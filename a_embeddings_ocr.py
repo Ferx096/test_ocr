@@ -45,7 +45,7 @@ def get_embedding():
 # cargar datos de guia
 import pathlib
 def load_guia_data():
-    MAP_PATH = os.getenv("MAP_JSON_PATH", str(pathlib.Path(__file__).parent / "test" / "map" / "map_test.json"))
+    MAP_PATH = os.getenv("MAP_JSON_PATH", str(pathlib.Path(__file__).parent / "map" / "map_test.json"))
     if not os.path.exists(MAP_PATH):
         logger.error(f"No se encontró el archivo de guía: {MAP_PATH}")
         raise FileNotFoundError(f"No se encontró el archivo de guía: {MAP_PATH}")
