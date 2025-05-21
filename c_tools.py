@@ -79,7 +79,7 @@ class State(TypedDict):
 
 import pathlib
 
-def load_pdf_content():
+def pdf_content():
     PDF_PATH = os.getenv("PDF_PATH", str(pathlib.Path(__file__).parent / "document" / "estados_financieros__pdf_93834000_202403.pdf"))
     if not os.path.exists(PDF_PATH):
         logger.error(f"No se encontró el archivo PDF: {PDF_PATH}")
@@ -90,7 +90,7 @@ def load_pdf_content():
 
 # Solo inicializar vectore_storage si se ejecuta como script principal
 if __name__ == "__main__":
-    pdf_content = load_pdf_content()
+    pdf_content = pdf_content()
     vectore_storage = search_vectorestore(pdf_content)
     logger.info(f"Almacenamiento de vectores listo")
 
