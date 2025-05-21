@@ -65,6 +65,9 @@ State = State
 # Caragar contenido
 pdf_content = pdf_content
 vectore_storage = search_vectorestore(pdf_content)
+if vectore_storage is None:
+    logger.error("No se pudo inicializar el almacenamiento de vectores. El proceso se detiene.")
+    exit(1)
 logger.info(f"Almacenamiento de vectores listo")
 
 

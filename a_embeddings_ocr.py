@@ -249,6 +249,9 @@ def search_vectorestore(pdf_content):
     Transformas el texto concatenado en embedding y lo guarda en un vectorstore, listo para ser invocado
     """
     docs_finance = concat_text(pdf_content)
+    if docs_finance is None:
+        logger.error("No se pudo crear el vector store porque la extracción de texto falló.")
+        return None
     docs_guia = embeddings_guia(guia_data)
     # combinar antes de vectorizar
     docs_merge = docs_guia + docs_finance
