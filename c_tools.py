@@ -88,9 +88,11 @@ def pdf_content():
         pdf_content = f.read()
     return pdf_content
 
-pdf_content_data = pdf_content()
-vectore_storage = search_vectorestore(pdf_content_data)
-logger.info(f"Almacenamiento de vectores listo")
+vectore_storage = None
+if vectore_storage is None:
+    pdf_content_data = pdf_content()
+    vectore_storage = search_vectorestore(pdf_content_data)
+    logger.info(f"Almacenamiento de vectores listo")
 
 
 prompt_extract_company = prompt_extract_company
