@@ -77,7 +77,9 @@ def embeddings_guia(guia_data: str):
     logger.info(f"Documento de guia json listo para ser dividido")
 
     # chunk-split de la guia de datos
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=100, chunk_overlap=20)
+    # DEBUG: menos chunks para pruebas
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+
     docs = []
     for texto in chunks_guie:
         for chunk in text_splitter.split_text(texto):
@@ -234,8 +236,8 @@ def concat_text(pdf_content):
     concat_content = full_text + "\n\n" + tables_text
     logger.info(f"Texto de documento de usuario concatenado")
 
-    # split
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=100, chunk_overlap=20)
+    # DEBUG: menos chunks para pruebas
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
     chunks = text_splitter.split_text(concat_content)
     docs_finance = [Document(page_content=chunk) for chunk in chunks]
     logger.info(f"Split  de documento de usuario listo")
