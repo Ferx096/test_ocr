@@ -19,7 +19,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from b_prompts import prompt_extract_company
 from b_prompts import prompt_balance_sheet
 from b_prompts import prompt_total_balance
-from b_prompts import prompt_income_statement
+
 
 
 load_dotenv()
@@ -84,11 +84,9 @@ with open(pdf_path, "rb") as f:
 vectore_storage = search_vectorestore(pdf_content)
 logger.info(f"Almacenamiento de vectores listo")
 
-from langchain_core.prompts import ChatPromptTemplate
 prompt_extract_company = ChatPromptTemplate.from_template(prompt_extract_company)
 prompt_balance_sheet = ChatPromptTemplate.from_template(prompt_balance_sheet)
 prompt_total_balance = ChatPromptTemplate.from_template(prompt_total_balance)
-prompt_income_statement = ChatPromptTemplate.from_template(prompt_income_statement)
 
 
 # ======================================
