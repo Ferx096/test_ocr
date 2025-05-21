@@ -44,7 +44,7 @@ embedding = AzureOpenAIEmbeddings(
 logger.info(f"Azure embedding cargado")
 
 # cargar datos de guia
-url = r"C:\Users\grupo\OneDrive\Escritorio\MyWacc\ocr\test\map\map_test.json"
+url = os.path.join(os.path.dirname(__file__), 'map', 'map_test.json')
 with open(url, encoding="utf-8") as f:
     guia_data = json.load(f)
 logger.info(f"json de documento guia cargado")

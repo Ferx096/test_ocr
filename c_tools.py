@@ -77,19 +77,18 @@ class State(TypedDict):
     next: Optional[str]
 
 
-with open(
-    r"C:\Users\grupo\OneDrive\Escritorio\MyWacc\ocr\document\estados_financieros__pdf_93834000_202403.pdf",
-    "rb",
-) as f:
+pdf_path = os.path.join(os.path.dirname(__file__), 'document', 'estados_financieros__pdf_93834000_202403.pdf')
+with open(pdf_path, "rb") as f:
     pdf_content = f.read()
 
 vectore_storage = search_vectorestore(pdf_content)
 logger.info(f"Almacenamiento de vectores listo")
 
-prompt_extract_company = prompt_extract_company
-prompt_balance_sheet = prompt_balance_sheet
-prompt_total_balance = prompt_total_balance
-prompt_income_statement = prompt_income_statement
+from langchain_core.prompts import ChatPromptTemplate
+prompt_extract_company = ChatPromptTemplate.from_template(prompt_extract_company)
+prompt_balance_sheet = ChatPromptTemplate.from_template(prompt_balance_sheet)
+prompt_total_balance = ChatPromptTemplate.from_template(prompt_total_balance)
+prompt_income_statement = ChatPromptTemplate.from_template(prompt_income_statement)
 
 
 # ======================================

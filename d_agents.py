@@ -383,19 +383,19 @@ app = graph.compile()
 
 
 # GRAPH VISUALIZATION
-# path_graph = r"C:\Users\grupo\OneDrive\Escritorio\MyWacc\ocr\graph.png"
-"""
+import os
 from langchain_core.runnables.graph_mermaid import MermaidDrawMethod
-from IPython.display import Image, display
 
-# generar imagen
-imagen = app.get_graph().draw_mermaid_png()
-# guardar imagen
-with open(path_graph, "wb") as f:
-    f.write(imagen)
-print("imagen del workflow guardada")
-logger.info(f"imagen del workflow guardada")
-"""
+def save_graph_png(app, filename="graph.png"):
+    path_graph = os.path.join(os.path.dirname(__file__), filename)
+    imagen = app.get_graph().draw_mermaid_png()
+    with open(path_graph, "wb") as f:
+        f.write(imagen)
+    print(f"Imagen del workflow guardada en {path_graph}")
+    logger.info(f"Imagen del workflow guardada en {path_graph}")
+
+# Descomentar para generar la imagen del grafo
+# save_graph_png(app)
 
 
 # ======================================
