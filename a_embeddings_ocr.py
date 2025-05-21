@@ -126,7 +126,7 @@ def extract_text_from_pdf_azure(pdf_content: bytes):
         logger.info("Iniciando análisis del documento...")
         poller = document_intelligence_client.begin_analyze_document(
             model_id="prebuilt-layout",
-            document=pdf_content,
+            body=pdf_content,
             content_type="application/pdf"
         )
 
