@@ -92,16 +92,48 @@ def node_company_info(state: State) -> Command[Literal["balance_sheet"]]:
     query = "Extrae el nombre, RUT y fecha de reporte de la empresa."
     # ejecutar el agente
     response = agent_company_info.invoke({"input": query})
+    logger.info(f"Respuesta bruta del agente: {response}")
+
     logger.info(f"Agente de recuperacion de informacion de compañia ejecutado")
 
     # Compatibilidad: si response es lista, tomar el primer elemento
-    if isinstance(response, list):
-        response_content = response[0].content
-    else:
+    # Adaptar acceso a la estructura real del agente
+    if isinstance(response, dict) and "output" in response:
+        response_content = response["output"]
+    elif hasattr(response, "content"):
         response_content = response.content
+    else:
+        response_content = str(response)
+    def clean_json_string(s):
+        s = s.strip()
+        if s.startswith('```json'):
+            s = s[7:]
+        if s.startswith('```'):
+            s = s[3:]
+        if s.endswith('```'):
+            s = s[:-3]
+        return s.strip()
 
+
+    # Limpiar formato markdown si es necesario
+    response_content = clean_json_string(response_content)
     # Parsear la respuesta JSON
-    estructura_company = json.loads(response_content)
+    import ast
+    try:
+        estructura_company = json.loads(response_content)
+    except json.JSONDecodeError:
+        try:
+            # Fallback: intentar reemplazar comillas simples por dobles
+            fixed = response_content.replace("'", '"')
+            estructura_company = json.loads(fixed)
+        except json.JSONDecodeError:
+            try:
+                # Fallback: intentar ast.literal_eval
+                estructura_company = ast.literal_eval(response_content)
+            except Exception as e:
+                logger.error(f"No se pudo parsear la respuesta como JSON: {e}\nContenido: {response_content}")
+                estructura_company = {}
+
 
     # Aplicar parse_number a cada valor dentro de cada bloque
     def clean(d):
@@ -124,7 +156,6 @@ def node_company_info(state: State) -> Command[Literal["balance_sheet"]]:
         goto=goto,
         update={
             # se usa solo content ya que es la respuesta del agente
-            "messages": [{"name": "company_info", "content": response_content}],
             # aqui se usa el diccionario result
             "nombre_compañia": company_name,
             "rut_compañia": company_rut,
@@ -175,8 +206,19 @@ def node_balance_sheet(state: State) -> Command[Literal["final"]]:
     # obtener query del estado
     query = f"Extrae los datos del balance general; activos, pasivos y patrimonio de la empresa {state['nombre_compañia']}. Dame tu respeusta en formato json"
     # ejecutar el agente
-    response = agent_balance_sheet.invoke([HumanMessage(content=query)])
-    texto = response.content
+    response = agent_balance_sheet.invoke({'messages': [HumanMessage(content=query)]})
+    # Defensive: if response is a list of HumanMessage, log error and raise
+    from langchain_core.messages import HumanMessage as LC_HumanMessage
+    if isinstance(response, list) and all(isinstance(x, LC_HumanMessage) for x in response):
+        logger.error(f"ERROR: agent_balance_sheet.invoke returned a list of HumanMessage: {response}")
+        raise ValueError("agent_balance_sheet.invoke returned a list of HumanMessage, which is not allowed")
+    # Adaptar acceso a la respuesta (puede ser dict, objeto, etc)
+    if isinstance(response, dict):
+        texto = response.get('content', str(response))
+    elif hasattr(response, 'content'):
+        texto = response.content
+    else:
+        texto = str(response)
     logger.info(f"Texto recuperado por agente principal.")
 
     # Usar LLM para evaluar inteligentemente el contenido
@@ -185,10 +227,32 @@ def node_balance_sheet(state: State) -> Command[Literal["final"]]:
         f"Evaluación de totales en el texto principal realizada: {resultado_llm}"
     )
 
-    # Parsear la rpta JSON conviertiendolo en un diccionario
-    estructura_balance = json.loads(
-        resultado_llm.content
-    )  # seguro si el JSON está limpio
+    # Limpiar y parsear la rpta JSON convirtiéndolo en un diccionario
+    def clean_json_string(s):
+        s = s.strip()
+        if s.startswith('```json'):
+            s = s[7:]
+        if s.startswith('```'):
+            s = s[3:]
+        if s.endswith('```'):
+            s = s[:-3]
+        return s.strip()
+
+    import ast
+    response_content = resultado_llm.content if hasattr(resultado_llm, 'content') else str(resultado_llm)
+    response_content = clean_json_string(response_content)
+    try:
+        estructura_balance = json.loads(response_content)
+    except json.JSONDecodeError:
+        try:
+            fixed = response_content.replace("'", '"')
+            estructura_balance = json.loads(fixed)
+        except json.JSONDecodeError:
+            try:
+                estructura_balance = ast.literal_eval(response_content)
+            except Exception as e:
+                logger.error(f"No se pudo parsear la respuesta como JSON: {e}\nContenido: {response_content}")
+                estructura_balance = {}
     logger.info(f"Json convertido a diccionario")
 
     # Aplicar parser_number a cada valor dentro de cada bloque
@@ -230,10 +294,6 @@ def node_balance_sheet(state: State) -> Command[Literal["final"]]:
     return Command(
         goto=goto,
         update={
-            # se usa solo content ya que es la respuesta del agente
-            #"messages": {"balance_sheet": response.content}
-            "messages": [{"name": "balance_sheet", "content": response.content}],
-            # aqui se usa el diccionario result
             "balance_general": [activos, pasivos, patrimonio],
             "next": goto,
         },
