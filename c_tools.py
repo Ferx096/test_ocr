@@ -68,7 +68,7 @@ Se pretende crear 3 agentes jerargicos para obtener informacion valiosa
 class State(TypedDict):
     """Estructura de estado compartido entre agentes"""
 
-    messages: Optional[Annotated[list[HumanMessage], add_messages]]
+    messages: Optional[list[dict]]  # [{"name": str, "content": str}]
     nombre_compañia: Optional[str]
     rut_compañia: Optional[str]
     fecha_reporte: Optional[str]

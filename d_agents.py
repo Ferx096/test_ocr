@@ -124,7 +124,7 @@ def node_company_info(State: State) -> Command[Literal["balance_sheet"]]:
         goto=goto,
         update={
             # se usa solo content ya que es la respuesta del agente
-            "messages": [HumanMessage(content=response_content, name="company_info")],
+            "messages": [{"name": "company_info", "content": response_content}],
             # aqui se usa el diccionario result
             "nombre_compañia": company_name,
             "rut_compañia": company_rut,
@@ -232,7 +232,7 @@ def node_balance_sheet(state: State) -> Command[Literal["final"]]:
         update={
             # se usa solo content ya que es la respuesta del agente
             #"messages": {"balance_sheet": response.content}
-            "messages": [HumanMessage(content=response.content, name="balance_sheet")],
+            "messages": [{"name": "balance_sheet", "content": response.content}],
             # aqui se usa el diccionario result
             "balance_general": [activos, pasivos, patrimonio],
             "next": goto,
@@ -295,9 +295,7 @@ def node_final(state: State) -> Command[Literal["end"]]:
     return Command(
         goto="end",
         update={
-            "messages": [
-                HumanMessage(content="Excel generado correctamente", name="final")
-            ]
+            "messages": [{"name": "final", "content": "Excel generado correctamente"}]
         },
     )
 
