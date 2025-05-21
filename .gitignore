@@ -1,7 +1,26 @@
+# Entornos virtuales
+venv/
+test_ocr/
+Lib/
+Include/
+Scripts/
+share/
+pyvenv.cfg
+# Python cache
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+# Archivos temporales
+*.log
+*.tmp
+# Configuracion de entorno
 .env
-*.xlsx
-.DS_Store
+# IDEs
 .idea/
 .vscode/
+# Otros
+.DS_Store
+*.xlsx
+list/
+
