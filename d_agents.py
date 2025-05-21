@@ -84,14 +84,14 @@ parse_company_info = parse_company_info
 
 
 # NODO COMPANY
-def node_company_info(State: State) -> Command[Literal["balance_sheet"]]:
+def node_company_info(state: State) -> Command[Literal["balance_sheet"]]:
     """
     Nodo que tiene funcion de buscar nombre y rut de la empresa y la fecha del informe
     """
     # obtener query del estado
     query = "Extrae el nombre, RUT y fecha de reporte de la empresa."
     # ejecutar el agente
-    response = agent_company_info.invoke([HumanMessage(content=query)])
+    response = agent_company_info.invoke({"input": query})
     logger.info(f"Agente de recuperacion de informacion de compañia ejecutado")
 
     # Compatibilidad: si response es lista, tomar el primer elemento
