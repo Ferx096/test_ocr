@@ -94,7 +94,7 @@ def node_company_info(State: State) -> Command[Literal["balance_sheet"]]:
     # obtener query del estado
     query = "Extrae el nombre, RUT y fecha de reporte de la empresa."
     # ejecutar el agente
-    response = agent_company_info.invoke([HumanMessage(content=query)])
+    response = agent_company_info.invoke(query)
     logger.info(f"Agente de recuperacion de informacion de compañia ejecutado")
 
     # Parsear la respuesta JSON
