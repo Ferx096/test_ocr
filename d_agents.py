@@ -94,8 +94,14 @@ def node_company_info(State: State) -> Command[Literal["balance_sheet"]]:
     response = agent_company_info.invoke([HumanMessage(content=query)])
     logger.info(f"Agente de recuperacion de informacion de compañia ejecutado")
 
+    # Compatibilidad: si response es lista, tomar el primer elemento
+    if isinstance(response, list):
+        response_content = response[0].content
+    else:
+        response_content = response.content
+
     # Parsear la respuesta JSON
-    estructura_company = json.loads(response.content)
+    estructura_company = json.loads(response_content)
 
     # Aplicar parse_number a cada valor dentro de cada bloque
     def clean(d):
@@ -118,7 +124,7 @@ def node_company_info(State: State) -> Command[Literal["balance_sheet"]]:
         goto=goto,
         update={
             # se usa solo content ya que es la respuesta del agente
-            "messages": [HumanMessage(content=response.content, name="company_info")],
+            "messages": [HumanMessage(content=response_content, name="company_info")],
             # aqui se usa el diccionario result
             "nombre_compañia": company_name,
             "rut_compañia": company_rut,
