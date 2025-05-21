@@ -89,6 +89,8 @@ def pdf_content():
     return pdf_content
 
 from a_embeddings_ocr import save_faiss_index, load_faiss_index
+from a_embeddings_ocr import get_embedding
+
 import pathlib
 
 FAISS_INDEX_PATH = str(pathlib.Path(__file__).parent / "faiss_index")
