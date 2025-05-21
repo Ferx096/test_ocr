@@ -105,9 +105,13 @@ if os.path.exists(FAISS_INDEX_PATH):
 else:
     pdf_content_data = pdf_content()
     vectore_store = search_vectorestore(pdf_content_data)
-    save_faiss_index(vectore_store, FAISS_INDEX_PATH)
-    vectore_storage = vectore_store.as_retriever()
-    logger.info(f"Almacenamiento de vectores listo y cacheado en {FAISS_INDEX_PATH}")
+    if vectore_store is not None:
+        save_faiss_index(vectore_store, FAISS_INDEX_PATH)
+        vectore_storage = vectore_store.as_retriever()
+        logger.info(f"Almacenamiento de vectores listo y cacheado en {FAISS_INDEX_PATH}")
+    else:
+        logger.error("No se pudo crear el vector store, abortando inicialización.")
+        vectore_storage = None
 
 
 prompt_extract_company = prompt_extract_company
