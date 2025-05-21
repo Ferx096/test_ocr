@@ -261,6 +261,11 @@ def search_vectorestore(pdf_content):
     logger.info(f"Documentos combinados para vectore store")
     # vectore store -embedding
     vectore_store = FAISS.from_documents(docs_merge, embedding)  # search FAISS
+    if not docs_merge:
+        logger.error("No hay documentos para vectorizar. docs_merge está vacío.")
+        return None
+    logger.info(f"Vectorizando {len(docs_merge)} documentos...")
+
     retrieverr = vectore_store.as_retriever()
     logger.info(f"Vector Store y recuperacion lista")
 def save_faiss_index(vectore_store, path):
