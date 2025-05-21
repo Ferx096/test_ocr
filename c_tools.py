@@ -106,7 +106,12 @@ else:
     pdf_content_data = pdf_content()
     vectore_store = search_vectorestore(pdf_content_data)
     if vectore_store is not None:
-        save_faiss_index(vectore_store, FAISS_INDEX_PATH)
+        logger.info(f"Guardando FAISS index en {FAISS_INDEX_PATH} ...")
+        try:
+            save_faiss_index(vectore_store, FAISS_INDEX_PATH)
+            logger.info(f"FAISS index guardado exitosamente en {FAISS_INDEX_PATH}")
+        except Exception as e:
+            logger.error(f"Error al guardar FAISS index: {e}")
         vectore_storage = vectore_store.as_retriever()
         logger.info(f"Almacenamiento de vectores listo y cacheado en {FAISS_INDEX_PATH}")
     else:
