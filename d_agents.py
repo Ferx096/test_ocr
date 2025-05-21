@@ -87,7 +87,7 @@ parse_company_info = parse_company_info
 
 
 # NODO COMPANY
-def node_company_info(State: State) -> Command[Literal["balance_sheet"]]:
+def node_company_info(state: State) -> Command[Literal["balance_sheet"]]:
     """
     Nodo que tiene funcion de buscar nombre y rut de la empresa y la fecha del informe
     """
