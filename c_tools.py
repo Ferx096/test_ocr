@@ -88,11 +88,9 @@ def pdf_content():
         pdf_content = f.read()
     return pdf_content
 
-# Solo inicializar vectore_storage si se ejecuta como script principal
-if __name__ == "__main__":
-    pdf_content = pdf_content()
-    vectore_storage = search_vectorestore(pdf_content)
-    logger.info(f"Almacenamiento de vectores listo")
+pdf_content_data = pdf_content()
+vectore_storage = search_vectorestore(pdf_content_data)
+logger.info(f"Almacenamiento de vectores listo")
 
 
 prompt_extract_company = prompt_extract_company
