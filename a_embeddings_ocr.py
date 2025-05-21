@@ -12,6 +12,7 @@ from azure.ai.documentintelligence import DocumentIntelligenceClient
 from config import AZURE_CONFIG
 
 
+
 load_dotenv()
 # configuracion de logging
 logging.basicConfig(

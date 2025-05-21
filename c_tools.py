@@ -21,6 +21,7 @@ from b_prompts import prompt_balance_sheet
 from b_prompts import prompt_total_balance
 from b_prompts import prompt_income_statement
 
+
 load_dotenv()
 # configuracion de logging
 logging.basicConfig(
