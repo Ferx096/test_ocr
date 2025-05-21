@@ -263,4 +263,12 @@ def search_vectorestore(pdf_content):
     vectore_store = FAISS.from_documents(docs_merge, embedding)  # search FAISS
     retrieverr = vectore_store.as_retriever()
     logger.info(f"Vector Store y recuperacion lista")
+def save_faiss_index(vectore_store, path):
+    vectore_store.save_local(path)
+    logger.info(f"Vector store guardado en {path}")
+
+def load_faiss_index(path, embedding):
+    from langchain_community.vectorstores.faiss import FAISS
+    return FAISS.load_local(path, embedding)
+
     return retrieverr

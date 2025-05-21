@@ -88,11 +88,24 @@ def pdf_content():
         pdf_content = f.read()
     return pdf_content
 
+from a_embeddings_ocr import save_faiss_index, load_faiss_index
+import pathlib
+
+FAISS_INDEX_PATH = str(pathlib.Path(__file__).parent / "faiss_index")
+
 vectore_storage = None
-if vectore_storage is None:
+embedding = get_embedding()
+
+if os.path.exists(FAISS_INDEX_PATH):
+    vectore_store = load_faiss_index(FAISS_INDEX_PATH, embedding)
+    vectore_storage = vectore_store.as_retriever()
+    logger.info(f"Vector store cargado desde cache {FAISS_INDEX_PATH}")
+else:
     pdf_content_data = pdf_content()
-    vectore_storage = search_vectorestore(pdf_content_data)
-    logger.info(f"Almacenamiento de vectores listo")
+    vectore_store = search_vectorestore(pdf_content_data)
+    save_faiss_index(vectore_store, FAISS_INDEX_PATH)
+    vectore_storage = vectore_store.as_retriever()
+    logger.info(f"Almacenamiento de vectores listo y cacheado en {FAISS_INDEX_PATH}")
 
 
 prompt_extract_company = prompt_extract_company
