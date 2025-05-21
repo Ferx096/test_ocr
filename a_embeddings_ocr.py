@@ -244,10 +244,8 @@ def concat_text(pdf_content):
 
 
 # Crear embeddings y guardarlos en un vectore store
-    guia_data = load_guia_data()
-
 def search_vectorestore(pdf_content):
-    global guia_data
+    guia_data = load_guia_data()
     """
     Transformas el texto concatenado en embedding y lo guarda en un vectorstore, listo para ser invocado
     """
