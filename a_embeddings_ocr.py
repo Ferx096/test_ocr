@@ -78,7 +78,7 @@ def embeddings_guia(guia_data: str):
 
     # chunk-split de la guia de datos
     # DEBUG: menos chunks para pruebas
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=20)
 
     docs = []
     for texto in chunks_guie:
@@ -237,7 +237,7 @@ def concat_text(pdf_content):
     logger.info(f"Texto de documento de usuario concatenado")
 
     # DEBUG: menos chunks para pruebas
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=20)
     chunks = text_splitter.split_text(concat_content)
     docs_finance = [Document(page_content=chunk) for chunk in chunks]
     logger.info(f"Split  de documento de usuario listo")

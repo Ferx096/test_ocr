@@ -96,8 +96,7 @@ def node_company_info(state: State) -> Command[Literal["balance_sheet"]]:
     # ejecutar el agente
     response = agent_company_info.invoke([HumanMessage(content=query)])
     logger.info(f"Agente de recuperacion de informacion de compañia ejecutado")
-    logger.info(f"Tipo de respuesta: {type(response)}; Valor: {response}")
-
+    
 
     # Parsear la respuesta JSON
     estructura_company = json.loads(response.content)
