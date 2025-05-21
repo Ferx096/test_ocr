@@ -186,6 +186,9 @@ def concat_text(pdf_content):
     return = split (texto + tabla contetanado)
     """
     result = extract_text_from_pdf_azure(pdf_content)
+    if not result or "full_text" not in result:
+        logger.error("No se pudo extraer texto del PDF. El resultado es None o no contiene 'full_text'.")
+        return None
     # guardar texto
     full_text = result["full_text"]
     logger.info(f"Full texto extraido")
