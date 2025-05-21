@@ -24,30 +24,36 @@ logger = logging.getLogger(__name__)
 # ======================================
 # CARGAR DATOS
 # ======================================
-# llm
-llm = AzureChatOpenAI(
-    api_key=os.getenv("AZURE_OPENAI_API_KEY"),
-    azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
-    api_version=os.getenv("OPENAI_API_VERSION"),
-    deployment_name=os.getenv("AZURE_OPENAI_CHAT_DEPLOYMENT_NAME"),
-    model_name="gpt-4",
-)
+def get_llm():
+    return AzureChatOpenAI(
+        api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+        azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+        api_version=os.getenv("OPENAI_API_VERSION"),
+        deployment_name=os.getenv("AZURE_OPENAI_CHAT_DEPLOYMENT_NAME"),
+        model_name="gpt-4",
+    )
 
-logger.info(f"Azure LLM cargado")
+def get_embedding():
+    return AzureOpenAIEmbeddings(
+        api_version=os.getenv("OPENAI_EMBEDDING_API_VERSION"),
+        deployment=os.getenv("AZURE_OPENAI_EMBEDDING_DEPLOYMENT_NAME"),
+        api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+        model="text-embedding-3-large",
+    )
 
-embedding = AzureOpenAIEmbeddings(
-    api_version=os.getenv("OPENAI_EMBEDDING_API_VERSION"),
-    deployment=os.getenv("AZURE_OPENAI_EMBEDDING_DEPLOYMENT_NAME"),
-    api_key=os.getenv("AZURE_OPENAI_API_KEY"),
-    model="text-embedding-3-large",
-)
-logger.info(f"Azure embedding cargado")
 
 # cargar datos de guia
-url = r"C:\Users\grupo\OneDrive\Escritorio\MyWacc\ocr\test\map\map_test.json"
-with open(url, encoding="utf-8") as f:
-    guia_data = json.load(f)
-logger.info(f"json de documento guia cargado")
+import pathlib
+def load_guia_data():
+    MAP_PATH = os.getenv("MAP_JSON_PATH", str(pathlib.Path(__file__).parent / "test" / "map" / "map_test.json"))
+    if not os.path.exists(MAP_PATH):
+        logger.error(f"No se encontró el archivo de guía: {MAP_PATH}")
+        raise FileNotFoundError(f"No se encontró el archivo de guía: {MAP_PATH}")
+    with open(MAP_PATH, encoding="utf-8") as f:
+        guia_data = json.load(f)
+    logger.info(f"json de documento guia cargado")
+    return guia_data
+
 
 
 # ======================================

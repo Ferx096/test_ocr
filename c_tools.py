@@ -77,14 +77,23 @@ class State(TypedDict):
     next: Optional[str]
 
 
-with open(
-    r"C:\Users\grupo\OneDrive\Escritorio\MyWacc\ocr\document\estados_financieros__pdf_93834000_202403.pdf",
-    "rb",
-) as f:
-    pdf_content = f.read()
+import pathlib
 
-vectore_storage = search_vectorestore(pdf_content)
-logger.info(f"Almacenamiento de vectores listo")
+def load_pdf_content():
+    PDF_PATH = os.getenv("PDF_PATH", str(pathlib.Path(__file__).parent / "document" / "estados_financieros__pdf_93834000_202403.pdf"))
+    if not os.path.exists(PDF_PATH):
+        logger.error(f"No se encontró el archivo PDF: {PDF_PATH}")
+        raise FileNotFoundError(f"No se encontró el archivo PDF: {PDF_PATH}")
+    with open(PDF_PATH, "rb") as f:
+        pdf_content = f.read()
+    return pdf_content
+
+# Solo inicializar vectore_storage si se ejecuta como script principal
+if __name__ == "__main__":
+    pdf_content = load_pdf_content()
+    vectore_storage = search_vectorestore(pdf_content)
+    logger.info(f"Almacenamiento de vectores listo")
+
 
 prompt_extract_company = prompt_extract_company
 prompt_balance_sheet = prompt_balance_sheet
@@ -170,10 +179,10 @@ def parse_number(valor):
             if not match:
                 return None
             number = float(match.group(1))
-            if "mil" in valor:
-                number *= 1000
-            elif "mill" in valor or "millon" in valor:
+            if "millon" in valor or "millones" in valor or "mill" in valor:
                 number *= 1000000
+            elif "mil" in valor:
+                number *= 1000
             return number
     except Exception:
         return None
