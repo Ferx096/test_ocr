@@ -1,0 +1,13 @@
+python-dotenv
+langchain
+langgraph
+langchain-openai
+langchain-core
+langchain-community
+faiss-cpu
+azure-ai-documentintelligence
+azure-core
+ipython
+pandas
+tabulate
+pyppeteer
