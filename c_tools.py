@@ -244,8 +244,10 @@ def fallback_parse_balance_totals(text: str) -> dict:
             return m.group(1).replace('.', '').replace(',', '')
         return None
     return {
-        "total_activos": find_total("total[\s_]*activos"),
-        "total_pasivos": find_total("total[\s_]*pasivos"),
+        "total_activos": find_total(r"total[\s_]*activos"),
+        "total_pasivos": find_total(r"total[\s_]*pasivos"),
+        "total_patrimonio": find_total(r"total[\s_]*patrimonio|patrimonio[\s_]*total")
+    }
 
 def extract_account_values_from_text(text: str, cuentas_dict: dict) -> dict:
     """
