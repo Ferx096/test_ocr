@@ -155,30 +155,51 @@ agent_company_info = create_react_agent(
 
 # funcion para extraer informacion del texto del agente
 def parse_company_info(response_text: str) -> dict:
-    """Extrae informacion del valor del texto corrigiendo  valores innecesarios"""
-    name_match = re.search(r"Nombre.*?:\s*(.+)", response_text, re.IGNORECASE)
+    """
+    Extrae informacion del valor del texto corrigiendo valores innecesarios.
+    Si el texto es un JSON válido, lo parsea directamente.
+    Si no, intenta extraer los campos por regex y, como fallback, busca patrones alternativos.
+    """
+    # Intentar parsear como JSON primero
+    try:
+        data = json.loads(response_text)
+        # Si es un dict y tiene los campos, devolverlos
+        if isinstance(data, dict):
+            return {
+                "company_name": data.get("company_name") or data.get("nombre") or None,
+                "company_rut": data.get("company_rut") or data.get("rut") or None,
+                "report_date": data.get("report_date") or data.get("fecha") or None,
+            }
+    except Exception:
+        pass
+
+    # Regex principal
+    name_match = re.search(r"Nombre.*?:\s*([\w\s\.,\-]+)", response_text, re.IGNORECASE)
     rut_match = re.search(r"RUT:?\s*([\d\-\.]+)", response_text, re.IGNORECASE)
-    date_match = re.search(
-        r"Fecha.*?:\s*([0-9]/[0-9]/[0-9])", response_text, re.IGNORECASE
-    )
+    date_match = re.search(r"Fecha.*?:\s*([0-9]{2,4}[\/\-][0-9]{2,4}[\/\-][0-9]{2,4}|[0-9]{8})", response_text, re.IGNORECASE)
+
+    # Fallbacks alternativos
+    if not name_match:
+        name_match = re.search(r"company_name"\s*[:=]\s*['\"]?([\w\s\.,\-]+)['\"]?", response_text, re.IGNORECASE)
+    if not rut_match:
+        rut_match = re.search(r"company_rut"\s*[:=]\s*['\"]?([\d\-\.]+)['\"]?", response_text, re.IGNORECASE)
+    if not date_match:
+        date_match = re.search(r"report_date"\s*[:=]\s*['\"]?([0-9]{8}|[0-9]{2,4}[\/\-][0-9]{2,4}[\/\-][0-9]{2,4})['\"]?", response_text, re.IGNORECASE)
+
+    # Si sigue sin datos, buscar la primera fecha y rut que aparezca
+    if not rut_match:
+        rut_match = re.search(r"[\d]{7,10}-[\dkK]", response_text)
+    if not date_match:
+        date_match = re.search(r"[0-9]{8}", response_text)
 
     return {
         "company_name": name_match.group(1).strip() if name_match else None,
         "company_rut": (
-            rut_match.group(1)
-            .strip()
-            .replace(".", "")
-            .replace("-", "")
-            .replace(" ", "")
-            .replace(",", "")
-            .replace("*", "")
-            .replace("'", "")
-            .replace('"', "")
-            if rut_match
-            else None
+            rut_match.group(1).strip().replace(".", "").replace("-", "").replace(" ", "") if rut_match else None
         ),
         "report_date": date_match.group(1).strip() if date_match else None,
     }
+
 
 
 # ======================================
