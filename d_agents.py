@@ -271,6 +271,13 @@ def node_balance_sheet(state: State) -> Command[Literal["final"]]:
     patrimonio = clean_dict(estructura_balance.get("patrimonio", {}))
     logger.info("Bloques parseados correctamente.")
 
+    # Heurística: si hay nulls, buscar en el texto los valores de cada cuenta
+    from c_tools import extract_account_values_from_text
+    activos = extract_account_values_from_text(texto, activos)
+    pasivos = extract_account_values_from_text(texto, pasivos)
+    patrimonio = extract_account_values_from_text(texto, patrimonio)
+    logger.info(f"Valores de cuentas extraídos por heurística: activos={activos}, pasivos={pasivos}, patrimonio={patrimonio}")
+
     # Trabajar los totales
     total_activos = (
         activos.get("total_activos")

@@ -246,6 +246,44 @@ def fallback_parse_balance_totals(text: str) -> dict:
     return {
         "total_activos": find_total("total[\s_]*activos"),
         "total_pasivos": find_total("total[\s_]*pasivos"),
+
+def extract_account_values_from_text(text: str, cuentas_dict: dict) -> dict:
+    """
+    Para cada campo null en cuentas_dict, busca en el texto una línea que contenga el nombre de la cuenta y extrae el número asociado.
+    Devuelve un nuevo dict con los valores encontrados (mantiene los existentes si no son null).
+    """
+    import re
+    def normalize_key(key):
+        return key.replace('_', ' ').replace('y', 'y').replace('de', '').replace('del', '').replace('la', '').replace('el', '').strip()
+    result = {}
+    for k, v in cuentas_dict.items():
+        if v is not None:
+            result[k] = v
+            continue
+        # Generar variantes del nombre de la cuenta
+        nombre = normalize_key(k)
+        # Buscar línea que contenga el nombre (case insensitive)
+        pattern = re.compile(rf"{nombre}.*?(\(?-?\d[\d\.,]*\)?)", re.IGNORECASE)
+        m = pattern.search(text)
+        if m:
+            num = m.group(1)
+            # Limpiar número: quitar paréntesis (negativo), puntos, comas
+            negativo = False
+            if num.startswith('(') and num.endswith(')'):
+                negativo = True
+                num = num[1:-1]
+            num = num.replace('.', '').replace(',', '')
+            try:
+                val = int(num)
+                if negativo:
+                    val = -val
+                result[k] = val
+            except Exception:
+                result[k] = None
+        else:
+            result[k] = None
+    return result
+
         "total_patrimonio": find_total("total[\s_]*patrimonio|patrimonio[\s_]*total")
     }
 
