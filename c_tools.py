@@ -204,7 +204,7 @@ def fallback_parse_company_info(text: str) -> dict:
     """
     Fallback: Busca patrones muy flexibles para nombre, rut y fecha en texto plano.
     """
-    # Nombre: primera línea larga en mayúsculas sin símbolos
+    # Nombre: primera línea larga en mayúsculas sin símbolos o la primera línea significativa
     lines = text.splitlines()
     name = None
     for line in lines:
@@ -212,6 +212,13 @@ def fallback_parse_company_info(text: str) -> dict:
         if len(l) > 5 and l.isupper() and not any(c in l for c in '0123456789:|*'):
             name = l
             break
+    if not name:
+        # Si no hay línea en mayúsculas, tomar la primera línea significativa
+        for line in lines:
+            l = line.strip()
+            if len(l) > 5 and not any(c in l for c in '0123456789:|*'):
+                name = l
+                break
     # Fecha: cualquier fecha tipo dd/mm/yyyy, dd-mm-yyyy, yyyymmdd
     date = None
     for pat in [r"(\d{2}[/-]\d{2}[/-]\d{4})", r"(\d{4}[/-]\d{2}[/-]\d{2})", r"(\d{8})"]:
