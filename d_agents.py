@@ -96,18 +96,27 @@ def node_company_info(state: State) -> Command[Literal["balance_sheet"]]:
     # ejecutar el agente
     response = agent_company_info.invoke([HumanMessage(content=query)])
     logger.info(f"Agente de recuperacion de informacion de compañia ejecutado")
-    
 
-    # Parsear la respuesta JSON
-    estructura_company = json.loads(response.content)
+    # Validar y parsear la respuesta JSON
+    try:
+        estructura_company = json.loads(response.content)
+        logger.info("Respuesta del agente parseada como JSON correctamente")
+    except Exception as e:
+        logger.error(f"Error al parsear la respuesta del agente como JSON: {e}. Respuesta: {response.content}")
+        # Devolver un dict vacío para evitar fallos posteriores
+        estructura_company = {"company_name": None, "company_rut": None, "report_date": None}
 
-    # Aplicar parse_number a cada valor dentro de cada bloque
-    def clean(d):
-        return {k: parse_company_info(v) for k, v in d.items()}
+    # Aplicar parse_company_info a cada campo
+    def clean_field(val):
+        if isinstance(val, dict):
+            return {k: parse_company_info(v) for k, v in val.items()}
+        elif isinstance(val, str):
+            return parse_company_info(val)
+        return None
 
-    company_name = clean(estructura_company.get("company_name", {}))
-    company_rut = clean(estructura_company.get("company_rut", {}))
-    report_date = clean(estructura_company.get("report_date", {}))
+    company_name = clean_field(estructura_company.get("company_name", ""))
+    company_rut = clean_field(estructura_company.get("company_rut", ""))
+    report_date = clean_field(estructura_company.get("report_date", ""))
     creacion_report = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     logger.info(f"Datos parseados")
 
@@ -184,10 +193,12 @@ def node_balance_sheet(state: State) -> Command[Literal["final"]]:
     )
 
     # Parsear la rpta JSON conviertiendolo en un diccionario
-    estructura_balance = json.loads(
-        resultado_llm.content
-    )  # seguro si el JSON está limpio
-    logger.info(f"Json convertido a diccionario")
+    try:
+        estructura_balance = json.loads(resultado_llm.content)
+        logger.info(f"Json convertido a diccionario")
+    except Exception as e:
+        logger.error(f"Error al parsear la respuesta del balance como JSON: {e}. Respuesta: {resultado_llm.content}")
+        estructura_balance = {"activos": {}, "pasivos": {}, "patrimonio": {}}
 
     # Aplicar parser_number a cada valor dentro de cada bloque
     def clean_dict(d):
