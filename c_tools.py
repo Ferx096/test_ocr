@@ -200,6 +200,32 @@ def parse_company_info(response_text: str) -> dict:
         "report_date": date_match.group(1).strip() if date_match else None,
     }
 
+def fallback_parse_company_info(text: str) -> dict:
+    """
+    Fallback: Busca patrones muy flexibles para nombre, rut y fecha en texto plano.
+    """
+    # Nombre: primera línea larga en mayúsculas sin símbolos
+    lines = text.splitlines()
+    name = None
+    for line in lines:
+        l = line.strip()
+        if len(l) > 5 and l.isupper() and not any(c in l for c in '0123456789:|*'):
+            name = l
+            break
+    # Fecha: cualquier fecha tipo dd/mm/yyyy, dd-mm-yyyy, yyyymmdd
+    date = None
+    for pat in [r"(\d{2}[/-]\d{2}[/-]\d{4})", r"(\d{4}[/-]\d{2}[/-]\d{2})", r"(\d{8})"]:
+        m = re.search(pat, text)
+        if m:
+            date = m.group(1)
+            break
+    # RUT: cualquier número largo con guion
+    rut = None
+    m = re.search(r"(\d{7,10}-[\dkK])", text)
+    if m:
+        rut = m.group(1)
+    return {"company_name": name, "company_rut": rut, "report_date": date}
+
 
 
 # ======================================

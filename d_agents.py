@@ -135,6 +135,18 @@ def node_company_info(state: State) -> Command[Literal["balance_sheet"]]:
     report_date = clean_field(estructura_company.get("report_date", ""))
     if isinstance(report_date, dict):
         report_date = next((v for v in report_date.values() if v), None)
+
+    # Fallback si todo es vacío o "No especificado"
+    if not company_name or company_name.lower() == "no especificado":
+        from c_tools import fallback_parse_company_info
+        fallback = fallback_parse_company_info(str(val))
+        if fallback.get("company_name"):
+            company_name = fallback["company_name"]
+        if fallback.get("company_rut"):
+            company_rut = fallback["company_rut"]
+        if fallback.get("report_date"):
+            report_date = fallback["report_date"]
+
     creacion_report = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     logger.info(f"Datos parseados")
 
