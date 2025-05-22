@@ -214,10 +214,10 @@ def node_balance_sheet(state: State) -> Command[Literal["final"]]:
 
     # Parsear la rpta JSON conviertiendolo en un diccionario
     try:
-        estructura_balance = json.loads(resultado_llm.content)
+        estructura_balance = json.loads(resultado_llm)
         logger.info(f"Json convertido a diccionario")
     except Exception as e:
-        logger.error(f"Error al parsear la respuesta del balance como JSON: {e}. Respuesta: {resultado_llm.content}")
+        logger.error(f"Error al parsear la respuesta del balance como JSON: {e}. Respuesta: {resultado_llm}")
         estructura_balance = {"activos": {}, "pasivos": {}, "patrimonio": {}}
 
     # Aplicar parser_number a cada valor dentro de cada bloque
