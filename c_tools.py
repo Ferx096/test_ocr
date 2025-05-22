@@ -19,7 +19,9 @@ from langchain_core.prompts import ChatPromptTemplate
 from b_prompts import prompt_extract_company
 from b_prompts import prompt_balance_sheet
 from b_prompts import prompt_total_balance
+from langchain_core.prompts import ChatPromptTemplate
 from b_prompts import prompt_income_statement
+import openpyxl
 
 
 load_dotenv()
@@ -79,7 +81,7 @@ class State(TypedDict):
 
 import pathlib
 
-def load_pdf_content():
+def pdf_content():
     PDF_PATH = os.getenv("PDF_PATH", str(pathlib.Path(__file__).parent / "document" / "estados_financieros__pdf_93834000_202403.pdf"))
     if not os.path.exists(PDF_PATH):
         logger.error(f"No se encontró el archivo PDF: {PDF_PATH}")
@@ -88,11 +90,40 @@ def load_pdf_content():
         pdf_content = f.read()
     return pdf_content
 
-# Solo inicializar vectore_storage si se ejecuta como script principal
-if __name__ == "__main__":
-    pdf_content = load_pdf_content()
-    vectore_storage = search_vectorestore(pdf_content)
-    logger.info(f"Almacenamiento de vectores listo")
+from a_embeddings_ocr import save_faiss_index, load_faiss_index
+from a_embeddings_ocr import get_embedding
+
+import pathlib
+
+FAISS_INDEX_PATH = str(pathlib.Path(__file__).parent / "faiss_index")
+
+vectore_storage = None
+embedding = get_embedding()
+
+if os.path.exists(FAISS_INDEX_PATH):
+    vectore_store = load_faiss_index(FAISS_INDEX_PATH, embedding)
+    vectore_storage = vectore_store.as_retriever()
+    logger.info(f"Vector store cargado desde cache {FAISS_INDEX_PATH}")
+else:
+    pdf_content_data = pdf_content()
+    vectore_store = search_vectorestore(pdf_content_data)
+    if vectore_store is not None:
+        logger.info(f"Guardando FAISS index en {FAISS_INDEX_PATH} ...")
+        try:
+            save_faiss_index(vectore_store, FAISS_INDEX_PATH)
+            logger.info(f"FAISS index guardado exitosamente en {FAISS_INDEX_PATH}")
+            vectore_storage = vectore_store.as_retriever()
+            logger.info(f"Almacenamiento de vectores listo y cacheado en {FAISS_INDEX_PATH}")
+        except Exception as e:
+            import traceback
+            logger.error(f"Error al guardar FAISS index o crear el retriever: {e}")
+            logger.error(traceback.format_exc())
+            vectore_storage = None
+        # Fin try/except
+
+    else:
+        logger.error("No se pudo crear el vector store, abortando inicialización.")
+        vectore_storage = None
 
 
 prompt_extract_company = prompt_extract_company
@@ -198,6 +229,8 @@ def sum_group(grupo: Dict[str, str]) -> float:
 agent_balance_sheet = create_react_agent(
     llm, tools=[extract_balance_sheet], prompt=prompt_balance_sheet
 )
+prompt_total_balance_runnable = ChatPromptTemplate.from_template(prompt_total_balance)
+
 
 
 # evaluador de balance total
@@ -206,8 +239,14 @@ def evaluate_balance_totals(llm, texto_balance: str):
     Evalua la respuesta obtenida por el primer agente (el que obtiene el balance)
     En la evaluacion verifica si existe los totales o tiene que geerar su suma
     """
-    chain = prompt_total_balance | llm | StrOutputParser()
-    return chain.invoke({"balance_texto": texto_balance})
+    chain = prompt_total_balance_runnable | llm | StrOutputParser()
+    # El prompt espera la variable 'texto_balance', que debe ser un JSON string
+    # Si texto_balance es un dict, serializarlo
+    if isinstance(texto_balance, dict):
+        texto_balance_str = json.dumps(texto_balance, ensure_ascii=False)
+    else:
+        texto_balance_str = texto_balance
+    return chain.invoke({"texto_balance": texto_balance_str})
 
 
 # ======================================

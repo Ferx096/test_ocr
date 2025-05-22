@@ -45,7 +45,7 @@ def get_embedding():
 # cargar datos de guia
 import pathlib
 def load_guia_data():
-    MAP_PATH = os.getenv("MAP_JSON_PATH", str(pathlib.Path(__file__).parent / "test" / "map" / "map_test.json"))
+    MAP_PATH = os.getenv("MAP_JSON_PATH", str(pathlib.Path(__file__).parent / "map" / "map_test.json"))
     if not os.path.exists(MAP_PATH):
         logger.error(f"No se encontró el archivo de guía: {MAP_PATH}")
         raise FileNotFoundError(f"No se encontró el archivo de guía: {MAP_PATH}")
@@ -77,7 +77,9 @@ def embeddings_guia(guia_data: str):
     logger.info(f"Documento de guia json listo para ser dividido")
 
     # chunk-split de la guia de datos
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=100, chunk_overlap=20)
+    # DEBUG: menos chunks para pruebas
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
+
     docs = []
     for texto in chunks_guie:
         for chunk in text_splitter.split_text(texto):
@@ -125,7 +127,9 @@ def extract_text_from_pdf_azure(pdf_content: bytes):
         # Analizar el documento
         logger.info("Iniciando análisis del documento...")
         poller = document_intelligence_client.begin_analyze_document(
-            "prebuilt-layout", document=pdf_content
+            model_id="prebuilt-layout",
+            body=pdf_content,
+            content_type="application/pdf"
         )
 
         logger.info("Esperando resultado del análisis...")
@@ -184,6 +188,9 @@ def concat_text(pdf_content):
     return = split (texto + tabla contetanado)
     """
     result = extract_text_from_pdf_azure(pdf_content)
+    if not result or "full_text" not in result:
+        logger.error("No se pudo extraer texto del PDF. El resultado es None o no contiene 'full_text'.")
+        return None
     # guardar texto
     full_text = result["full_text"]
     logger.info(f"Full texto extraido")
@@ -229,8 +236,8 @@ def concat_text(pdf_content):
     concat_content = full_text + "\n\n" + tables_text
     logger.info(f"Texto de documento de usuario concatenado")
 
-    # split
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=100, chunk_overlap=20)
+    # DEBUG: menos chunks para pruebas
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
     chunks = text_splitter.split_text(concat_content)
     docs_finance = [Document(page_content=chunk) for chunk in chunks]
     logger.info(f"Split  de documento de usuario listo")
@@ -240,16 +247,40 @@ def concat_text(pdf_content):
 
 # Crear embeddings y guardarlos en un vectore store
 def search_vectorestore(pdf_content):
+    embedding = get_embedding()
+
+    guia_data = load_guia_data()
     """
     Transformas el texto concatenado en embedding y lo guarda en un vectorstore, listo para ser invocado
     """
     docs_finance = concat_text(pdf_content)
+    if docs_finance is None:
+        logger.error("No se pudo crear el vector store porque la extracción de texto falló.")
+        return None
     docs_guia = embeddings_guia(guia_data)
     # combinar antes de vectorizar
     docs_merge = docs_guia + docs_finance
+    if not docs_merge:
+        logger.error("No hay documentos para vectorizar. docs_merge está vacío.")
+        return None
     logger.info(f"Documentos combinados para vectore store")
-    # vectore store -embedding
-    vectore_store = FAISS.from_documents(docs_merge, embedding)  # search FAISS
-    retrieverr = vectore_store.as_retriever()
-    logger.info(f"Vector Store y recuperacion lista")
+    logger.info(f"Vectorizando {len(docs_merge)} documentos...")
+    try:
+        vectore_store = FAISS.from_documents(docs_merge, embedding)  # search FAISS
+        logger.info(f"Vector Store y recuperacion lista")
+        return vectore_store
+    except Exception as e:
+        import traceback
+        logger.error(f"Error al crear el vector store: {e}")
+        logger.error(traceback.format_exc())
+        return None
+    # Fin try/except
+def save_faiss_index(vectore_store, path):
+    vectore_store.save_local(path)
+    logger.info(f"Vector store guardado en {path}")
+
+def load_faiss_index(path, embedding):
+    from langchain_community.vectorstores.faiss import FAISS
+    return FAISS.load_local(path, embedding, allow_dangerous_deserialization=True)
+
     return retrieverr
