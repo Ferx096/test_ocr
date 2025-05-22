@@ -208,6 +208,8 @@ def node_balance_sheet(state: State) -> Command[Literal["final"]]:
 
     # Usar LLM para evaluar inteligentemente el contenido
     resultado_llm = evaluate_balance_totals(llm, texto)
+    logger.info(f"Contenido enviado a evaluate_balance_totals: {texto}")
+
     logger.info(
         f"Evaluación de totales en el texto principal realizada: {resultado_llm}"
     )
