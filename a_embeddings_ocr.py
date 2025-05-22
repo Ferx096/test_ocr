@@ -1,3 +1,7 @@
+"""
+Módulo para extracción de texto, procesamiento y creación de embeddings a partir de documentos PDF usando Azure y LangChain.
+Incluye funciones para cargar datos de guía, extraer texto de PDFs, convertir tablas a markdown y almacenar/reutilizar embeddings en FAISS.
+"""
 from dotenv import load_dotenv
 import os
 import pandas as pd
@@ -24,12 +28,18 @@ logger = logging.getLogger(__name__)
 # ======================================
 # CARGAR DATOS
 # ======================================
+    """
+    Devuelve un objeto LLM de Azure OpenAI listo para usar en el flujo de procesamiento.
+    """
 def get_llm():
     return AzureChatOpenAI(
         api_key=os.getenv("AZURE_OPENAI_API_KEY"),
         azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
         api_version=os.getenv("OPENAI_API_VERSION"),
         deployment_name=os.getenv("AZURE_OPENAI_CHAT_DEPLOYMENT_NAME"),
+    """
+    Devuelve un objeto de embeddings de Azure OpenAI para vectorización de textos.
+    """
         model_name="gpt-4",
     )
 
@@ -39,6 +49,9 @@ def get_embedding():
         deployment=os.getenv("AZURE_OPENAI_EMBEDDING_DEPLOYMENT_NAME"),
         api_key=os.getenv("AZURE_OPENAI_API_KEY"),
         model="text-embedding-3-large",
+    """
+    Carga el archivo de guía (map_test.json) con la estructura de términos y descripciones contables.
+    """
     )
 
 
@@ -56,6 +69,9 @@ def load_guia_data():
 
 
 
+    """
+    Convierte el json de guía en una lista de documentos para embeddings, separando por categoría y término.
+    """
 # ======================================
 # DOCS GUIE
 # ======================================
@@ -95,6 +111,9 @@ def embeddings_guia(guia_data: str):
 
 
 # ======================================
+    """
+    Extrae texto de un PDF usando Azure Document Intelligence y retorna texto y tablas extraídas.
+    """
 # OCR+EMBEDINGS / DOCUMENTOS FINACIEROS
 # ======================================
 """
@@ -167,6 +186,9 @@ def extract_text_from_pdf_azure(pdf_content: bytes):
         logger.info(f"Texto extraído: {len(full_text)} caracteres")
 
         return {
+    """
+    Convierte el resultado OCR (texto y tablas) en un único string concatenado y lo divide en chunks para embeddings.
+    """
             "full_text": full_text,
             "text_by_page": text_by_page,
             "tables_data": tables_data,
@@ -229,6 +251,9 @@ def concat_text(pdf_content):
             .unstack()
             .fillna("")
         )
+    """
+    Crea un vector store FAISS combinando embeddings de la guía y del documento financiero extraído.
+    """
         tables_text += df.to_markdown(index=False) + "\n\n"
     logger.info(f"Tablas transformadas a formato markdown")
     """
@@ -255,7 +280,13 @@ def search_vectorestore(pdf_content):
     """
     docs_finance = concat_text(pdf_content)
     if docs_finance is None:
+    """
+    Guarda el vector store FAISS en disco para reutilización futura.
+    """
         logger.error("No se pudo crear el vector store porque la extracción de texto falló.")
+    """
+    Carga un vector store FAISS desde disco usando el embedding especificado.
+    """
         return None
     docs_guia = embeddings_guia(guia_data)
     # combinar antes de vectorizar

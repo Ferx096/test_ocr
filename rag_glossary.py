@@ -1,3 +1,7 @@
+"""
+Clase GlossaryRAG para búsqueda semántica de términos en glosarios contables usando embeddings.
+Permite encontrar términos y sinónimos relevantes para clasificación automática.
+"""
 import json
 import unicodedata
 import os

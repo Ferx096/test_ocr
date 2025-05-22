@@ -1,3 +1,7 @@
+"""
+Pipeline principal para extracción, preprocesamiento y clasificación de datos financieros desde PDF usando OCR+RAG.
+Ejecuta todo el flujo: OCR, extracción de pares, matching, agrupación y exportación de resultados.
+"""
 import os
 import logging
 from a_embeddings_ocr import extract_text_from_pdf_azure

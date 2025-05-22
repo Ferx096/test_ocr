@@ -1,3 +1,7 @@
+"""
+Herramientas y agentes para extracción y procesamiento de información financiera.
+Define agentes jerárquicos, funciones de parsing y utilidades para manipular datos extraídos de documentos.
+"""
 from dotenv import load_dotenv
 import pandas as pd
 import logging
@@ -67,7 +71,10 @@ Se pretende crear 3 agentes jerargicos para obtener informacion valiosa
 
 
 class State(TypedDict):
-    """Estructura de estado compartido entre agentes"""
+    """
+    Estructura de estado compartido entre agentes, contiene los campos principales del flujo.
+    Incluye mensajes, datos de la compañía, balance general y el siguiente paso del flujo.
+    """
 
     messages: Optional[Annotated[list[HumanMessage], add_messages]]
     nombre_compañia: Optional[str]
@@ -78,9 +85,10 @@ class State(TypedDict):
     next: Optional[str]
 
 
-import pathlib
-
 def pdf_content():
+    """
+    Lee el PDF de entrada y retorna su contenido en bytes para procesamiento.
+    """
     PDF_PATH = os.getenv("PDF_PATH", str(pathlib.Path(__file__).parent / "document" / "estados_financieros__pdf_93834000_202403.pdf"))
     if not os.path.exists(PDF_PATH):
         logger.error(f"No se encontró el archivo PDF: {PDF_PATH}")
@@ -131,12 +139,11 @@ prompt_total_balance = prompt_total_balance
 prompt_income_statement = prompt_income_statement
 
 
-# ======================================
-# AGENT COMPANY INFO
-# ======================================
-# crear tool de company info
 @tool
 def extract_company_info(query: str) -> str:
+    """
+    Tool para extraer información de la empresa desde el vector store usando una consulta.
+    """
     """
     Extrae informacion de la empresa desde vector store
     """
@@ -145,6 +152,13 @@ def extract_company_info(query: str) -> str:
 
 
 # agente
+
+def parse_company_info(response_text: str) -> dict:
+    """
+    Extrae y limpia los campos de nombre, RUT y fecha desde el texto de respuesta del agente.
+    """
+    # ... (lógica de extracción)
+
 agent_company_info = create_react_agent(
     llm,
     tools=[extract_company_info],
@@ -174,14 +188,16 @@ def parse_company_info(response_text: str) -> dict:
             .replace("'", "")
             .replace('"', "")
             if rut_match
+    """
+    Tool para extraer datos del balance general desde el vector store, dividiendo en bloques.
+    """
             else None
         ),
         "report_date": date_match.group(1).strip() if date_match else None,
     }
 
-
-# ======================================
 # TOOL + FUNCTION BALANCE GENERAL
+
 # ======================================
 # crear tool de balance general
 @tool
@@ -197,8 +213,8 @@ def extract_balance_sheet(query: str) -> str:
 # funcion para asegurarnos que los valores no tengan string
 def parse_number(valor):
     """
-    Convierte strings como mil y millon a float
-    Retorna None si no puede convertir.
+    Convierte strings como "mil" y "millón" a float, o retorna None si no es posible.
+    Intenta extraer el valor numérico de un string, considerando palabras como 'mil' y 'millón'.
     """
     try:
         if isinstance(valor, (int, float)):
@@ -213,6 +229,9 @@ def parse_number(valor):
                 number *= 1000000
             elif "mil" in valor:
                 number *= 1000
+    """
+    Evalúa si existen totales en el balance, y si no, los calcula sumando los valores de cada bloque.
+    """
             return number
     except Exception:
         return None
@@ -220,7 +239,9 @@ def parse_number(valor):
 
 # Sumar valores en caso no exista suma:
 def sum_group(grupo: Dict[str, str]) -> float:
-    """Suma los valores numéricos de un grupo de cuentas."""
+    """
+    Suma los valores numéricos de un grupo de cuentas (dict).
+    """
     return sum(parse_number(e) for e in grupo.values())
 
 
@@ -230,13 +251,16 @@ agent_balance_sheet = create_react_agent(
 )
 prompt_total_balance_runnable = ChatPromptTemplate.from_template(prompt_total_balance)
 
+    """
+    Tool para extraer datos del estado de resultados desde el vector store.
+    """
 
 
 # evaluador de balance total
 def evaluate_balance_totals(llm, texto_balance: str):
     """
-    Evalua la respuesta obtenida por el primer agente (el que obtiene el balance)
-    En la evaluacion verifica si existe los totales o tiene que geerar su suma
+    Evalúa si existen totales en el balance, y si no, los calcula sumando los valores de cada bloque.
+    Recibe el texto del balance, lo procesa y retorna el resultado evaluado.
     """
     chain = prompt_total_balance_runnable | llm | StrOutputParser()
     # El prompt espera la variable 'texto_balance', que debe ser un JSON string
@@ -255,8 +279,8 @@ def evaluate_balance_totals(llm, texto_balance: str):
 @tool
 def extract_income_statement(query: str) -> str:
     """
-    Extrae datos de estado de resultados de la empresa del vectore storage.
-    Dividiendo la inforamcion extraida en
+    Tool para extraer datos del estado de resultados desde el vector store.
+    Extrae datos de estado de resultados de la empresa del vectore storage, dividiendo la información extraída en bloques.
     """
     results = vectore_storage.invoke(query)
     return "\n".join([doc.page_content for doc in results])

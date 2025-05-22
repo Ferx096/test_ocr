@@ -1,3 +1,7 @@
+"""
+Orquestador de agentes y nodos para el flujo de extracción y procesamiento de balances financieros.
+Define nodos para cada etapa (info empresa, balance, salida final) y el grafo de ejecución.
+"""
 from dotenv import load_dotenv
 import logging
 import os

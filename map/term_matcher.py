@@ -1,3 +1,7 @@
+"""
+Clase TermMatcher para hacer matching inteligente de términos contables usando fuzzy matching y embeddings.
+Permite asociar términos extraídos a categorías estándar del glosario.
+"""
 import json
 import os
 from pathlib import Path
