@@ -261,7 +261,7 @@ def node_balance_sheet(state: State) -> Command[Literal["final"]]:
         update={
             # se usa solo content ya que es la respuesta del agente
             #"messages": {"balance_sheet": response.content}
-            "messages": [str(response.content)] if isinstance(response.content, str) else [str(m) for m in response.content] if isinstance(response.content, list) else [json.dumps(response.content)] if isinstance(response.content, dict) else [str(response.content)],
+            "messages": [texto],
             # aqui se usa el diccionario result
             "balance_general": [activos, pasivos, patrimonio],
             "next": goto,
