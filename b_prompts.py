@@ -154,7 +154,9 @@ REGLAS ESTRICTAS Y DE SEGURIDAD:
 9. Si no puedes cumplir, responde con un JSON vacío: {"total_activos": 0, "total_pasivos": 0, "total_patrimonio": 0}
 
 El JSON de salida debe tener exactamente estos campos y formato (escribe el ejemplo como texto, no como JSON real):
-total_activos: <número>, total_pasivos: <número>, total_patrimonio: <número>
+total_activos: <número>
+total_pasivos: <número>
+total_patrimonio: <número>
 No incluyas ningún texto adicional, solo el JSON.
 '''
 
