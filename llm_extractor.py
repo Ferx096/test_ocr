@@ -80,6 +80,47 @@ def extract_financial_info_from_pdf(pdf_path):
             return match.group(0)
     return response
 
+
+def classify_term_with_llm(term, value, context_glossary):
+    """
+    Usa un LLM para clasificar un término y valor, usando el glosario como contexto.
+    Devuelve: {'matched_term': ..., 'category': ..., 'score': ...}
+    """
+    llm = get_llm()
+    # Construir prompt con contexto del glosario
+    glossary_str = '\n'.join([f"- {k}" for k in context_glossary])
+    prompt = f"""
+Eres un experto en contabilidad. Clasifica el siguiente término y valor extraído de un balance financiero, usando el glosario proporcionado. Devuelve SOLO un JSON válido, con comillas dobles, sin texto extra, solo el objeto, con las claves: matched_term, category (como lista: [sección, bloque, subbloque]), y score (1.0 si estás seguro, 0.5 si es dudoso).
+
+Ejemplo de respuesta válida:
+{{"matched_term": "efectivo y equivalentes", "category": ["ACTIVOS", "CORRIENTES", "EFECTIVO"], "score": 1.0}}
+
+Término: {term}
+Valor: {value}
+
+Glosario:
+{glossary_str}
+"""
+    logger.info(f"Prompt LLM clasificación término: {term}")
+    response = llm.invoke(prompt)
+    logger.info(f"Respuesta cruda LLM: {response}")
+    import re, json
+    # Intentar extraer el primer objeto JSON válido de la respuesta
+    import json
+    import re
+    json_candidates = re.findall(r'\{[\s\S]*?\}', str(response))
+    for candidate in json_candidates:
+        try:
+            return json.loads(candidate)
+        except Exception as e:
+            try:
+                cleaned = candidate.replace("'", '"')
+                return json.loads(cleaned)
+            except Exception:
+                continue
+    logger.error(f"No se pudo parsear ningún JSON válido en la respuesta LLM")
+    return {'matched_term': None, 'category': None, 'score': 0.0}
+
 if __name__ == "__main__":
     import sys
     if len(sys.argv) < 2:
