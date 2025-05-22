@@ -248,6 +248,7 @@ def fallback_parse_balance_totals(text: str) -> dict:
         "total_pasivos": find_total(r"total[\s_]*pasivos"),
         "total_patrimonio": find_total(r"total[\s_]*patrimonio|patrimonio[\s_]*total")
     }
+
 def extract_account_values_from_text(text: str, cuentas_dict: dict) -> dict:
     """
     Para cada campo null en cuentas_dict, busca en el texto una línea que contenga el nombre de la cuenta y extrae el número asociado.
