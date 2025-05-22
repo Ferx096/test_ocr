@@ -37,11 +37,11 @@ prompt_extract_company = """
     ### SALIDA
     Devuelve exclusivamente un objeto JSON con la siguiente estructura:
 
-    {
+    {{
     "company_name": "...",
     "company_rut": "...",
     "report_date": "..."
-    }
+    }}
     
     # Notes  
 
@@ -75,26 +75,26 @@ Para cada bloque, incluye los conceptos clave que pueden ser identificados entre
 # Formato de salida
 
 ```json
-{
-    "activos": {
+{{
+    "activos": {{
         "concepto_1": "valor_1",
         "concepto_2": "valor_2",
         ...
         "otros": "valor_n"  # Opcional para valores residuales
-    },
-    "pasivos": {
+    }},
+    "pasivos": {{
         "concepto_1": "valor_1",
         "concepto_2": "valor_2",
         ...
         "otros": "valor_n"  # Opcional para valores residuales
-    },
-    "patrimonio": {
+    }},
+    "patrimonio": {{
         "concepto_1": "valor_1",
         "concepto_2": "valor_2",
         ...
         "otros": "valor_n"  # Opcional para valores residuales
-    }
-}
+    }}
+}}
 ```
 
 # Ejemplo
@@ -110,20 +110,20 @@ Para cada bloque, incluye los conceptos clave que pueden ser identificados entre
 **Salida esperada:**
 
 ```json
-{
-    "activos": {
+{{
+    "activos": {{
         "efectivo": 10000,
         "inventario": 3000
-    },
-    "pasivos": {
+    }},
+    "pasivos": {{
         "cuentas_por_pagar": 5000,
         "deuda_largo_plazo": 8000
-    },
-    "patrimonio": {
+    }},
+    "patrimonio": {{
         "capital": 12000,
         "ganancias_retenidas": 7000
-    }
-}
+    }}
+}}
 ```
 
 # Notas
@@ -134,16 +134,14 @@ Para cada bloque, incluye los conceptos clave que pueden ser identificados entre
 - Asegúrate de que todos los datos están clasificados bajo los bloques principales (activos, pasivos, o patrimonio).
 """
 
-prompt_total_balance = '''
+prompt_total_balance = r'''
 Tu tarea es analizar la siguiente estructura JSON, que se entrega como string en la variable texto_balance.
-El JSON tiene los siguientes campos de primer nivel: 'activos', 'pasivos', 'patrimonio'.
+El JSON tiene los siguientes campos de primer nivel: activos, pasivos, patrimonio.
 No uses llaves dobles ni variables de template en tu respuesta ni en el análisis.
-No uses {activos} ni {{activos}} ni nada similar.
-No hay variables de template, solo recibirás el string JSON en texto_balance.
-No uses {activos} ni {{activos}} ni nada similar.
+No uses llaves ni variables de template en tu respuesta ni en el análisis. No hay variables de template, solo recibirás el string JSON en texto_balance.
 
 Debes hacer una búsqueda inteligente dentro de cada bloque para identificar si ya existe un total correspondiente al grupo. Este total puede aparecer con distintos nombres, abreviaturas entre otros, como:
-- Para activos: "activo total", "total activos corrientes", "suma de activos", "total del activo", etc.
+- Para activos: "activo total", "total activos corrientes", "suma de activos", "total del activo", etc. (No uses ningún placeholder, solo texto literal)
 - Para pasivos: "pasivo total", "suma total de pasivos", "total obligaciones", etc.
 - Para patrimonio: "patrimonio neto", "total patrimonio", "capital contable total", etc.
 
