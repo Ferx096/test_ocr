@@ -139,7 +139,7 @@ def node_company_info(state: State) -> Command[Literal["balance_sheet"]]:
     # Fallback si todo es vacío o "No especificado"
     if not company_name or company_name.lower() == "no especificado":
         from c_tools import fallback_parse_company_info
-        fallback = fallback_parse_company_info(str(val))
+        fallback = fallback_parse_company_info(str(estructura_company))
         if fallback.get("company_name"):
             company_name = fallback["company_name"]
         if fallback.get("company_rut"):
