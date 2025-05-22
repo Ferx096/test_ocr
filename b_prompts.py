@@ -155,12 +155,6 @@ EJEMPLO DE SALIDA:
 {"total_activos": 12345, "total_pasivos": 6789, "total_patrimonio": 5555}
 '''
 
-7. El output debe ser un JSON válido, sin ningún texto antes o después, ni bloques de código.
-
-EJEMPLO DE SALIDA:
-{"total_activos": 12345, "total_pasivos": 6789, "total_patrimonio": 5555}
-
-
 
 
 
