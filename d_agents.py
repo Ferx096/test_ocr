@@ -127,8 +127,35 @@ def node_company_info(state: State) -> Command[Literal["balance_sheet"]]:
         return None
 
     company_name = clean_field(estructura_company.get("company_name", ""))
+    if isinstance(company_name, dict):
+        company_name = next((v for v in company_name.values() if v), None)
     company_rut = clean_field(estructura_company.get("company_rut", ""))
+    if isinstance(company_rut, dict):
+        company_rut = next((v for v in company_rut.values() if v), None)
     report_date = clean_field(estructura_company.get("report_date", ""))
+    if isinstance(report_date, dict):
+        report_date = next((v for v in report_date.values() if v), None)
+
+    # Fallback si todo es vacío o "No especificado"
+    if not company_name or company_name.lower() == "no especificado":
+        from c_tools import fallback_parse_company_info
+        # Buscar texto plano original en la respuesta
+        texto_plano = None
+        if isinstance(response, dict) and 'messages' in response and response['messages']:
+            for msg in response['messages']:
+                if hasattr(msg, 'content') and msg.content:
+                    texto_plano = msg.content
+                    break
+        if not texto_plano:
+            texto_plano = str(response)
+        fallback = fallback_parse_company_info(texto_plano)
+        if fallback.get("company_name"):
+            company_name = fallback["company_name"]
+        if fallback.get("company_rut"):
+            company_rut = fallback["company_rut"]
+        if fallback.get("report_date"):
+            report_date = fallback["report_date"]
+
     creacion_report = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     logger.info(f"Datos parseados")
 
@@ -244,6 +271,13 @@ def node_balance_sheet(state: State) -> Command[Literal["final"]]:
     patrimonio = clean_dict(estructura_balance.get("patrimonio", {}))
     logger.info("Bloques parseados correctamente.")
 
+    # Heurística: si hay nulls, buscar en el texto los valores de cada cuenta
+    from c_tools import extract_account_values_from_text
+    activos = extract_account_values_from_text(texto, activos)
+    pasivos = extract_account_values_from_text(texto, pasivos)
+    patrimonio = extract_account_values_from_text(texto, patrimonio)
+    logger.info(f"Valores de cuentas extraídos por heurística: activos={activos}, pasivos={pasivos}, patrimonio={patrimonio}")
+
     # Trabajar los totales
     total_activos = (
         activos.get("total_activos")
@@ -266,6 +300,18 @@ def node_balance_sheet(state: State) -> Command[Literal["final"]]:
     pasivos["total_pasivos"] = total_pasivos
     patrimonio["total_patrimonio"] = total_patrimonio
     logger.info("Totales calculados y actualizados en los bloques.")
+    # Fallback: si los totales son 0 o None, buscar en el texto original
+    if (not total_activos or total_activos == 0) or (not total_pasivos or total_pasivos == 0) or (not total_patrimonio or total_patrimonio == 0):
+        from c_tools import fallback_parse_balance_totals
+        fallback = fallback_parse_balance_totals(str(texto))
+        if fallback.get("total_activos"):
+            activos["total_activos"] = fallback["total_activos"]
+        if fallback.get("total_pasivos"):
+            pasivos["total_pasivos"] = fallback["total_pasivos"]
+        if fallback.get("total_patrimonio"):
+            patrimonio["total_patrimonio"] = fallback["total_patrimonio"]
+        logger.info(f"Fallback de totales aplicado: {fallback}")
+
 
     goto = "final"
 
@@ -326,7 +372,8 @@ def node_final(state: State) -> Command[Literal["end"]]:
     logger.info("Dataframe concatenados")
 
     # Guardar todo en una sola hoja excel
-    name_filed = f"Balance_empresa_{nombre_compañia}.xlsx"
+    safe_company_name = str(nombre_compañia or "desconocida").replace("/", "_").replace("\\", "_").replace(" ", "_")[:30]
+    name_filed = f"Balance_empresa_{safe_company_name}.xlsx"
     with pd.ExcelWriter(name_filed, engine="openpyxl") as writer:
         empresa_info.to_excel(writer, index=False, sheet_name="Balance", startrow=0)
         df_balance_concat.to_excel(
