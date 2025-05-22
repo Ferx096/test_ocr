@@ -153,6 +153,25 @@ REGLAS ESTRICTAS:
 
 EJEMPLO DE SALIDA:
 {"total_activos": 12345, "total_pasivos": 6789, "total_patrimonio": 5555}
+'''
+
+
+El JSON SIEMPRE tendrá los siguientes campos de primer nivel: activos, pasivos, patrimonio. Cada uno es un objeto con pares concepto: valor.
+
+REGLAS ESTRICTAS:
+1. NO devuelvas NUNCA texto adicional, explicaciones, ni comentarios. SOLO el JSON de salida.
+2. Si encuentras un total explícito en cada bloque (por ejemplo, "total activos", "total pasivos", "total patrimonio" o variantes semánticas), úsalo como total. Si hay más de uno, elige el más representativo.
+3. Si NO hay total explícito, suma todos los valores numéricos del bloque y repórtalo como el total correspondiente.
+4. El JSON de salida DEBE tener exactamente estos campos de primer nivel:
+   - "total_activos"
+   - "total_pasivos"
+   - "total_patrimonio"
+5. Los valores deben ser estrictamente numéricos (sin comas, puntos, ni texto).
+6. Si algún bloque no tiene datos, su total debe ser 0.
+7. El output debe ser un JSON válido, sin ningún texto antes o después, ni bloques de código.
+
+EJEMPLO DE SALIDA:
+{"total_activos": 12345, "total_pasivos": 6789, "total_patrimonio": 5555}
 
 
 
