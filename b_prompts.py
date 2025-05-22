@@ -138,7 +138,7 @@ prompt_total_balance = r'''
 Tu tarea es analizar la siguiente estructura JSON, que se entrega como string en la variable texto_balance.
 El JSON tiene los siguientes campos de primer nivel: activos, pasivos, patrimonio.
 No uses llaves dobles ni variables de template en tu respuesta ni en el análisis.
-No uses llaves simples ni dobles (ni {activos} ni {{activos}} ni nada similar). No hay variables de template, solo recibirás el string JSON en texto_balance.
+No uses llaves ni variables de template en tu respuesta ni en el análisis. No hay variables de template, solo recibirás el string JSON en texto_balance.
 
 Debes hacer una búsqueda inteligente dentro de cada bloque para identificar si ya existe un total correspondiente al grupo. Este total puede aparecer con distintos nombres, abreviaturas entre otros, como:
 - Para activos: "activo total", "total activos corrientes", "suma de activos", "total del activo", etc. (No uses ningún placeholder, solo texto literal)
