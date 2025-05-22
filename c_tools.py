@@ -19,6 +19,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from b_prompts import prompt_extract_company
 from b_prompts import prompt_balance_sheet
 from b_prompts import prompt_total_balance
+from langchain_core.prompts import ChatPromptTemplate
 from b_prompts import prompt_income_statement
 
 
@@ -110,10 +111,15 @@ else:
         try:
             save_faiss_index(vectore_store, FAISS_INDEX_PATH)
             logger.info(f"FAISS index guardado exitosamente en {FAISS_INDEX_PATH}")
+            vectore_storage = vectore_store.as_retriever()
+            logger.info(f"Almacenamiento de vectores listo y cacheado en {FAISS_INDEX_PATH}")
         except Exception as e:
-            logger.error(f"Error al guardar FAISS index: {e}")
-        vectore_storage = vectore_store.as_retriever()
-        logger.info(f"Almacenamiento de vectores listo y cacheado en {FAISS_INDEX_PATH}")
+            import traceback
+            logger.error(f"Error al guardar FAISS index o crear el retriever: {e}")
+            logger.error(traceback.format_exc())
+            vectore_storage = None
+        # Fin try/except
+
     else:
         logger.error("No se pudo crear el vector store, abortando inicialización.")
         vectore_storage = None
@@ -222,6 +228,8 @@ def sum_group(grupo: Dict[str, str]) -> float:
 agent_balance_sheet = create_react_agent(
     llm, tools=[extract_balance_sheet], prompt=prompt_balance_sheet
 )
+prompt_total_balance_runnable = ChatPromptTemplate.from_template(prompt_total_balance)
+
 
 
 # evaluador de balance total
@@ -230,8 +238,14 @@ def evaluate_balance_totals(llm, texto_balance: str):
     Evalua la respuesta obtenida por el primer agente (el que obtiene el balance)
     En la evaluacion verifica si existe los totales o tiene que geerar su suma
     """
-    chain = prompt_total_balance | llm | StrOutputParser()
-    return chain.invoke({"balance_texto": texto_balance})
+    chain = prompt_total_balance_runnable | llm | StrOutputParser()
+    # El prompt espera la variable 'texto_balance', que debe ser un JSON string
+    # Si texto_balance es un dict, serializarlo
+    if isinstance(texto_balance, dict):
+        texto_balance_str = json.dumps(texto_balance, ensure_ascii=False)
+    else:
+        texto_balance_str = texto_balance
+    return chain.invoke({"texto_balance": texto_balance_str})
 
 
 # ======================================

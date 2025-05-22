@@ -260,22 +260,27 @@ def search_vectorestore(pdf_content):
     docs_guia = embeddings_guia(guia_data)
     # combinar antes de vectorizar
     docs_merge = docs_guia + docs_finance
-    logger.info(f"Documentos combinados para vectore store")
-    # vectore store -embedding
-    vectore_store = FAISS.from_documents(docs_merge, embedding)  # search FAISS
     if not docs_merge:
         logger.error("No hay documentos para vectorizar. docs_merge está vacío.")
         return None
+    logger.info(f"Documentos combinados para vectore store")
     logger.info(f"Vectorizando {len(docs_merge)} documentos...")
-
-    retrieverr = vectore_store.as_retriever()
-    logger.info(f"Vector Store y recuperacion lista")
+    try:
+        vectore_store = FAISS.from_documents(docs_merge, embedding)  # search FAISS
+        logger.info(f"Vector Store y recuperacion lista")
+        return vectore_store
+    except Exception as e:
+        import traceback
+        logger.error(f"Error al crear el vector store: {e}")
+        logger.error(traceback.format_exc())
+        return None
+    # Fin try/except
 def save_faiss_index(vectore_store, path):
     vectore_store.save_local(path)
     logger.info(f"Vector store guardado en {path}")
 
 def load_faiss_index(path, embedding):
     from langchain_community.vectorstores.faiss import FAISS
-    return FAISS.load_local(path, embedding)
+    return FAISS.load_local(path, embedding, allow_dangerous_deserialization=True)
 
     return retrieverr

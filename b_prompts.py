@@ -134,104 +134,34 @@ Para cada bloque, incluye los conceptos clave que pueden ser identificados entre
 - Asegúrate de que todos los datos están clasificados bajo los bloques principales (activos, pasivos, o patrimonio).
 """
 
-prompt_total_balance = """
-    Tu tarea es analizar la siguiente estructura JSON llamada `texto_balance`, que contiene ítems clasificados en tres bloques: **activos**, **pasivos** y **patrimonio**.
+prompt_total_balance = '''
+Tu tarea es analizar la siguiente estructura JSON, que se entrega como string en la variable texto_balance.
+El JSON tiene los siguientes campos de primer nivel: 'activos', 'pasivos', 'patrimonio'.
+No uses llaves dobles ni variables de template en tu respuesta ni en el análisis.
+No uses {activos} ni {{activos}} ni nada similar.
+No hay variables de template, solo recibirás el string JSON en texto_balance.
+No uses {activos} ni {{activos}} ni nada similar.
 
-    Debes hacer una **búsqueda inteligente** dentro de cada bloque para identificar si ya existe un **total** correspondiente al grupo. Este total puede aparecer con distintos nombres, abreviaturas entre otros, como:
+Debes hacer una búsqueda inteligente dentro de cada bloque para identificar si ya existe un total correspondiente al grupo. Este total puede aparecer con distintos nombres, abreviaturas entre otros, como:
+- Para activos: "activo total", "total activos corrientes", "suma de activos", "total del activo", etc.
+- Para pasivos: "pasivo total", "suma total de pasivos", "total obligaciones", etc.
+- Para patrimonio: "patrimonio neto", "total patrimonio", "capital contable total", etc.
 
-    - **Para activos:** "activo total", "total activos corrientes", "suma de activos", "total del activo", etc.
-    - **Para pasivos:** "pasivo total", "suma total de pasivos", "total obligaciones", etc.
-    - **Para patrimonio:** "patrimonio neto", "total patrimonio", "capital contable total", etc.
+# Reglas:
+1. Identificación semántica de totales:
+- Revisa cada bloque por posibles nombres que signifiquen un total de ese bloque.
+- Ignora diferencias en redacción o abreviaturas; enfócate en el significado económico del nombre.
+2. Estandariza el nombre del total dentro del bloque:
+- Usa exactamente estos nombres al insertar el total:
+    - "total_activos"
+    - "total_pasivos"
+    - "total_patrimonio"
+3. Si no existe un total explícito, suma los valores numéricos de cada bloque y repórtalo como el total correspondiente.
+4. Devuelve únicamente un JSON válido con los totales encontrados o calculados, sin texto adicional.
+'''
 
-    # Reglas:
 
-    1. **Identificación semántica de totales:**
-    - Revisa cada bloque por posibles nombres que signifiquen un total de ese bloque.
-    - Ignora diferencias en redacción o abreviaturas; enfócate en el **significado económico** del nombre.
 
-    2. **Estandariza el nombre del total dentro del bloque**:
-    - Usa exactamente estos nombres al insertar el total:
-        - `"total_activos"`
-        - `"total_pasivos"`
-        - `"total_patrimonio"`
-
-    3. **Valores válidos:**
-    - Si encuentras un total con un valor **numérico válido**, trasládalo tal cual (sin modificar el número).
-    - Si **no existe** un total o **no tiene valor**, agrega el total con valor `"NO ENCONTRADO"`.
-
-    4. **Conservación de datos:**
-    - No elimines, modifiques ni reorganices ningún dato del bloque original.
-    - Solo **agrega** (o reemplaza si ya existe) el campo `"total_*"` al final del bloque correspondiente.
-
-    # Formato de salida:
-
-    La estructura final debe conservar todos los conceptos originales y añadir el total estandarizado al final de cada bloque:
-
-    ```json
-    {
-        "activos": {
-            "concepto_1": valor_1,
-            "...": "...",
-            "total_activos": valor_o_NO_ENCONTRADO
-        },
-        "pasivos": {
-            "concepto_1": valor_1,
-            "...": "...",
-            "total_pasivos": valor_o_NO_ENCONTRADO
-        },
-        "patrimonio": {
-            "concepto_1": valor_1,
-            "...": "...",
-            "total_patrimonio": valor_o_NO_ENCONTRADO
-        }
-    }
-
-    # Ejemplo de entrada:
-
-    estructura_balance = {
-        "activos": {
-            "efectivo": 10000,
-            "inventario": 3000
-        },
-        "pasivos": {
-            "cuentas_por_pagar": 5000,
-            "deuda_largo_plazo": 8000,
-            "pasivo total": 13000
-        },
-        "patrimonio": {
-            "capital": 12000,
-            "ganancias_retenidas": 7000
-        }
-    }
-
-    # Ejemplo de salida esperada:
-
-    estructura_balance = {
-        "activos": {
-            "efectivo": 10000,
-            "inventario": 3000,
-            "total_activos": "NO ENCONTRADO"
-        },
-        "pasivos": {
-            "cuentas_por_pagar": 5000,
-            "deuda_largo_plazo": 8000,
-            "pasivo total": 13000,
-            "total_pasivos": 13000
-        },
-        "patrimonio": {
-            "capital": 12000,
-            "ganancias_retenidas": 7000,
-            "total_patrimonio": "NO ENCONTRADO"
-        }
-    }
-
-    #Notas finales:
-    - La salida debe ser únicamente un JSON válido, sin ningún texto antes o después.
-    - No realices cálculos ni sumas.
-    - Si ya existe un total mal nombrado (por ejemplo: "total del activo"), no lo elimines, solo añade el campo estándar con el mismo valor.
-    - Asegúrate de mantener el formato JSON bien estructurado.
-    - Tienes que devolver tu respuesta en formato JSON
-"""
 
 prompt_income_statement = """
 
