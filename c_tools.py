@@ -233,7 +233,7 @@ def fallback_parse_balance_totals(text: str) -> dict:
     def find_total(label):
         pat = rf"{label}[^\d]*(\d[\d\.,]*)"
         m = re.search(pat, text, re.IGNORECASE)
-        if m:
+        if m and m.group(1):
             return m.group(1).replace('.', '').replace(',', '')
         return None
     return {
