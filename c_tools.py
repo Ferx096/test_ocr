@@ -21,6 +21,7 @@ from b_prompts import prompt_balance_sheet
 from b_prompts import prompt_total_balance
 from langchain_core.prompts import ChatPromptTemplate
 from b_prompts import prompt_income_statement
+import openpyxl
 
 
 load_dotenv()
