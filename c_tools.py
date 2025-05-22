@@ -3,6 +3,71 @@ import pandas as pd
 import logging
 import os
 import re
+def parse_number(num_str: str) -> int | float | None:
+    """
+    Parsea un string numérico robusto, aceptando:
+    - Separadores de miles (puntos, comas, espacios, apóstrofos)
+    - Decimales (coma o punto)
+    - Paréntesis para negativos
+    - Signos + y -
+    - Valores con o sin decimales
+    - Formatos tipo: 1.234.567,89 | 1,234,567.89 | 1 234 567,89 | 1'234'567.89 | 1234567.89 | 1234567 | .123 | ,123
+    Devuelve int si es entero, float si tiene decimales, None si no es válido.
+    """
+    import re
+    if not isinstance(num_str, str):
+        return None
+    s = num_str.strip()
+    if not s:
+        return None
+    negativo = False
+    if s.startswith('(') and s.endswith(')'):
+        negativo = True
+        s = s[1:-1]
+    if s.startswith('-'):
+        negativo = True
+        s = s[1:]
+    if s.startswith('+'):
+        s = s[1:]
+    # Quitar cualquier otro caracter no numérico excepto . , - espacio y apóstrofo
+    s = re.sub(r"[^\d.,\- '\']", '', s)
+    # Quitar todos los espacios y apóstrofos (siempre miles)
+    s = s.replace(' ', '').replace("'", '')
+    # Si empieza con . o , es decimal fraccionario
+    if s.startswith('.') or s.startswith(','):
+        s = '0' + s
+    # Si termina en . o , eliminar
+    if s.endswith('.') or s.endswith(','):
+        s = s[:-1]
+    # Buscar el último separador decimal válido (punto o coma con 1-3 dígitos a la derecha)
+    decimal_pos = -1
+    decimal_char = ''
+    for sep in ['.', ',']:
+        pos = s.rfind(sep)
+        if pos > -1 and 1 <= len(s) - pos - 1 <= 3 and s[pos+1:].isdigit():
+            if pos > decimal_pos:
+                decimal_pos = pos
+                decimal_char = sep
+    if decimal_pos > -1:
+        int_part = s[:decimal_pos]
+        dec_part = s[decimal_pos+1:]
+        int_part = re.sub(r'[.,]', '', int_part)
+        s = int_part + '.' + dec_part
+    else:
+        s = re.sub(r'[.,]', '', s)
+    try:
+        if '.' in s:
+            val = float(s)
+            if val.is_integer():
+                val = int(val)
+        else:
+            val = int(s)
+        if negativo:
+            val = -val
+        return val
+    except Exception:
+        return None
+
 import json
 from langchain_openai import AzureChatOpenAI, AzureOpenAIEmbeddings
 from langgraph.prebuilt import create_react_agent
@@ -204,50 +269,85 @@ def fallback_parse_company_info(text: str) -> dict:
     """
     Fallback: Busca patrones muy flexibles para nombre, rut y fecha en texto plano.
     """
-    # Nombre: primera línea larga en mayúsculas sin símbolos o la primera línea significativa
+    # Nombre: buscar la línea más larga sin números ni símbolos, priorizando mayúsculas, luego la más larga significativa
     lines = text.splitlines()
     name = None
+    # 1. Buscar línea larga en mayúsculas sin números ni símbolos
     for line in lines:
         l = line.strip()
         if len(l) > 5 and l.isupper() and not any(c in l for c in '0123456789:|*'):
             name = l
             break
+    # 2. Si no, buscar la línea más larga sin números ni símbolos
     if not name:
-        # Si no hay línea en mayúsculas, tomar la primera línea significativa
-        for line in lines:
-            l = line.strip()
-            if len(l) > 5 and not any(c in l for c in '0123456789:|*'):
-                name = l
-                break
-    # Fecha: cualquier fecha tipo dd/mm/yyyy, dd-mm-yyyy, yyyymmdd
+        candidates = [l.strip() for l in lines if len(l.strip()) > 5 and not any(c in l for c in '0123456789:|*')]
+        if candidates:
+            name = max(candidates, key=len)
+    # 3. Si no, buscar la línea más larga del texto
+    if not name:
+        candidates = [l.strip() for l in lines if len(l.strip()) > 5]
+        if candidates:
+            name = max(candidates, key=len)
+    # 4. Si sigue sin nombre, usar el primer fragmento de texto largo
+    if not name:
+        # Si no hay nada, usar el primer fragmento largo del texto, aunque sea con números
+        name = next((l.strip() for l in lines if len(l.strip()) > 5), None)
+        if not name:
+            name = text[:40].replace('\n', ' ').strip() if len(text) > 5 else "Desconocido"
+
+    # Fecha: buscar cualquier fecha tipo dd/mm/yyyy, dd-mm-yyyy, yyyy-mm-dd, yyyymmdd
     date = None
     for pat in [r"(\d{2}[/-]\d{2}[/-]\d{4})", r"(\d{4}[/-]\d{2}[/-]\d{2})", r"(\d{8})"]:
         m = re.search(pat, text)
         if m:
             date = m.group(1)
             break
-    # RUT: cualquier número largo con guion
+    if not date:
+        # Buscar año de 4 dígitos
+        m = re.search(r"(20\d{2})", text)
+        if m:
+            date = m.group(1)
+
+    # RUT: buscar cualquier número largo con guion, o con puntos y guion, o con espacios
     rut = None
-    m = re.search(r"(\d{7,10}-[\dkK])", text)
+    m = re.search(r"(\d{1,3}(?:[\.\s]\d{3}){1,2}-[\dkK])", text)
+    if not m:
+        m = re.search(r"(\d{7,10}-[\dkK])", text)
     if m:
-        rut = m.group(1)
+        rut = m.group(1).replace(' ', '').replace('.', '')
+    if not rut:
+        # Buscar cualquier número largo con guion
+        m = re.search(r"(\d{5,}-[\dkK])", text)
+        if m:
+            rut = m.group(1)
+    if not rut:
+        rut = "Desconocido"
+
     return {"company_name": name, "company_rut": rut, "report_date": date}
+
 def fallback_parse_balance_totals(text: str) -> dict:
     """
     Busca en el texto líneas con 'total activos', 'total pasivos', 'total patrimonio' y extrae el número asociado.
     """
     import re
-    def find_total(label):
+    def find_total(label, alt_labels=None):
         pat = rf"{label}[^\d]*(\d[\d\.,]*)"
         m = re.search(pat, text, re.IGNORECASE)
         if m and m.group(1):
-            return m.group(1).replace('.', '').replace(',', '')
+            return parse_number(m.group(1))
+        if alt_labels:
+            for alt in alt_labels:
+                pat = rf"{alt}[^\d]*(\d[\d\.,]*)"
+                m = re.search(pat, text, re.IGNORECASE)
+                if m and m.group(1):
+                    return parse_number(m.group(1))
         return None
     return {
-        "total_activos": find_total(r"total[\s_]*activos"),
-        "total_pasivos": find_total(r"total[\s_]*pasivos"),
-        "total_patrimonio": find_total(r"total[\s_]*patrimonio|patrimonio[\s_]*total")
+        "total_activos": find_total(r"total[\s_]*activos", [r"activos[\s_]*totales", r"total[\s_]*de[\s_]*activos", r"activos[\s_]*total"]),
+        "total_pasivos": find_total(r"total[\s_]*pasivos", [r"pasivos[\s_]*totales", r"total[\s_]*de[\s_]*pasivos", r"pasivos[\s_]*total"]),
+        "total_patrimonio": find_total(r"total[\s_]*patrimonio|patrimonio[\s_]*total", [r"patrimonio[\s_]*total", r"total[\s_]*de[\s_]*patrimonio"])
     }
+
 
 def extract_account_values_from_text(text: str, cuentas_dict: dict) -> dict:
     """
@@ -274,20 +374,14 @@ def extract_account_values_from_text(text: str, cuentas_dict: dict) -> dict:
             if num.startswith('(') and num.endswith(')'):
                 negativo = True
                 num = num[1:-1]
-            num = num.replace('.', '').replace(',', '')
-            try:
-                val = int(num)
-                if negativo:
-                    val = -val
-                result[k] = val
-            except Exception:
-                result[k] = None
+            val = parse_number(num)
+            if negativo and val is not None:
+                val = -abs(val)
+            result[k] = val
         else:
             result[k] = None
     return result
 
-        "total_patrimonio": find_total("total[\s_]*patrimonio|patrimonio[\s_]*total")
-    }
 
 
 
