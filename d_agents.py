@@ -284,6 +284,18 @@ def node_balance_sheet(state: State) -> Command[Literal["final"]]:
     pasivos["total_pasivos"] = total_pasivos
     patrimonio["total_patrimonio"] = total_patrimonio
     logger.info("Totales calculados y actualizados en los bloques.")
+    # Fallback: si los totales son 0 o None, buscar en el texto original
+    if (not total_activos or total_activos == 0) or (not total_pasivos or total_pasivos == 0) or (not total_patrimonio or total_patrimonio == 0):
+        from c_tools import fallback_parse_balance_totals
+        fallback = fallback_parse_balance_totals(str(texto))
+        if fallback.get("total_activos"):
+            activos["total_activos"] = fallback["total_activos"]
+        if fallback.get("total_pasivos"):
+            pasivos["total_pasivos"] = fallback["total_pasivos"]
+        if fallback.get("total_patrimonio"):
+            patrimonio["total_patrimonio"] = fallback["total_patrimonio"]
+        logger.info(f"Fallback de totales aplicado: {fallback}")
+
 
     goto = "final"
 

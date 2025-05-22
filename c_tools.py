@@ -225,6 +225,23 @@ def fallback_parse_company_info(text: str) -> dict:
     if m:
         rut = m.group(1)
     return {"company_name": name, "company_rut": rut, "report_date": date}
+def fallback_parse_balance_totals(text: str) -> dict:
+    """
+    Busca en el texto líneas con 'total activos', 'total pasivos', 'total patrimonio' y extrae el número asociado.
+    """
+    import re
+    def find_total(label):
+        pat = rf"{label}[^\d]*(\d[\d\.,]*)"
+        m = re.search(pat, text, re.IGNORECASE)
+        if m:
+            return m.group(1).replace('.', '').replace(',', '')
+        return None
+    return {
+        "total_activos": find_total("total[\s_]*activos"),
+        "total_pasivos": find_total("total[\s_]*pasivos"),
+        "total_patrimonio": find_total("total[\s_]*patrimonio|patrimonio[\s_]*total")
+    }
+
 
 
 
