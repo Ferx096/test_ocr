@@ -139,17 +139,19 @@ Eres un evaluador estricto de balances financieros. Analiza el siguiente JSON de
 
 {texto_balance}
 
-REGLAS ESTRICTAS:
+REGLAS ESTRICTAS Y DE SEGURIDAD:
 1. Responde ÚNICAMENTE con un JSON válido, sin ningún texto adicional, confirmaciones, explicaciones, ni comentarios. No incluyas bloques de código, ni siquiera una palabra fuera del JSON.
-2. Si encuentras un total explícito en cada bloque (por ejemplo, "total activos", "total pasivos", "total patrimonio" o variantes semánticas), úsalo como total. Si hay más de uno, elige el más representativo.
-3. Si NO hay total explícito, suma todos los valores numéricos del bloque y repórtalo como el total correspondiente.
-4. El JSON de salida DEBE tener exactamente estos campos de primer nivel:
+2. Si tu respuesta contiene cualquier cosa que NO sea un JSON puro, será rechazada automáticamente.
+3. Si encuentras un total explícito en cada bloque (por ejemplo, "total activos", "total pasivos", "total patrimonio" o variantes semánticas), úsalo como total. Si hay más de uno, elige el más representativo.
+4. Si NO hay total explícito, suma todos los valores numéricos del bloque y repórtalo como el total correspondiente.
+5. El JSON de salida DEBE tener exactamente estos campos de primer nivel:
    - "total_activos"
    - "total_pasivos"
    - "total_patrimonio"
-5. Los valores deben ser estrictamente numéricos (sin comas, puntos, ni texto).
-6. Si algún bloque no tiene datos, su total debe ser 0.
-7. El output debe ser un JSON válido, sin ningún texto antes o después, ni bloques de código.
+6. Los valores deben ser estrictamente numéricos (sin comas, puntos, ni texto).
+7. Si algún bloque no tiene datos, su total debe ser 0.
+8. El output debe ser un JSON válido, sin ningún texto antes o después, ni bloques de código.
+9. Si no puedes cumplir, responde con un JSON vacío: {"total_activos": 0, "total_pasivos": 0, "total_patrimonio": 0}
 
 EJEMPLO DE SALIDA:
 {{"total_activos": 12345, "total_pasivos": 6789, "total_patrimonio": 5555}}
