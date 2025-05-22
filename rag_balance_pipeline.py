@@ -110,6 +110,9 @@ rows = extract_table_rows(raw_text)
 # 3. Inicializar el agente RAG y matcher inteligente
 from rag_glossary import GlossaryRAG
 rag = GlossaryRAG(MAP_JSON_PATH)
+from map.term_matcher import TermMatcher
+matcher = TermMatcher(map_json_path=MAP_JSON_PATH)
+
 
 # 4. Buscar términos y valores en líneas/tablas
 extracted = []
@@ -267,7 +270,20 @@ for item in extracted:
     if not item['matched_term'] or not item['category']:
         balance['otros'][item['original']] = item['value']
         continue
-    section, block, subblock = item['category']
+    cat_tuple = item['category']
+    # Normaliza a 3 elementos para evitar ValueError
+    if not isinstance(cat_tuple, (list, tuple)):
+        section, block, subblock = cat_tuple, None, None
+    elif len(cat_tuple) == 3:
+        section, block, subblock = cat_tuple
+    elif len(cat_tuple) == 2:
+        section, block = cat_tuple
+        subblock = None
+    elif len(cat_tuple) == 1:
+        section = cat_tuple[0]
+        block = subblock = None
+    else:
+        section = block = subblock = None
     cat = f"{section} {block} {subblock}".lower() if subblock else f"{section} {block}".lower()
     # Clasificación inteligente usando RAG+LLM: si la categoría contiene palabras clave
     if any(x in cat for x in ['activo', 'asset']):

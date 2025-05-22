@@ -96,6 +96,21 @@ def extract_flexible_term_value_pairs(text):
             if term and value:
                 pairs.append((term, value))
     return pairs
+def debug_failed_lines(text, regexes, out_path="ocr_debug_failed_lines.txt"):
+    """Guarda líneas que no matchean ningún regex de término-valor."""
+    with open(out_path, "w", encoding="utf-8") as f:
+        for line in text.split('\n'):
+            line = line.strip()
+            if not line:
+                continue
+            matched = False
+            for rx in regexes:
+                if re.match(rx, line):
+                    matched = True
+                    break
+            if not matched:
+                f.write(line + "\n")
+
 
 def extract_multiline_term_value_pairs(text):
     # Extrae pares término-valor agrupando líneas: término en una línea, valores numéricos en las siguientes
