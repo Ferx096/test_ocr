@@ -180,11 +180,11 @@ def parse_company_info(response_text: str) -> dict:
 
     # Fallbacks alternativos
     if not name_match:
-        name_match = re.search(r"company_name"\s*[:=]\s*['\"]?([\w\s\.,\-]+)['\"]?", response_text, re.IGNORECASE)
+        name_match = re.search(r"company_name\s*[:=]\s*['\"]?([\w\s\.,\-]+)['\"]?", response_text, re.IGNORECASE)
     if not rut_match:
-        rut_match = re.search(r"company_rut"\s*[:=]\s*['\"]?([\d\-\.]+)['\"]?", response_text, re.IGNORECASE)
+        rut_match = re.search(r"company_rut\s*[:=]\s*['\"]?([\d\-\.]+)['\"]?", response_text, re.IGNORECASE)
     if not date_match:
-        date_match = re.search(r"report_date"\s*[:=]\s*['\"]?([0-9]{8}|[0-9]{2,4}[\/\-][0-9]{2,4}[\/\-][0-9]{2,4})['\"]?", response_text, re.IGNORECASE)
+        date_match = re.search(r"report_date\s*[:=]\s*['\"]?([0-9]{8}|[0-9]{2,4}[\/\-][0-9]{2,4}[\/\-][0-9]{2,4})['\"]?", response_text, re.IGNORECASE)
 
     # Si sigue sin datos, buscar la primera fecha y rut que aparezca
     if not rut_match:
