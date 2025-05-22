@@ -153,8 +153,9 @@ REGLAS ESTRICTAS Y DE SEGURIDAD:
 8. El output debe ser un JSON válido, sin ningún texto antes o después, ni bloques de código.
 9. Si no puedes cumplir, responde con un JSON vacío: {"total_activos": 0, "total_pasivos": 0, "total_patrimonio": 0}
 
-EJEMPLO DE SALIDA:
-# {"total_activos": 12345, "total_pasivos": 6789, "total_patrimonio": 5555}
+El JSON de salida debe tener exactamente estos campos y formato:
+{"total_activos": <número>, "total_pasivos": <número>, "total_patrimonio": <número>}
+No incluyas ningún texto adicional, solo el JSON.
 '''
 
 
