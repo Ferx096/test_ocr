@@ -332,7 +332,8 @@ def node_final(state: State) -> Command[Literal["end"]]:
     logger.info("Dataframe concatenados")
 
     # Guardar todo en una sola hoja excel
-    name_filed = f"Balance_empresa_{nombre_compañia}.xlsx"
+    safe_company_name = str(nombre_compañia or "desconocida").replace("/", "_").replace("\\", "_").replace(" ", "_")[:30]
+    name_filed = f"Balance_empresa_{safe_company_name}.xlsx"
     with pd.ExcelWriter(name_filed, engine="openpyxl") as writer:
         empresa_info.to_excel(writer, index=False, sheet_name="Balance", startrow=0)
         df_balance_concat.to_excel(
