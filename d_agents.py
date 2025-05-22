@@ -127,8 +127,14 @@ def node_company_info(state: State) -> Command[Literal["balance_sheet"]]:
         return None
 
     company_name = clean_field(estructura_company.get("company_name", ""))
+    if isinstance(company_name, dict):
+        company_name = next((v for v in company_name.values() if v), None)
     company_rut = clean_field(estructura_company.get("company_rut", ""))
+    if isinstance(company_rut, dict):
+        company_rut = next((v for v in company_rut.values() if v), None)
     report_date = clean_field(estructura_company.get("report_date", ""))
+    if isinstance(report_date, dict):
+        report_date = next((v for v in report_date.values() if v), None)
     creacion_report = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     logger.info(f"Datos parseados")
 
