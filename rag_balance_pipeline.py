@@ -3,6 +3,7 @@ import logging
 from a_embeddings_ocr import extract_text_from_pdf_azure
 from ocr_preprocess import preprocess_ocr_result
 from map.term_matcher import TermMatcher
+from llm_extractor import classify_term_with_llm
 import pandas as pd
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -77,6 +78,24 @@ with open("ocr_debug_flatline_groups.txt", "w", encoding="utf-8") as dbg:
         dbg.write(str(group) + "\n")
 
 # Extraer candidatos a pares término-valor de todo el texto crudo
+# Guardar líneas que no matchean ningún regex de término-valor para debugging
+from ocr_preprocess import debug_failed_lines
+
+# REGEX FLEXIBLE PARA NÚMEROS LATINOS
+regexes = [
+    r"(.+?)[\s:]+([\(\-]?[\d\.\,\s]+[\)]?)$",  # acepta espacios, puntos, comas, paréntesis
+    r"(.+?)\s+([\d\.\,\s]+)$",                  # término seguido de número
+    r"(.+?):\s*([\d\.\,\s]+)$",                 # término: valor
+    r"(.+?)\s*\t\s*([\d\.\,\s]+)$",           # término\tvalor
+    r"(.+?)[\s:]+([\(\-]?[\d\.\,]+[\)]?)$",   # original backup
+]
+
+from typing import List
+
+# Eliminado bloque duplicado de regexes para evitar confusión y permitir edición automática
+
+debug_failed_lines(raw_text, regexes)
+
 candidates = extract_term_value_candidates(raw_text)
 
 from ocr_preprocess import extract_term_value_pairs
@@ -88,8 +107,9 @@ from ocr_preprocess import extract_table_rows
 rows = extract_table_rows(raw_text)
 
 
-# 3. Inicializar el matcher inteligente
-matcher = TermMatcher(map_json_path=MAP_JSON_PATH)
+# 3. Inicializar el agente RAG y matcher inteligente
+from rag_glossary import GlossaryRAG
+rag = GlossaryRAG(MAP_JSON_PATH)
 
 # 4. Buscar términos y valores en líneas/tablas
 extracted = []
@@ -97,12 +117,72 @@ import re
 import re
 import logging
 logging.basicConfig(filename='rag_balance_debug.log', level=logging.INFO, format='%(asctime)s %(message)s')
+# Si hay grupos planos (flatline_groups), usarlos como fuente principal
+if flatline_groups:
+    for group in flatline_groups:
+        # group: (term, nota, val1, val2)
+        term = group[0]
+        # nota = group[1]  # puede omitirse o usarse para debugging
+        value1 = group[2]
+        value2 = group[3] if len(group) > 3 else None
+        # Usar ambos valores si existen (ej: año actual y anterior)
+        for value in [value1, value2]:
+            if not value:
+                continue
+            line = f"{term} {value}"
+            logging.info(f"LINE: {line}")
+            m = None
+            for rx in regexes:
+                m = re.match(rx, line)
+                if m:
+                    break
+            if not m:
+                continue
+            original, value = m.group(1).strip(), m.group(2).replace('.', '').replace(',', '.')
+            # --- RAG Matching ---
+            rag_results = rag.query(original, topk=1)
+            if rag_results and rag_results[0]['score'] > 0.7:
+                rag_best = rag_results[0]
+                matched_term = rag_best['term']
+                category = [rag_best.get('section'), rag_best.get('block'), rag_best.get('subblock')]
+                score = rag_best['score']
+                log = 'RAG'
+            else:
+                # fallback matcher clásico
+                match_tuple = matcher.match(original, return_log=True)
+                if match_tuple:
+                    matched_term, category, score, log = match_tuple
+                else:
+                    matched_term, category, score, log = None, None, 0, None
+            # fallback LLM
+            if not matched_term or score < 0.7:
+                llm_result = classify_term_with_llm(original, value, context_glossary=matcher.terms)
+                matched_term = llm_result.get('matched_term')
+                category = llm_result.get('category')
+                score = llm_result.get('score', 1.0)
+                log = log or 'LLM'
+            extracted.append({
+                'original': original,
+                'value': value,
+                'matched_term': matched_term,
+                'category': category,
+                'score': score,
+                'log': log
+            })
+            print(f"EXTRACTED: {original} | {value} | {matched_term} | {category} | {score}")
 
+
+
+# BLOQUE DUPLICADO DE REGEX ELIMINADO MANUALMENTE PARA EVITAR CONFLICTOS
+
+
+# REGEX FLEXIBLE PARA NÚMEROS LATINOS
 regexes = [
-    r"(.+?)[\s:]+([\(\-]?[\d\.,]+[\)]?)$",  # original
-    r"(.+?)\s+([\d\.,]+)$",                  # término seguido de número
-    r"(.+?):\s*([\d\.,]+)$",                 # término: valor
-    r"(.+?)\s*\t\s*([\d\.,]+)$",           # término\tvalor
+    r"(.+?)[\s:]+([\(\-]?[\d\.\,\s]+[\)]?)$",  # acepta espacios, puntos, comas, paréntesis
+    r"(.+?)\s+([\d\.\,\s]+)$",                  # término seguido de número
+    r"(.+?):\s*([\d\.\,\s]+)$",                 # término: valor
+    r"(.+?)\s*\t\s*([\d\.\,\s]+)$",           # término\tvalor
+    r"(.+?)[\s:]+([\(\-]?[\d\.\,]+[\)]?)$",   # original backup
 ]
 
 # Usar filas de tabla si existen, si no, usar pares término-valor
@@ -121,10 +201,17 @@ if rows:
             continue
         original, value = m.group(1).strip(), m.group(2).replace('.', '').replace(',', '.')
         match_result = matcher.match(original, return_log=True)
-        matched_term = match_result['term'] if match_result['score'] > 0.3 else None
+        # --- HYBRID MATCHER+LLM BLOCK 1 ---
+        score = match_result.get('score', 0)
+        matched_term = match_result.get('term') if score > 0.3 else None
         category = match_result.get('category')
-        score = match_result['score']
         log = match_result.get('log')
+        if not matched_term or score < 0.7:
+            llm_result = classify_term_with_llm(original, value, context_glossary=matcher.terms)
+            matched_term = llm_result.get('matched_term')
+            category = llm_result.get('category')
+            score = llm_result.get('score', 1.0)
+            log = log or 'LLM'
         extracted.append({
             'original': original,
             'value': value,
@@ -133,6 +220,8 @@ if rows:
             'score': score,
             'log': log
         })
+        logging.info(f"EXTRACTED: {original} | {value} | {matched_term} | {category} | {score}")
+
 else:
     for term, nums in term_value_pairs:
         value = nums[-1]
@@ -143,14 +232,22 @@ else:
             m = re.match(rx, line)
             if m:
                 break
+
         if not m:
             continue
         original, value = m.group(1).strip(), m.group(2).replace('.', '').replace(',', '.')
-        match_result = matcher.match(original, return_log=True)
-        matched_term = match_result['term'] if match_result['score'] > 0.3 else None
-        category = match_result.get('category')
-        score = match_result['score']
-        log = match_result.get('log')
+        # --- HYBRID MATCHER+LLM BLOCK 2 ---
+        match_tuple = matcher.match(original, return_log=True)
+        if match_tuple:
+            matched_term, category, score, log = match_tuple
+        else:
+            matched_term, category, score, log = None, None, 0, None
+        if not matched_term or score < 0.7:
+            llm_result = classify_term_with_llm(original, value, context_glossary=matcher.terms)
+            matched_term = llm_result.get('matched_term')
+            category = llm_result.get('category')
+            score = llm_result.get('score', 1.0)
+            log = log or 'LLM'
         extracted.append({
             'original': original,
             'value': value,
@@ -159,6 +256,7 @@ else:
             'score': score,
             'log': log
         })
+        logging.info(f"EXTRACTED: {original} | {value} | {matched_term} | {category} | {score}")
 
 
 logging.info(f"MATCHER TERMS: {matcher.terms[:10]} ... total: {len(matcher.terms)}")
