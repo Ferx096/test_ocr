@@ -154,7 +154,7 @@ REGLAS ESTRICTAS Y DE SEGURIDAD:
 9. Si no puedes cumplir, responde con un JSON vacío: {"total_activos": 0, "total_pasivos": 0, "total_patrimonio": 0}
 
 EJEMPLO DE SALIDA:
-{{{{"total_activos": 12345, "total_pasivos": 6789, "total_patrimonio": 5555}}}}  # doble llave para escapar en prompt
+{{'total_activos': 12345, 'total_pasivos': 6789, 'total_patrimonio': 5555}}  # ejemplo, no variable
 '''
 
 
