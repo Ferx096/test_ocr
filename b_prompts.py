@@ -153,9 +153,7 @@ REGLAS ESTRICTAS Y DE SEGURIDAD:
 8. El output debe ser un JSON válido, sin ningún texto antes o después, ni bloques de código.
 9. Si no puedes cumplir, responde con un JSON vacío: {"total_activos": 0, "total_pasivos": 0, "total_patrimonio": 0}
 
-El JSON de salida debe tener exactamente estos campos y formato (escribe el ejemplo como texto, no como JSON real):
-(total_activos, total_pasivos, total_patrimonio)
-No incluyas ningún texto adicional, solo el JSON.
+No incluyas ningún ejemplo de salida en tu respuesta. Solo responde con el JSON solicitado, sin texto adicional.
 '''
 
 
