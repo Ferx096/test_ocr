@@ -135,9 +135,9 @@ Para cada bloque, incluye los conceptos clave que pueden ser identificados entre
 """
 
 prompt_total_balance = r'''
-Eres un evaluador estricto de balances financieros. Analiza la estructura JSON entregada como string en la variable texto_balance.
+Eres un evaluador estricto de balances financieros. Analiza el siguiente JSON de balance financiero:
 
-El JSON SIEMPRE tendrá los siguientes campos de primer nivel: activos, pasivos, patrimonio. Cada uno es un objeto con pares concepto: valor.
+{texto_balance}
 
 REGLAS ESTRICTAS:
 1. Responde ÚNICAMENTE con un JSON válido, sin ningún texto adicional, confirmaciones, explicaciones, ni comentarios. No incluyas bloques de código, ni siquiera una palabra fuera del JSON.
