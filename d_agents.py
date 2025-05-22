@@ -214,7 +214,20 @@ def node_balance_sheet(state: State) -> Command[Literal["final"]]:
 
     # Parsear la rpta JSON conviertiendolo en un diccionario
     try:
-        estructura_balance = json.loads(resultado_llm)
+    # Extraer bloque JSON si la respuesta contiene texto adicional
+    import re
+    def extract_json_block(text):
+        # Busca bloque entre triple backticks y/o primer bloque {...}
+        match = re.search(r'```json[\s\n]*({[\s\S]*?})[\s\n]*```', text)
+        if match:
+            return match.group(1)
+        match = re.search(r'({[\s\S]*})', text)
+        if match:
+            return match.group(1)
+        return text
+    resultado_llm_json = extract_json_block(resultado_llm)
+
+        estructura_balance = json.loads(resultado_llm_json)
         logger.info(f"Json convertido a diccionario")
     except Exception as e:
         logger.error(f"Error al parsear la respuesta del balance como JSON: {e}. Respuesta: {resultado_llm}")
