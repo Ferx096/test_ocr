@@ -151,7 +151,7 @@ REGLAS ESTRICTAS Y DE SEGURIDAD:
 6. Los valores deben ser estrictamente numéricos (sin comas, puntos, ni texto).
 7. Si algún bloque no tiene datos, su total debe ser 0.
 8. El output debe ser un JSON válido, sin ningún texto antes o después, ni bloques de código.
-9. Si no puedes cumplir, responde con un JSON vacío: {"total_activos": 0, "total_pasivos": 0, "total_patrimonio": 0}
+9. Si no puedes cumplir, responde con un JSON vacío: {{"total_activos": 0, "total_pasivos": 0, "total_patrimonio": 0}}
 '''
 
 
