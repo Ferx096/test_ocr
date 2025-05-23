@@ -2,42 +2,9 @@
 Herramientas y agentes para extracción y procesamiento de información financiera.
 Define agentes jerárquicos, funciones de parsing y utilidades para manipular datos extraídos de documentos.
 """
-from dotenv import load_dotenv
-import pandas as pd
-import logging
-import os
-import re
-import json
-from langchain_openai import AzureChatOpenAI, AzureOpenAIEmbeddings
-from langgraph.prebuilt import create_react_agent
-from langgraph.graph import StateGraph, MessagesState, START, END
-from langgraph.graph.message import add_messages
-from langgraph.types import Command
-from typing import Annotated, TypedDict, Literal, Dict, Optional, Union
-from langchain_core.tools import tool
-from langgraph.checkpoint.memory import MemorySaver
-from langchain_core.messages import HumanMessage
-from a_embeddings_ocr import search_vectorestore
-from langchain_core.output_parsers import StrOutputParser
-from langchain_core.prompts import ChatPromptTemplate
-from b_prompts import prompt_extract_company
-from b_prompts import prompt_balance_sheet
-from b_prompts import prompt_total_balance
-from langchain_core.prompts import ChatPromptTemplate
-from b_prompts import prompt_income_statement
+# Este archivo ha sido refactorizado. Las funciones de parsing están en parsing_tools.py, los agentes en agent_tools.py y las utilidades en utils_tools.py.
+# Mantener este archivo solo para compatibilidad temporal o migrar todo el código a los nuevos módulos.
 
-
-load_dotenv()
-# configuracion de logging
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
-)
-logger = logging.getLogger(__name__)
-
-# ======================================
-# CARGAR DATOS
-# ======================================
-# llm
 llm = AzureChatOpenAI(
     api_key=os.getenv("AZURE_OPENAI_API_KEY"),
     azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),

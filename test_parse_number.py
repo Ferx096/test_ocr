@@ -1,4 +1,5 @@
-from c_tools import parse_number, fallback_parse_balance_totals, extract_account_values_from_text
+from parsing_tools import parse_number
+# fallback_parse_balance_totals y extract_account_values_from_text deben migrarse a utils_tools.py si se usan
 
 def test_parse_number():
     casos = [

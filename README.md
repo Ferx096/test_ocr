@@ -25,3 +25,19 @@ python3 rag_balance_pipeline.py --input_pdf document/estados_financieros__pdf_93
 ## Notas
 - El pipeline utiliza OCR, matching flexible (fuzzy, embeddings, LLM) y un glosario inteligente basado en `map/map_test.json`.
 - Si tienes problemas con dependencias, revisa y reinstala usando `requirements_final.txt`.
+## Documentación de módulos principales
+
+- El flujo principal está en `rag_balance_pipeline.py`, que orquesta la extracción, preprocesamiento, matching y exportación de resultados.
+- Las funciones de parsing están en `parsing_tools.py`, los agentes en `agent_tools.py` y las utilidades en `utils_tools.py`. El archivo `c_tools.py` se mantiene solo para compatibilidad temporal.
+- El matching semántico de términos está en `map/term_matcher.py` y el glosario inteligente en `rag_glossary.py`.
+- Los prompts y plantillas de extracción están en `b_prompts.py`.
+- El módulo `llm_extractor.py` contiene utilidades para extracción robusta usando LLMs.
+- Los logs estructurados se generan con `utils_logging.py`.
+
+## Mejora de modularidad y documentación
+
+- Se refactorizó `c_tools.py` en submódulos: `parsing_tools.py`, `agent_tools.py` y `utils_tools.py`.
+- Se mejorará el manejo de errores y el logging en los módulos principales.
+- Se unificará el idioma a español en variables, funciones y prompts.
+- Se ampliarán los tests para cubrir los módulos principales.
+
