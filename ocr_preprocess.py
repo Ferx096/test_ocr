@@ -69,7 +69,7 @@ def preprocess_ocr_result(ocr_result):
     text = clean_ocr_text(text)
     lines, tables = extract_lines_and_tables(text)
     return {'lines': lines, 'tables': tables, 'raw': text}
-    
+
 def preprocess_ocr_text(text):
     """
     Extrae filas de tabla detectando líneas con múltiples números grandes.
@@ -105,13 +105,12 @@ def preprocess_ocr_text(text):
 
 
 def extract_term_value_candidates(text):
-    # Extrae líneas candidatas a pares término-valor usando heurísticas
      """
-    Extrae pares término-valor agrupando líneas: término en una línea, valores numéricos en las siguientes.
+     Divide el texto en líneas normales y posibles tablas usando heurísticas de separación.
     Args:
-        text (str): Texto OCR limpio.
+        text (str): Texto limpio.
     Returns:
-        list: Lista de tuplas (término, [valores]).
+        tuple: (normal_lines, tables) listas de líneas normales y de tablas.
     """
     import re
     candidates = []
