@@ -220,9 +220,7 @@
           ],
           "total_activos": {
             "nombre": "Total activos",
-            "categoria": [
-              "activos"
-            ],
+            "categoria": "activos",
             "sinonimos": [
               "Total de activos",
               "Suma de activos corrientes y no corrientes",
@@ -284,9 +282,7 @@
               "Obligaciones a corto plazo totales"
             ],
             "descripcion": "Suma total de todas las obligaciones financieras y no financieras que deben pagarse dentro del año fiscal.",
-            "categoria": [
-              "pasivos"
-            ],
+            "categoria": "pasivos",
             "patrones": [
               "total current liabilities",
               "suma de pasivos corrientes",
@@ -335,9 +331,7 @@
               "Total liabilities"
             ],
             "descripcion": "Suma de los pasivos corrientes y no corrientes. Representa todas las obligaciones financieras y operativas de la empresa.",
-            "categoria": [
-              "pasivos"
-            ],
+            "categoria": "pasivos",
             "patrones": [
               "total pasivos",
               "suma de pasivos corrientes y no corrientes",
@@ -358,9 +352,7 @@
               "Share capital"
             ],
             "descripcion": "Representa la inversión directa de los propietarios en la empresa, incluyendo aportes iniciales y ampliaciones de capital.",
-            "categoria": [
-              "patrimonio"
-            ],
+            "categoria": "patrimonio",
             "patrones": [
               "capital social",
               "equity capital",
@@ -381,9 +373,7 @@
               "Beneficios"
             ],
             "descripcion": "Resultado neto después de deducir todos los gastos operativos, financieros y tributarios.",
-            "categoria": [
-              "patrimonio"
-            ],
+            "categoria": "patrimonio",
             "patrones": [
               "profits",
               "beneficios",
@@ -401,9 +391,7 @@
               "Reservas estatutarias"
             ],
             "descripcion": "Parte del patrimonio acumulado por decisiones internas o legales.",
-            "categoria": [
-              "patrimonio"
-            ],
+            "categoria": "patrimonio",
             "patrones": [
               "reservas legales",
               "reservas estatutarias",
@@ -420,9 +408,7 @@
               "Reservas acumuladas"
             ],
             "descripcion": "Ganancias acumuladas que no han sido distribuidas a los accionistas como dividendos y se reinvierten en la empresa.",
-            "categoria": [
-              "patrimonio"
-            ],
+            "categoria": "patrimonio",
             "patrones": [
               "ganancias retenidas",
               "retained earnings",
@@ -438,9 +424,7 @@
               "Net income of the period"
             ],
             "descripcion": "Ganancia o pérdida neta obtenida por la empresa durante el último año fiscal.",
-            "categoria": [
-              null
-            ],
+            "categoria": null,
             "patrones": [
               "net income of the period",
               "resultado neto del periodo",
@@ -456,9 +440,7 @@
               "Total equity"
             ],
             "descripcion": "Suma total del capital, utilidades retenidas y otras reservas.",
-            "categoria": [
-              "patrimonio"
-            ],
+            "categoria": "patrimonio",
             "patrones": [
               "suma de patrimonio",
               "valor neto contable",
@@ -474,9 +456,7 @@
               "Total liabilities and equity"
             ],
             "descripcion": "Suma del total de pasivos más el patrimonio total. Debe ser igual al total de activos.",
-            "categoria": [
-              "pasivos"
-            ],
+            "categoria": "pasivos",
             "patrones": [
               "suma de pasivos y patrimonio",
               "total de recursos propios y ajenos",
