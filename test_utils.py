@@ -1,5 +1,5 @@
 import pytest
-from c_tools import parse_number, sum_group
+from parsing_tools import parse_number, sum_group
 
 def test_parse_number_int():
     assert parse_number(1000) == 1000

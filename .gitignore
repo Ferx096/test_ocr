@@ -1,3 +1,13 @@
+ocr_debug_candidates.txt
+ocr_debug_failed_lines.txt
+ocr_debug_flatline_groups.txt
+ocr_debug_flexible_pairs.txt
+ocr_debug_full_text.txt
+ocr_debug_multiline_candidates.txt
+ocr_debug_multiline_pairs.txt
+ocr_debug_table_rows.txt
+ocr_debug_term_value_pairs.txt
+
 __pycache__/
 *.pyc
 faiss_index/

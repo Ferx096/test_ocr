@@ -1,4 +1,11 @@
+"""
+Prompts predefinidos para extracción de información financiera y clasificación de datos en bloques contables.
+Incluye ejemplos y formatos de salida esperados para cada tarea.
+"""
 prompt_extract_company = """
+"""
+Prompt para extraer información clave de la empresa desde documentos financieros.
+"""
     Eres un agente recuperador de información financiera. Extrae información financiera relevante como el nombre de la compañía, su RUT, y la fecha del reporte a partir de documentos utilizando recuperación asistida por RAG. Responde de manera breve, especificando únicamente el nombre del campo solicitado y la información obtenida, sin agregar detalles adicionales.
 
     - Realiza búsquedas inteligentes para identificar conceptos relacionados o abreviados dentro del texto que correspondan al título del campo requerido.
@@ -49,6 +56,9 @@ prompt_extract_company = """
     - Si la información es numérica o de formato específico (como una fecha), verificar que coincida con los estándares locales (e.g., formato RUT chileno).
     - Cuando devuelvas el valor del RUT, asegúrate de eliminar cualquier punto (.) o guion (-)  u otro carácter y devuelve únicamente los números en formato continuo. Ejemplo: "12.345.678-9" debe devolverse como "123456789".
     - No añadas texto adicional ni explicaciones. Devuelve solamente el JSON válido
+"""
+"""
+Prompt para clasificar ítems extraídos en activos, pasivos y patrimonio, y estructurarlos en JSON.
 """
 
 
@@ -129,6 +139,9 @@ Para cada bloque, incluye los conceptos clave que pueden ser identificados entre
 # Notas
 - La salida debe ser únicamente un JSON válido, sin ningún texto antes o después.
 - Algunas entradas pueden ser nombradas ambiguamente o nombres abreviaso en el documento; en ese caso, asócialas al bloque correspondiente basado en su significado económico.
+"""
+Prompt para identificar y calcular los totales de cada bloque (activos, pasivos, patrimonio) en el balance.
+"""
 - Cada concepto debe tener un valor numerico asociado, de lo contrario no lo pongas.
 - Los valores numéricos que no incluyan comas ni espacios ni ningún carácter adicional que no sea numero 
 - Asegúrate de que todos los datos están clasificados bajo los bloques principales (activos, pasivos, o patrimonio).

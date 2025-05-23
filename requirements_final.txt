@@ -1,6 +1,5 @@
 python-dotenv
 langchain
-langgraph
 langchain-openai
 langchain-core
 langchain-community
@@ -10,5 +9,9 @@ azure-core
 ipython
 pandas
 tabulate
-pyppeteer
 openpyxl
+numpy
+scikit-learn
+sentence-transformers
+torch
+rapidfuzz

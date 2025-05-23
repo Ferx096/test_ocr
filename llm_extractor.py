@@ -1,3 +1,7 @@
+"""
+Utilidades para extracción de información financiera clave usando LLMs y OCR.
+Incluye prompts y funciones para extraer y clasificar términos y valores de documentos PDF.
+"""
 import os
 from a_embeddings_ocr import extract_text_from_pdf_azure
 from langchain_openai import AzureChatOpenAI
@@ -8,6 +12,11 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 def get_llm():
+    """
+    Inicializa y retorna un objeto AzureChatOpenAI listo para invocaciones LLM.
+    Returns:
+        AzureChatOpenAI: Cliente LLM configurado.
+    """
     return AzureChatOpenAI(
         api_key=os.getenv("AZURE_OPENAI_API_KEY"),
         azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
@@ -39,6 +48,13 @@ Si algún campo no se encuentra, pon "No especificado". No expliques nada, solo 
 
 Texto extraído:
 """
+    """
+    Extrae información financiera clave de un PDF usando OCR y LLM.
+    Args:
+        pdf_path (str): Ruta al archivo PDF.
+    Returns:
+        dict: Diccionario con campos extraídos (nombre, RUT, fecha, activos, pasivos, patrimonio).
+    """
 {document_text}
 """
 '''
@@ -70,6 +86,15 @@ def extract_financial_info_from_pdf(pdf_path):
     logger.info("Enviando prompt al LLM para extracción financiera clave...")
     response = llm.invoke(prompt)
     # Buscar JSON en la respuesta
+    """
+    Usa un LLM para clasificar un término y valor, usando el glosario como contexto.
+    Args:
+        term (str): Término a clasificar.
+        value (str): Valor asociado.
+        context_glossary (list): Lista de términos de referencia.
+    Returns:
+        dict: Diccionario con claves 'matched_term', 'category', 'score'.
+    """
     import re
     match = re.search(r'\{[\s\S]*\}', str(response))
     if match:

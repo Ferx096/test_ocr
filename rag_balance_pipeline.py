@@ -1,31 +1,40 @@
+"""
+Pipeline principal para extracción, preprocesamiento y clasificación de datos financieros desde PDF usando OCR+RAG.
+Ejecuta todo el flujo: OCR, extracción de pares, matching, agrupación y exportación de resultados.
+"""
 import os
-import logging
 from a_embeddings_ocr import extract_text_from_pdf_azure
 from ocr_preprocess import preprocess_ocr_result
 from map.term_matcher import TermMatcher
 from llm_extractor import classify_term_with_llm
 import pandas as pd
+from utils_normalization import normalize_term, normalize_category
+from utils_logging import setup_logger
+from exceptions import OCRError, MatchingError
+from parsing_tools import parse_number, sum_group
+from agent_tools import extract_company_info, extract_balance_sheet, extract_income_statement
+from utils_tools import evaluate_balance_totals
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
-logger = logging.getLogger(__name__)
+logger = setup_logger('pipeline', 'pipeline_debug.log')
 
 # Configuración de paths y modelos
 PDF_PATH = os.getenv("PDF_PATH", "document/estados_financieros__pdf_93834000_202403.pdf")
 MAP_JSON_PATH = os.getenv("MAP_JSON_PATH", "map/map_test.json")
 
 # 1. Extraer texto y tablas del PDF
-with open(PDF_PATH, "rb") as f:
-    pdf_bytes = f.read()
-ocr_result = extract_text_from_pdf_azure(pdf_bytes)
-if not ocr_result or "full_text" not in ocr_result:
-    # DEBUG: Guardar texto OCR crudo para inspección
+try:
+    with open(PDF_PATH, "rb") as f:
+        pdf_bytes = f.read()
+    ocr_result = extract_text_from_pdf_azure(pdf_bytes)
+    if not ocr_result or "full_text" not in ocr_result:
+        with open("ocr_debug_full_text.txt", "w", encoding="utf-8") as dbg:
+            dbg.write(str(ocr_result))
+        raise OCRError("No se pudo extraer texto del PDF.")
     with open("ocr_debug_full_text.txt", "w", encoding="utf-8") as dbg:
-        dbg.write(str(ocr_result))
-    logger.error("No se pudo extraer texto del PDF.")
+        dbg.write(ocr_result.get("full_text", ""))
+except OCRError as e:
+    logger.error(str(e))
     exit(1)
-# DEBUG: Guardar texto OCR crudo para inspección
-with open("ocr_debug_full_text.txt", "w", encoding="utf-8") as dbg:
-    dbg.write(ocr_result.get("full_text", ""))
 
 # 2. Preprocesar texto OCR
 preproc = preprocess_ocr_result(ocr_result)

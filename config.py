@@ -1,4 +1,8 @@
 """
+Configuración centralizada para servicios Azure (OCR, Blob Storage, Auth).
+Carga variables de entorno y construye objetos de configuración globales.
+"""
+"""
 Configuración para el servicio OCR.
 """
 
