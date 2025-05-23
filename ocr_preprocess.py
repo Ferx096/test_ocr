@@ -33,8 +33,7 @@ def clean_ocr_text(text):
     Returns:
         dict: Diccionario con listas de líneas, tablas y texto crudo limpio.
     """
-    Realiza limpieza avanzada y segmentación de texto OCR, dividiéndolo en líneas útiles.
-    Args:
+        Args:
         text (str): Texto OCR limpio.
     Returns:
         list: Lista de líneas segmentadas y fusionadas.
