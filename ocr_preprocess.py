@@ -37,8 +37,7 @@ def clean_ocr_text(text):
         text (str): Texto OCR limpio.
     Returns:
         list: Lista de líneas segmentadas y fusionadas.
-    """
-    """
+
 
 def extract_lines_and_tables(text):
     # Divide en líneas y detecta posibles tablas (líneas con muchos espacios o separadores)
