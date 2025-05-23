@@ -139,5 +139,73 @@
         ]
       }
     }
+  },
+  "Estado de resultados": {
+    "descripcion": "Reporte financiero que muestra los ingresos, costos y gastos de una empresa durante un periodo determinado, reflejando el resultado neto (utilidad o pérdida). También conocido como estado de pérdidas y ganancias, income statement, profit and loss statement.",
+    "estructura": {
+      "ejemplo": {
+        "ingresos": [
+          {
+            "nombre": "Ingresos por ventas",
+            "sinonimos": ["Ventas netas", "Net sales", "Revenue", "Ingresos operativos"],
+            "descripcion": "Total de ingresos obtenidos por la venta de bienes o servicios, menos devoluciones y descuentos." 
+          },
+          {
+            "nombre": "Otros ingresos operativos",
+            "sinonimos": ["Ingresos extraordinarios", "Other operating income", "Ingresos no recurrentes"],
+            "descripcion": "Ingresos derivados de actividades distintas a la operación principal, como alquileres, regalías o comisiones." 
+          }
+        ],
+        "costos": [
+          {
+            "nombre": "Costo de ventas",
+            "sinonimos": ["Coste de ventas", "Cost of goods sold", "COGS", "Costo de los productos vendidos"],
+            "descripcion": "Costo directo de los bienes o servicios vendidos durante el periodo." 
+          }
+        ],
+        "gastos": [
+          {
+            "nombre": "Gastos de administración",
+            "sinonimos": ["Gastos administrativos", "Administrative expenses", "Gastos de gestión"],
+            "descripcion": "Gastos relacionados con la gestión y administración general de la empresa." 
+          },
+          {
+            "nombre": "Gastos de ventas",
+            "sinonimos": ["Gastos comerciales", "Selling expenses", "Gastos de distribución"],
+            "descripcion": "Gastos asociados a la comercialización y distribución de los productos o servicios." 
+          },
+          {
+            "nombre": "Gastos financieros",
+            "sinonimos": ["Costos financieros", "Financial expenses", "Intereses pagados"],
+            "descripcion": "Gastos derivados de intereses y otros costos relacionados con financiamiento." 
+          }
+        ],
+        "utilidad_bruta": {
+          "nombre": "Utilidad bruta",
+          "sinonimos": ["Beneficio bruto", "Gross profit", "Resultado bruto"],
+          "descripcion": "Diferencia entre ingresos por ventas y costo de ventas." 
+        },
+        "utilidad_operativa": {
+          "nombre": "Utilidad operativa",
+          "sinonimos": ["Resultado operativo", "Operating profit", "EBIT"],
+          "descripcion": "Resultado después de restar gastos operativos a la utilidad bruta." 
+        },
+        "utilidad_antes_impuestos": {
+          "nombre": "Utilidad antes de impuestos",
+          "sinonimos": ["Resultado antes de impuestos", "Profit before tax", "Earnings before tax"],
+          "descripcion": "Resultado antes de deducir el gasto por impuestos." 
+        },
+        "impuestos": {
+          "nombre": "Impuestos sobre la renta",
+          "sinonimos": ["Gasto por impuestos", "Income tax expense", "ISR"],
+          "descripcion": "Monto de impuestos sobre la renta causados en el periodo." 
+        },
+        "utilidad_neta": {
+          "nombre": "Utilidad neta",
+          "sinonimos": ["Resultado neto", "Net income", "Beneficio neto", "Pérdida neta"],
+          "descripcion": "Resultado final después de restar todos los gastos e impuestos a los ingresos totales." 
+        }
+      }
+    }
   }
 }
