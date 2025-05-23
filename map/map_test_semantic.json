@@ -1,0 +1,143 @@
+{
+  "Balance general": {
+    "descripcion": "Es un reporte financiero que muestra lo que tiene y debe una empresa en un momento específico. Se divide en: activos (lo que posee), pasivos (lo que debe) y patrimonio (lo que le pertenece a los dueños). Es como una fotografía de un momento puntual y refleja la situación financiera de la empresa. También conocido como balance de situación, estado de situación financiera, balance sheet, statement of financial position.",
+    "estructura": {
+      "ejemplo": {
+        "activos": {
+          "activos_corrientes": [
+            {
+              "nombre": "Efectivo y equivalentes",
+              "sinonimos": ["Caja y bancos", "Cash and equivalents", "Activos líquidos", "Tesorería", "Dinero en caja", "Fondos disponibles"],
+              "descripcion": "Activos líquidos disponibles de inmediato, como dinero en caja, depósitos bancarios, cheques y equivalentes altamente líquidos (por ejemplo, bonos a corto plazo)."
+            },
+            {
+              "nombre": "Cuentas por cobrar",
+              "sinonimos": ["Clientes por cobrar", "Accounts receivable", "Deudores comerciales", "Facturas pendientes"],
+              "descripcion": "Derechos de cobro a clientes por ventas a crédito o servicios prestados aún no pagados."
+            },
+            {
+              "nombre": "Inventarios",
+              "sinonimos": ["Existencias", "Stocks", "Inventories", "Mercaderías"],
+              "descripcion": "Bienes destinados a la venta o a la producción de bienes para la venta."
+            },
+            {
+              "nombre": "Otros activos corrientes",
+              "sinonimos": ["Otros activos circulantes", "Other current assets", "Anticipos", "Pagos anticipados"],
+              "descripcion": "Activos de corto plazo no clasificados en otras cuentas, como anticipos y pagos adelantados."
+            },
+            {
+              "nombre": "Total activos corrientes",
+              "sinonimos": ["Suma de activos corrientes", "Total current assets", "Suma de todos los activos líquidos"],
+              "descripcion": "Suma de todos los activos que se espera convertir en efectivo, vender o consumir en el ciclo operativo normal."
+            }
+          ],
+          "activos_no_corrientes": [
+            {
+              "nombre": "Activos fijos, netos",
+              "sinonimos": ["Inmovilizado neto", "Fixed assets, net", "PP&E", "Activos físicos netos", "Propiedad, planta y equipo"],
+              "descripcion": "Bienes tangibles de uso prolongado, como maquinaria, terrenos, edificios, vehículos, menos la depreciación acumulada."
+            },
+            {
+              "nombre": "Otros activos no corrientes",
+              "sinonimos": ["Activos a largo plazo", "Other non-current assets", "Activos intangibles", "Inversiones a largo plazo"],
+              "descripcion": "Recursos con vencimiento superior a un año que no son inmovilizado, como inversiones a largo plazo, activos intangibles y activos por impuestos diferidos."
+            },
+            {
+              "nombre": "Total activos no corrientes",
+              "sinonimos": ["Suma de activos no corrientes", "Total non-current assets", "Suma de todos los activos a largo plazo"],
+              "descripcion": "Suma de todos los activos a largo plazo de una empresa."
+            }
+          ],
+          "total_activos": {
+            "nombre": "Total activos",
+            "sinonimos": ["Total de activos", "Total assets", "Suma de activos corrientes y no corrientes"],
+            "descripcion": "Suma de todos los activos de la empresa, tanto corrientes como no corrientes."
+          }
+        },
+        "pasivos": {
+          "pasivos_corrientes": [
+            {
+              "nombre": "Deuda financiera (corto plazo)",
+              "sinonimos": ["Préstamos bancarios a corto plazo", "Financial debt (short term)", "Obligaciones financieras corrientes"],
+              "descripcion": "Pasivos provenientes de préstamos bancarios, bonos emitidos o líneas de crédito con intereses a corto plazo."
+            },
+            {
+              "nombre": "Tarjetas de crédito",
+              "sinonimos": ["Crédito bancario", "Credit cards", "Líneas de crédito comerciales"],
+              "descripcion": "Pasivo financiero corriente generado por el uso de líneas de crédito proporcionadas por entidades emisoras de tarjetas."
+            },
+            {
+              "nombre": "Otros pasivos corrientes",
+              "sinonimos": ["Otras obligaciones a corto plazo", "Other current liabilities", "Provisiones operativas"],
+              "descripcion": "Obligaciones diversas de corto plazo no clasificadas como deuda financiera."
+            }
+          ],
+          "total_pasivos_corrientes": {
+            "nombre": "Total pasivos corrientes",
+            "sinonimos": ["Suma de pasivos corrientes", "Total current liabilities", "Obligaciones a corto plazo totales"],
+            "descripcion": "Suma total de todas las obligaciones financieras y no financieras que deben pagarse dentro del año fiscal."
+          },
+          "pasivos_no_corrientes": [
+            {
+              "nombre": "Deuda financiera no corriente",
+              "sinonimos": ["Préstamos bancarios a largo plazo", "Non-current financial debt", "Obligaciones financieras a largo plazo"],
+              "descripcion": "Préstamos, créditos u otras formas de financiamiento que la empresa debe pagar en un plazo mayor a un año."
+            },
+            {
+              "nombre": "Otros pasivos no corrientes",
+              "sinonimos": ["Otras obligaciones a largo plazo", "Other non-current liabilities", "Pasivos por impuestos diferidos"],
+              "descripcion": "Obligaciones financieras o contingentes de largo plazo superior a un año no incluidas en deuda principal."
+            },
+            {
+              "nombre": "Total pasivos no corrientes",
+              "sinonimos": ["Suma de pasivos no corrientes", "Total non-current liabilities", "Obligaciones a largo plazo totales"],
+              "descripcion": "Suma total de todas las deudas y obligaciones con vencimiento superior a un año."
+            }
+          ],
+          "total_pasivos": {
+            "nombre": "Total de pasivos",
+            "sinonimos": ["Total pasivos", "Total liabilities", "Suma de pasivos corrientes y no corrientes"],
+            "descripcion": "Suma de los pasivos corrientes y no corrientes. Representa todas las obligaciones financieras y operativas de la empresa."
+          }
+        },
+        "patrimonio": [
+          {
+            "nombre": "Capital",
+            "sinonimos": ["Capital social", "Share capital", "Equity capital", "Aportes de los propietarios"],
+            "descripcion": "Representa la inversión directa de los propietarios en la empresa, incluyendo aportes iniciales y ampliaciones de capital."
+          },
+          {
+            "nombre": "Ganancias",
+            "sinonimos": ["Utilidades", "Earnings", "Profits", "Beneficios"],
+            "descripcion": "Resultado neto después de deducir todos los gastos operativos, financieros y tributarios."
+          },
+          {
+            "nombre": "Otras reservas",
+            "sinonimos": ["Reservas legales", "Other reserves", "Reservas voluntarias", "Reservas estatutarias"],
+            "descripcion": "Parte del patrimonio acumulado por decisiones internas o legales."
+          },
+          {
+            "nombre": "Utilidades retenidas",
+            "sinonimos": ["Ganancias retenidas", "Retained earnings", "Reservas acumuladas"],
+            "descripcion": "Ganancias acumuladas que no han sido distribuidas a los accionistas como dividendos y se reinvierten en la empresa."
+          },
+          {
+            "nombre": "Resultado del ejercicio",
+            "sinonimos": ["Resultado neto del periodo", "Net income of the period", "Resultado anual"],
+            "descripcion": "Ganancia o pérdida neta obtenida por la empresa durante el último año fiscal."
+          },
+          {
+            "nombre": "Patrimonio total",
+            "sinonimos": ["Total equity", "Suma de patrimonio", "Valor neto contable"],
+            "descripcion": "Suma total del capital, utilidades retenidas y otras reservas."
+          },
+          {
+            "nombre": "Total pasivos y patrimonio",
+            "sinonimos": ["Total liabilities and equity", "Suma de pasivos y patrimonio", "Total de recursos propios y ajenos"],
+            "descripcion": "Suma del total de pasivos más el patrimonio total. Debe ser igual al total de activos."
+          }
+        ]
+      }
+    }
+  }
+}
