@@ -10,29 +10,26 @@ def clean_ocr_text(text):
     Normaliza y limpia el texto OCR, eliminando caracteres extraños y espacios innecesarios.
     Args:
         text (str): Texto crudo extraído por OCR.
-    Returns:
+                Returns:
         str: Texto limpio y normalizado.
-    """
-    # Normaliza unicode, quita caracteres raros, corrige espacios
-    """
+  
     Divide el texto en líneas normales y posibles tablas, usando heurísticas de separación.
     Args:
         text (str): Texto limpio.
     Returns:
         tuple: (normal_lines, tables) listas de líneas normales y de tablas.
-    """
-    text = unicodedata.normalize('NFKC', text)
-    text = re.sub(r'[\x00-\x1F\x7F]+', ' ', text)  # quita caracteres de control
-    text = re.sub(r'\s+', ' ', text)
-    text = text.replace('\u200b', '')
-    return text.strip()
-    """
+
     Preprocesa el resultado OCR, limpiando el texto y extrayendo líneas y tablas.
     Args:
         ocr_result (dict): Diccionario con claves 'full_text' y 'tables_data'.
     Returns:
         dict: Diccionario con listas de líneas, tablas y texto crudo limpio.
     """
+    text = unicodedata.normalize('NFKC', text)
+    text = re.sub(r'[\x00-\x1F\x7F]+', ' ', text)  # quita caracteres de control
+    text = re.sub(r'\s+', ' ', text)
+    text = text.replace('\u200b', '')
+    return text.strip()
         Args:
         text (str): Texto OCR limpio.
     Returns:
@@ -41,27 +38,28 @@ def clean_ocr_text(text):
 
 def extract_lines_and_tables(text):
     # Divide en líneas y detecta posibles tablas (líneas con muchos espacios o separadores)
-    lines = text.split('\n')
-    tables = []
-    normal_lines = []
     """
     Extrae líneas candidatas a pares término-valor usando heurísticas simples.
     Args:
         text (str): Texto OCR limpio.
     Returns:
         list: Líneas candidatas a contener pares término-valor.
-    """
-    for line in lines:
-        if re.search(r'(\s{2,}|\||;|,\s)', line):
-            tables.append(line)
-        else:
-    """
+
     Busca y extrae pares término-valor en bloques de texto, usando patrones regulares.
     Args:
         text (str): Texto OCR limpio.
     Returns:
         list: Lista de tuplas (término, [valores]).
     """
+    lines = text.split('\n')
+    tables = []
+    normal_lines = []
+    
+    for line in lines:
+        if re.search(r'(\s{2,}|\||;|,\s)', line):
+            tables.append(line)
+        else:
+ 
             normal_lines.append(line)
     return normal_lines, tables
 
@@ -71,6 +69,7 @@ def preprocess_ocr_result(ocr_result):
     text = clean_ocr_text(text)
     lines, tables = extract_lines_and_tables(text)
     return {'lines': lines, 'tables': tables, 'raw': text}
+    
 def preprocess_ocr_text(text):
     """
     Extrae filas de tabla detectando líneas con múltiples números grandes.
@@ -78,6 +77,17 @@ def preprocess_ocr_text(text):
         text (str): Texto OCR limpio.
     Returns:
         list: Listas de columnas por fila de tabla.
+            Extrae pares término-valor de cualquier línea con palabra y número grande.
+    Args:
+        text (str): Texto OCR limpio.
+    Returns:
+        list: Lista de tuplas (término, valor).
+        ---------------------------
+    Guarda líneas que no matchean ningún regex de término-valor para debugging.
+    Args:
+        text (str): Texto OCR limpio.
+        regexes (list): Lista de patrones regex.
+        out_path (str): Ruta de archivo de salida.
     """
     # Limpieza avanzada y segmentación
     import re
@@ -85,13 +95,7 @@ def preprocess_ocr_text(text):
     lines = re.split(r' {3,}|\n', text)
     lines = [l.strip() for l in lines if l.strip()]
     merged = []
-    """
-    Extrae pares término-valor de cualquier línea con palabra y número grande.
-    Args:
-        text (str): Texto OCR limpio.
-    Returns:
-        list: Lista de tuplas (término, valor).
-    """
+
     for line in lines:
         if merged and (merged[-1][-1].isdigit() or merged[-1][-1] in ".,;:") and (line[0].islower() or line[0].isdigit()):
             merged[-1] += ' ' + line
@@ -99,15 +103,16 @@ def preprocess_ocr_text(text):
             merged.append(line)
     return merged
 
-    """
-    Guarda líneas que no matchean ningún regex de término-valor para debugging.
-    Args:
-        text (str): Texto OCR limpio.
-        regexes (list): Lista de patrones regex.
-        out_path (str): Ruta de archivo de salida.
-    """
+
 def extract_term_value_candidates(text):
     # Extrae líneas candidatas a pares término-valor usando heurísticas
+     """
+    Extrae pares término-valor agrupando líneas: término en una línea, valores numéricos en las siguientes.
+    Args:
+        text (str): Texto OCR limpio.
+    Returns:
+        list: Lista de tuplas (término, [valores]).
+    """
     import re
     candidates = []
     for line in re.split(r'\n| {2,}', text):
@@ -115,13 +120,7 @@ def extract_term_value_candidates(text):
         # Heurística: línea con texto y número grande al final
         if re.search(r'[a-zA-Z].*\d{3,}[\.,]?\d*$', line):
             candidates.append(line)
-    """
-    Extrae pares término-valor agrupando líneas: término en una línea, valores numéricos en las siguientes.
-    Args:
-        text (str): Texto OCR limpio.
-    Returns:
-        list: Lista de tuplas (término, [valores]).
-    """
+
     return candidates
 
 def extract_term_value_pairs(text):
@@ -143,29 +142,30 @@ def extract_term_value_pairs(text):
 
 def extract_table_rows(text):
     # Extrae filas de tabla por alineación de espacios (balance)
-    import re
-    rows = []
-    for line in text.split('\n'):
-        # Busca líneas con al menos dos números grandes
-        if len(re.findall(r'\d{3,}', line)) >= 2:
-    """
+     """
     Guarda candidatos multilineales para debugging, mostrando términos y líneas siguientes.
     Args:
         text (str): Texto OCR limpio.
         out_path (str): Ruta de archivo de salida.
-    """
-            # Divide por 2+ espacios o tabulador
-            cols = re.split(r' {2,}|\t', line.strip())
-            if len(cols) >= 2:
-                rows.append(cols)
-    return rows
-    """
+
     Busca patrones de término + nota + valor1 + valor2 en líneas largas.
     Args:
         text (str): Texto OCR limpio.
     Returns:
         list: Lista de tuplas (término, nota, valor1, valor2).
     """
+    import re
+    rows = []
+    for line in text.split('\n'):
+        # Busca líneas con al menos dos números grandes
+        if len(re.findall(r'\d{3,}', line)) >= 2:
+   
+            # Divide por 2+ espacios o tabulador
+            cols = re.split(r' {2,}|\t', line.strip())
+            if len(cols) >= 2:
+                rows.append(cols)
+    return rows
+  
 
 def extract_flexible_term_value_pairs(text):
     # Extrae pares término-valor de cualquier línea con palabra y número grande
