@@ -18,6 +18,7 @@
             {
               "nombre": "Efectivo y equivalentes",
               "categoria": "activos",
+              "subcategoria": "activos corrientes",
               "sinonimos": [
                 "Caja y bancos",
                 "Cash and equivalents",
@@ -43,6 +44,7 @@
             {
               "nombre": "Cuentas por cobrar",
               "categoria": "activos",
+              "subcategoria": "activos corrientes",
               "sinonimos": [
                 "Clientes por cobrar",
                 "Accounts receivable",
@@ -65,6 +67,7 @@
             {
               "nombre": "Inventarios",
               "categoria": "activos",
+              "subcategoria": "activos corrientes",
               "sinonimos": [
                 "Existencias",
                 "Stocks",
@@ -88,6 +91,7 @@
             {
               "nombre": "Otros activos corrientes",
               "categoria": "activos",
+              "subcategoria": "activos corrientes",
               "sinonimos": [
                 "Otros activos circulantes",
                 "Other current assets",
@@ -111,6 +115,7 @@
             {
               "nombre": "Total activos corrientes",
               "categoria": "activos",
+              "subcategoria": "activos corrientes",
               "sinonimos": [
                 "Suma de activos corrientes",
                 "Total current assets",
@@ -132,6 +137,7 @@
             {
               "nombre": "Activos fijos, netos",
               "categoria": "activos",
+              "subcategoria": "activos no corrientes",
               "sinonimos": [
                 "Inmovilizado neto",
                 "Fixed assets, net",
@@ -156,6 +162,7 @@
             {
               "nombre": "Otros activos no corrientes",
               "categoria": "activos",
+              "subcategoria": "activos no corrientes",
               "sinonimos": [
                 "Activos a largo plazo",
                 "Other non-current assets",
@@ -179,6 +186,7 @@
             {
               "nombre": "Total activos no corrientes",
               "categoria": "activos",
+              "subcategoria": "activos no corrientes",
               "sinonimos": [
                 "Suma de activos no corrientes",
                 "Total non-current assets",
@@ -199,6 +207,7 @@
           "total_activos": {
             "nombre": "Total activos",
             "categoria": "activos",
+            "subcategoria": "total activos ",
             "sinonimos": [
               "Total de activos",
               "Suma de activos corrientes y no corrientes",
@@ -232,6 +241,7 @@
               ],
               "descripcion": "Pasivos provenientes de préstamos bancarios, bonos emitidos o líneas de crédito con intereses a corto plazo.",
               "categoria": "pasivos",
+              "subcategoria": "pasivos corrientes",
               "patrones": [
                 "deuda financiera (corto plazo)",
                 "financial debt (short term)",
@@ -253,6 +263,7 @@
               ],
               "descripcion": "Pasivo financiero corriente generado por el uso de líneas de crédito proporcionadas por entidades emisoras de tarjetas.",
               "categoria": "pasivos",
+              "subcategoria": "pasivos corrientes",
               "patrones": [
                 "credit cards",
                 "crédito bancario",
@@ -275,6 +286,7 @@
               ],
               "descripcion": "Obligaciones diversas de corto plazo no clasificadas como deuda financiera.",
               "categoria": "pasivos",
+              "subcategoria": "pasivos corrientes",
               "patrones": [
                 "otros pasivos corrientes",
                 "otras obligaciones a corto plazo",
@@ -297,6 +309,7 @@
             ],
             "descripcion": "Suma total de todas las obligaciones financieras y no financieras que deben pagarse dentro del año fiscal.",
             "categoria": "pasivos",
+            "subcategoria": "total pasivos corrientes",
             "patrones": [
               "total current liabilities",
               "suma de pasivos corrientes",
@@ -322,6 +335,7 @@
               ],
               "descripcion": "Préstamos, créditos u otras formas de financiamiento que la empresa debe pagar en un plazo mayor a un año.",
               "categoria": "pasivos",
+              "subcategoria": "total pasivos no corrientes",
               "patrones": [
                 "préstamos bancarios a largo plazo",
                 "deuda financiera no corriente",
@@ -343,6 +357,7 @@
               ],
               "descripcion": "Obligaciones financieras o contingentes de largo plazo superior a un año no incluidas en deuda principal.",
               "categoria": "pasivos",
+              "subcategoria": "total pasivos no corrientes",
               "patrones": [
                 "other non-current liabilities",
                 "otros pasivos no corrientes",
@@ -364,6 +379,7 @@
               ],
               "descripcion": "Suma total de todas las deudas y obligaciones con vencimiento superior a un año.",
               "categoria": "pasivos",
+              "subcategoria": "total pasivos no corrientes",
               "patrones": [
                 "obligaciones a largo plazo totales",
                 "suma de pasivos no corrientes",
@@ -386,6 +402,7 @@
             ],
             "descripcion": "Suma de los pasivos corrientes y no corrientes. Representa todas las obligaciones financieras y operativas de la empresa.",
             "categoria": "pasivos",
+            "subcategoria": "total pasivos",
             "patrones": [
               "total pasivos",
               "suma de pasivos corrientes y no corrientes",
