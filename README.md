@@ -45,6 +45,7 @@ python3 rag_balance_pipeline.py --input_pdf document/estados_financieros__pdf_93
 
 Este diagrama describe el flujo de trabajo para categorizar términos financieros utilizando técnicas de búsqueda semántica, incluyendo coincidencias difusas, embeddings y modelos de lenguaje.
 
+
 ```mermaid
 flowchart TD
     A["Término de entrada\n(\"caja bancaria\")"]
