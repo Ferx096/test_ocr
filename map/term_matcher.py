@@ -27,26 +27,26 @@ class TermMatcher:
         self.terms = []
         self.term_to_category = {}
         for section, content in self.map_data.items():
-            estructura = content.get("estructura | structure", {})
+            estructura = content.get("estructura, {})
             for block, block_content in estructura.items():
                 if isinstance(block_content, dict):
                     for subblock, sublist in block_content.items():
                         if isinstance(sublist, list):
                             for term in sublist:
-                                clean_term = term.split("|")[0].strip().lower()
+                                clean_term = term.strip().lower()
                                 self.terms.append(clean_term)
                                 self.term_to_category[clean_term] = (section, block, subblock)
                         elif isinstance(sublist, str):
-                            clean_term = sublist.split("|")[0].strip().lower()
+                            clean_term = sublist.strip().lower()
                             self.terms.append(clean_term)
                             self.term_to_category[clean_term] = (section, block, subblock)
                 elif isinstance(block_content, list):
                     for term in block_content:
-                        clean_term = term.split("|")[0].strip().lower()
+                        clean_term = term.strip().lower()
                         self.terms.append(clean_term)
                         self.term_to_category[clean_term] = (section, block, None)
                 elif isinstance(block_content, str):
-                    clean_term = block_content.split("|")[0].strip().lower()
+                    clean_term = block_content.strip().lower()
                     self.terms.append(clean_term)
                     self.term_to_category[clean_term] = (section, block, None)
         # Precompute embeddings
