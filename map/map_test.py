@@ -1,0 +1,105 @@
+import json
+
+financial_terms = {
+    "Balance general": {
+        "descripcion": "Es un reporte financiero que muestra lo que tiene y debe una empresa en un momento específico. Se divide en: activos (lo que posee), pasivos (lo que debe) y patrimonio (lo que le pertenece a los dueños). Es como una fotografía de un momento puntual y refleja la situación financiera de la empresa. | Balance sheet: It is a financial report that shows what a company owns and owes at a specific point in time. It is divided into: assets (what it owns), liabilities (what it owes), and equity (what belongs to the owners). It is like a snapshot of a specific moment in time and reflects the company’s financial position.",
+        "estructura | structure": {
+            "Ejemplo de estructura de Balance general | Example structure of a Balance sheet": {
+                "Activos | Assets": {
+                    "Activos corrientes | Current assets": [
+                        "Efectivo y equivalentes | Cash and equivalents",
+                        "Cuentas por cobrar | Accounts receivable",
+                        "Inventarios | Inventories",
+                        "Otros activos corrientes | Other current assets",
+                        "Total activos corrientes | Total current assets | suma de todos los activos corrientes | sum of all current assets",
+                    ],
+                    "Activos no corrientes | Non-current assets": [
+                        "Activos fijos, netos | Fixed assets, net",
+                        "Otros activos no corrientes | Other non-current assets",
+                        "Total activos no corrientes | Total non-current assets | suma de todos los activos corrientes | sum of all non-current assets",
+                    ],
+                    "Total activos | Total assets": "suma de todos los activos corrientes y no corrientes | sum of all current and non-current assets",
+                },
+                "Pasivos | Liabilities": {
+                    "Pasivos corrientes | Current liabilities": [
+                        "Deuda financiera (corto plazo) | Financial debt (short term)",
+                        "Tarjetas de crédito | Credit cards",
+                        "Otros pasivos corrientes | Other current liabilities",
+                    ],
+                    "Total pasivos corrientes | Total current liabilities": "suma de todos los pasivos corrientes | sum of all current liabilities",
+                    "Pasivos no corrientes | Non-current liabilities": [
+                        "Deuda financiera no corriente | Non-current financial debt",
+                        "Otros pasivos no corrientes | Other non-current liabilities",
+                        "Total pasivos no corrientes | Total non-current liabilities | suma de todos los pasivos no corrientes | sum of all non-current liabilities",
+                    ],
+                    "Total de pasivos | Total liabilities": "suma de todos los pasivos corrientes y no corrientes | sum of all current and non-current liabilities",
+                },
+                "Patrimonio | Equity": [
+                    "Capital | Capital",
+                    "Ganancias | Earnings",
+                    "Otras reservas | Other reserves",
+                    "Utilidades retenidas | Retained earnings",
+                    "Resultado del ejercicio | Net income of the period",
+                    "Patrimonio total | Total equity",
+                    "Total pasivos y patrimonio | Total liabilities and equity | suma del total de pasivos y patrimonio total, debe ser igual al total de activos | sum of total liabilities and total equity, must equal total assets",
+                ],
+            }
+        },
+        "terminos": {
+            "Efectivo y equivalentes": "Activos líquidos disponibles de inmediato, como dinero en caja, depósitos bancarios, cheques y equivalentes altamente líquidos (por ejemplo, bonos a corto plazo). Abreviatura: CCE. Sinónimos: activos líquidos, tesorería, caja | cash and equivalents. Immediately available liquid assets such as cash on hand, bank deposits, checks, and highly liquid equivalents (e.g., short-term bonds). Abbreviation: CCE (Cash and Cash Equivalents). Synonyms: liquid assets, treasury, cash holdings.",
+            "Total activos corrientes": "Suma total de todos los activos que se espera que se conviertan en efectivo, se vendan o consuman en el curso normal del negocio en un año fiscal. Incluye efectivo y equivalentes, cuentas por cobrar, inventarios y otros activos corrientes. | total current assets. Total sum of all assets expected to be converted into cash, sold, or consumed within the normal operating cycle, typically within one fiscal year. Includes cash and equivalents, receivables, inventories, and other current assets.",
+            "Activos corrientes": "Bienes y derechos que se convertirán en efectivo o se consumirán en un año fiscal, excluyendo efectivo. Incluye cuentas por cobrar, inventarios, anticipos. Sinónimos: activos circulantes secundarios, activos corrientes varios | current assets. Short-term assets expected to be realized or consumed within a fiscal year, excluding cash. Includes receivables, inventories, and advances. Synonyms: secondary current assets, non-cash current assets.",
+            "Activos fijos, netos": "Bienes tangibles de uso prolongado en la empresa, como maquinaria, terrenos, edificios, vehículos, menos la depreciación acumulada. Abreviatura: PP&E (Property, Plant, and Equipment). Sinónimos: inmovilizado neto, activos físicos netos |fixed assets. Long-term tangible assets used in business operations, such as machinery, land, buildings, vehicles, net of accumulated depreciation. Abbreviation: PP&E. Synonyms: net fixed assets, net tangible assets.",
+            "Otros activos no corrientes": "Recursos de la empresa con vencimiento superior a un año que no son inmovilizado. Ejemplos: inversiones a largo plazo, activos intangibles (marcas, patentes), activos por impuestos diferidos. | other non current assets. Company resources with a maturity of more than one year that are not fixed assets. Examples include long-term investments, intangible assets (brands, patents), and deferred tax assets.",
+            "Total activos no corrientes": "Suma de todos los activos a largo plazo de una empresa. Incluye activos fijos netos, inversiones a largo plazo, activos intangibles y activos por impuestos diferidos. | total non current assets. Total sum of all long-term assets held by a company. Includes net fixed assets, long-term investments, intangible assets, and deferred tax assets.",
+            "Total activos": "Suma de todos los activos de la empresa, tanto corrientes como no corrientes. Representa todo lo que la empresa posee y controla con valor económico. | total assets. Total of all company assets, both current and non-current. Represents everything the company owns and controls that has economic value.",
+            "Deuda financiera": "Pasivos provenientes de préstamos bancarios, bonos emitidos o líneas de crédito con intereses. Puede ser de corto o largo plazo. Abreviatura: FD. Sinónimos: pasivo financiero, obligaciones de crédito | Liabilities arising from bank loans, issued bonds, or interest-bearing credit lines. Can be short or long term. Abbreviation: FD (Financial Debt). Synonyms: financial liabilities, credit obligations.",
+            "Pasivos corrientes": "Obligaciones que deben pagarse en el próximo año fiscal. Incluyen cuentas por pagar, salarios, impuestos, parte corriente de la deuda. Sinónimos: obligaciones a corto plazo, pasivos inmediatos | current financial debt. Obligations due within the next fiscal year. Includes accounts payable, wages, taxes, and current portion of debt. Synonyms: short-term obligations, current liabilities.",
+            "Otros pasivos corrientes": "Obligaciones diversas de corto plazo no clasificadas como deuda financiera. Ejemplos: pasivos acumulados, provisiones operativas. | other current liabilities. Various short-term obligations not classified as financial debt. Examples: accrued liabilities, operating provisions.",
+            "Total pasivos corrientes": "Suma total de todas las obligaciones financieras y no financieras que deben pagarse dentro del año fiscal. | total current liabilities. Total sum of all financial and non-financial obligations due within one fiscal year.",
+            "Deuda financiera no corriente": "Es solo una parte de los pasivos no corrientes. Se refiere específicamente a préstamos, créditos u otras formas de financiamiento que la empresa debe pagar en un plazo mayor a un año. | Non-current financial debt. This is only a portion of non-current liabilities. It refers specifically to loans, credits, or other forms of financing that the company must repay within a period of more than one year.",
+            "Otros pasivos no corrientes": "Pasivos no corrientes, obligaciones financieras o contingentes de largo plazo superior a un año no incluidas en deuda principal. Ejemplos: pasivos por impuestos diferidos, obligaciones por pensiones, litigios pendientes. | other non current liabilities. Long-term financial or contingent obligations not included in primary debt. Examples: deferred tax liabilities, pension obligations, pending litigation.",
+            "Total pasivos no corrientes": "Suma total de todas las deudas y obligaciones con vencimiento superior a un año. | Total of all debts and obligations due in more than one year.",
+            "Total de pasivos": "Suma de los pasivos corrientes y no corrientes. Representa todas las obligaciones financieras y operativas de la empresa. | total liabilities. Sum of current and non-current liabilities. Represents all financial and operational obligations of the company.",
+            "Tarjetas de credito": "Pasivo financiero corriente generado por el uso de líneas de crédito proporcionadas por entidades emisoras de tarjetas. Puede tener altos intereses si no se paga en el periodo de gracia. | Credit cards. Current financial liability arising from the use of credit lines provided by card issuers. Often bears high interest if not paid within the grace period.",
+            "Capital": "También conocido como capital social. Representa la inversión directa de los propietarios en la empresa, incluyendo aportes iniciales y ampliaciones de capital. | capital. Also known as share capital or equity capital. It represents the owners' direct investment in the company, including initial and additional contributions.",
+            "Ganancias": "Resultado neto después de deducir todos los gastos operativos, financieros y tributarios. Incluye utilidades retenidas. | earnings. Net result after deducting all operating, financial, and tax expenses. Includes retained earnings.",
+            "Otras reservas": "Parte del patrimonio acumulado por decisiones internas o legales. Incluye reservas legales, voluntarias y estatutarias generadas por resultados anteriores. | other_reserves. Portion of equity set aside based on internal or legal decisions. Includes legal, voluntary, and statutory reserves created from past profits.",
+            "Patrimonio total": "Suma total del capital, utilidades retenidas y otras reservas. Representa el valor contable que pertenece a los accionistas. | total equity. Total sum of capital, retained earnings, and other reserves. Represents the book value that belongs to shareholders.",
+            "Utilidades retenidas": "Ganancias acumuladas que no han sido distribuidas a los accionistas como dividendos y se reinvierten en la empresa. | Retained earnings.Accumulated profits not distributed as dividends, instead reinvested into the business.",
+            "Resultado del ejercicio": "Ganancia o pérdida neta obtenida por la empresa durante el último año fiscal. Refleja el desempeño financiero reciente. | Result of the exercise. Net profit or loss earned by the company during the last fiscal year. Reflects recent financial performance.",
+            "Patrimonio total y pasivos": "Suma del total de pasivos más el patrimonio total. Debe ser igual al total de activos, según el principio contable de partida doble. | total equity and liabilities. Sum of total liabilities and total equity. Must equal total assets, according to the accounting principle of double-entry bookkeeping.",
+        },
+    },
+    "Estado de resultados": {
+        "descripcion": "Conocido también como estado de ingresos, estado de pérdidas y ganancias o estado de operaciones, es un informe financiero clave que detalla los ingresos, gastos, ganancias y pérdidas de una empresa durante un periodo de tiempo específico (mensual, trimestral, anual). Proporciona una visión clara del desempeño financiero operativo, permitiendo a los inversores, directivos y analistas evaluar la rentabilidad y la eficiencia operativa. | Also known as the income statement, profit and loss statement, or statement of operations, it is a key financial report that details a company’s revenues, expenses, profits, and losses over a specific period of time (monthly, quarterly, annual). It provides a clear view of operational financial performance, allowing investors, managers, and analysts to evaluate profitability and operational efficiency.",
+        "terminos": {
+            "Ingresos": "Total de ventas o servicios prestados antes de deducir gastos. Es la base principal para calcular la rentabilidad y analizar el volumen de operaciones. Abreviatura: Rev. Sinónimos: ventas, facturación, ingresos brutos | Total revenue from sales or services before expenses are deducted. It is the main basis for calculating profitability and analyzing business volume. Abbreviation: Rev. Synonyms: sales, turnover, gross revenue.",
+            "Ingresos netos": "Ingresos totales menos descuentos, devoluciones y bonificaciones. Refleja el ingreso real percibido por ventas efectivas. | Net revenue equals total revenue minus discounts, returns, and allowances. It reflects the actual income received from effective sales.",
+            "Ingresos brutos": "Ingresos sin deducción de ningún gasto o costo. Representa el valor total generado por las operaciones. | Gross revenue is the total income generated from operations before any deductions for costs or expenses.",
+            "Ingresos operacionales": "Ingresos generados por la actividad principal del negocio, excluyendo ingresos extraordinarios o no recurrentes. | Operating revenue refers to income generated from the company’s core business activities, excluding extraordinary or non-recurring income.",
+            "Ingresos por intereses": "Ganancias obtenidas por inversiones en instrumentos financieros como bonos, cuentas de ahorro o préstamos otorgados. | Interest income is earnings derived from investments in financial instruments such as bonds, savings accounts, or loans issued.",
+            "Ingresos financieros": "Todos los ingresos relacionados con instrumentos financieros, incluyendo intereses, dividendos y ganancias por diferencias de tipo de cambio. | Financial income encompasses all earnings from financial instruments, including interest, dividends, and exchange rate gains.",
+            "Costo de bienes vendidos, COGS": "Costos directos atribuibles a la producción o adquisición de los bienes vendidos, como materias primas y mano de obra directa. Abreviatura: COGS. Sinónimos: costo de ventas, costo directo | Direct costs attributable to the production or acquisition of goods sold, such as raw materials and direct labor. Abbreviation: COGS. Synonyms: cost of sales, direct cost.",
+            "Engranajes": "No es un término estándar en contabilidad financiera en este contexto. Posiblemente se refiere a 'apalancamiento financiero' o a mecanismos internos operativos. Especificar contexto para aclaración. | Not a standard financial accounting term in this context. It might refer to 'financial leverage' or internal operational mechanisms. Specify context for clarification.",
+            "Gastos de venta, generales y administrativos, SG&A": "Costos indirectos no atribuibles a la producción, tales como marketing, sueldos administrativos, alquileres, servicios y suministros. Abreviatura: SG&A. Sinónimos: gastos operativos, gastos indirectos | Indirect costs not directly tied to production, such as marketing, administrative salaries, rent, utilities, and supplies. Abbreviation: SG&A. Synonyms: overhead, operating expenses.",
+            "Amortización de depreciación": "No es una expresión estándar. Podría tratarse de la 'amortización y depreciación', que son cargos contables que reflejan la pérdida de valor de activos tangibles e intangibles. | Not a standard term; likely refers to 'amortization and depreciation,' which are accounting charges reflecting the loss of value in tangible and intangible assets.",
+            "EBIT": "Ganancia antes de intereses e impuestos. Mide la rentabilidad operativa sin considerar el costo de la deuda ni impuestos. Es útil para comparar el desempeño entre empresas con diferentes estructuras financieras. | Earnings Before Interest and Taxes. Measures operating profitability without considering debt costs or taxes. Useful for comparing performance across companies with different financial structures.",
+            "EBITDA": "Ganancia antes de intereses, impuestos, depreciación y amortización. Indicador común de la capacidad operativa de una empresa antes de gastos contables y financieros. | Earnings Before Interest, Taxes, Depreciation, and Amortization. A common indicator of a company’s operating performance before accounting and financial expenses.",
+            "Gastos financieros": "Costos relacionados con el financiamiento de la empresa, como intereses de préstamos o líneas de crédito. | Expenses related to the company’s financing, such as interest on loans or credit lines.",
+            "Otros gastos de ingresos": "Gastos o ingresos que no están directamente relacionados con la operación principal del negocio, como ventas de activos o multas. | Other income and expenses not directly related to core business operations, such as asset sales or fines.",
+            "Ganancia y pérdida por cambio": "Diferencias generadas por la conversión de monedas extranjeras debido a fluctuaciones del tipo de cambio. | Gains and losses arising from the conversion of foreign currencies due to exchange rate fluctuations.",
+            "Ganancia antes de impuestos": "Ganancia obtenida antes de aplicar los impuestos sobre la renta. Refleja el rendimiento económico neto previo a obligaciones fiscales. | Profit earned before applying income taxes. Reflects net economic performance before tax obligations.",
+            "Utilidad bruta": "Diferencia entre ingresos netos y costo de bienes vendidos. Mide la eficiencia en producción y comercialización. | Difference between net revenue and cost of goods sold. Measures efficiency in production and marketing.",
+            "Beneficio bruto": "Sinónimo de utilidad bruta. | Synonym of gross profit.",
+            "Utilidad neta": "Resultado final después de todos los ingresos, costos, gastos, intereses e impuestos. Es el beneficio total que obtiene la empresa. | Final result after all income, costs, expenses, interest, and taxes. It is the total profit the company earns.",
+            "Impuestos": "Carga fiscal que la empresa debe pagar al Estado, usualmente sobre sus ganancias. Incluye impuesto a la renta, IVA, entre otros. | Tax burden the company must pay to the State, usually on its earnings. Includes income tax, VAT, among others.",
+            "Depreciación": "Reducción contable del valor de activos tangibles por uso, desgaste o envejecimiento. No representa salida directa de efectivo. | Accounting reduction of tangible asset value due to use, wear, or aging. It does not represent a direct cash outflow.",
+            "Amortización": "Distribución gradual del costo de activos intangibles o deuda a lo largo del tiempo. Aplica a elementos como patentes, marcas, software o préstamos. | Gradual allocation of the cost of intangible assets or debt over time. Applies to items such as patents, trademarks, software, or loans.",
+        },
+    },
+}
+
+route = r"C:\Users\grupo\OneDrive\Escritorio\MyWacc\ocr\test\map\map_test.json"
+with open(route, "w", encoding="utf-8") as f:
+    json.dump(financial_terms, f, ensure_ascii=False, indent=4)
