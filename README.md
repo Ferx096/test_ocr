@@ -45,13 +45,21 @@ python3 rag_balance_pipeline.py --input_pdf document/estados_financieros__pdf_93
 
 Este diagrama describe el flujo de trabajo para categorizar términos financieros utilizando técnicas de búsqueda semántica, incluyendo coincidencias difusas, embeddings y modelos de lenguaje.
 
+```mermaid
+graph TD;
+    A-->B;
+    A-->C;
+    B-->D;
+    C-->D;
+```
+
 
 ```mermaid
 flowchart TD
-    A["Término de entrada\n(\"caja bancaria\")"]
-    A --> B["TermMatcher\nFuzzy + Embedding Matching\n(OpenAI)"]
+    A["Término de entrada<br>(\"caja bancaria\")"]
+    A --> B["TermMatcher<br>Fuzzy + Embedding Matching<br>(OpenAI)"]
     B --> C{"¿Coincidencia encontrada?"}
     C -- Sí --> D["Categoría asignada\nEj.: Activo Corriente"]
-    C -- No --> E["GlossaryRAG\nSemantic Search\n(MiniLM)"]
+    C -- No --> E["GlossaryRAG\nSemantic Search<br>(MiniLM)"]
     E --> F["Términos similares sugeridos\nEj.: \"efectivo y equivalentes\""]
 ```
