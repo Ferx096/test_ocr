@@ -1,0 +1,868 @@
+# Balance general
+
+## estructura_ejemplo
+
+    - Activo corriente: Efectivo y equivalentes, Cuentas por cobrar, Inventarios, Otros activos corrientes, Total activos corrientes
+    - Activo no corriente: Activos fijos, netos, Otros activos no corrientes, Total activos no corrientes
+    - Total activos: Suma de activos corrientes y no corrientes
+    - Pasivo corriente: Deuda financiera (corto plazo), Tarjetas de crédito, Otros pasivos corrientes, Total pasivos corrientes
+    - Pasivo no corriente: Deuda financiera no corriente, Otros pasivos no corrientes, Total pasivos no corrientes
+    - Total pasivos: Suma de pasivos corrientes y no corrientes
+    - Patrimonio: Capital, Ganancias, Otras reservas, Utilidades retenidas, Resultado del ejercicio, Patrimonio total
+    - Total pasivos y patrimonio: Suma del total de pasivos más el patrimonio total
+## descripcion
+
+    - Es un reporte financiero que muestra lo que tiene y debe una empresa en un momento específico. Se divide en: activos (lo que posee), pasivos (lo que debe) y patrimonio (lo que le pertenece a los dueños). Es como una fotografía de un momento puntual y refleja la situación financiera de la empresa. También conocido como balance de situación, estado de situación financiera, balance sheet, statement of financial position.
+## estructura
+
+### ejemplo
+
+#### activos
+
+##### activos_corrientes
+
+###### nombre
+
+            - Efectivo y equivalentes
+###### categoria
+
+            - activos
+###### subcategoria
+
+            - activos corrientes
+###### sinonimos
+
+            - Caja y bancos
+            - Cash and equivalents
+            - Activos líquidos
+            - Tesorería
+            - Dinero en caja
+            - Fondos disponibles
+###### descripcion
+
+            - Activos líquidos disponibles de inmediato, como dinero en caja, depósitos bancarios, cheques y equivalentes altamente líquidos (por ejemplo, bonos a corto plazo).
+###### patrones
+
+            - efectivo
+            - cash
+            - fondos disponibles
+            - caja y bancos
+            - activos líquidos
+###### ejemplos
+
+            - Efectivo y equivalentes $1,000,000
+            - Cash and equivalents 500,000
+            - Caja y bancos 200,000
+###### nombre
+
+            - Cuentas por cobrar
+###### categoria
+
+            - activos
+###### subcategoria
+
+            - activos corrientes
+###### sinonimos
+
+            - Clientes por cobrar
+            - Accounts receivable
+            - Deudores comerciales
+            - Facturas pendientes
+###### descripcion
+
+            - Derechos de cobro a clientes por ventas a crédito o servicios prestados aún no pagados.
+###### patrones
+
+            - cuentas? por cobrar
+            - accounts receivable
+            - clientes por cobrar
+            - deudores comerciales
+###### ejemplos
+
+            - Cuentas por cobrar $500,000
+            - Accounts receivable 300,000
+            - Clientes por cobrar 100,000
+###### nombre
+
+            - Inventarios
+###### categoria
+
+            - activos
+###### subcategoria
+
+            - activos corrientes
+###### sinonimos
+
+            - Existencias
+            - Stocks
+            - Inventories
+            - Mercaderías
+###### descripcion
+
+            - Bienes destinados a la venta o a la producción de bienes para la venta.
+###### patrones
+
+            - inventarios
+            - stocks
+            - existencias
+            - mercaderías
+            - inventories
+###### ejemplos
+
+            - Inventarios $200,000
+            - Stocks 150,000
+            - Existencias 50,000
+###### nombre
+
+            - Otros activos corrientes
+###### categoria
+
+            - activos
+###### subcategoria
+
+            - activos corrientes
+###### sinonimos
+
+            - Otros activos circulantes
+            - Other current assets
+            - Anticipos
+            - Pagos anticipados
+###### descripcion
+
+            - Activos de corto plazo no clasificados en otras cuentas, como anticipos y pagos adelantados.
+###### patrones
+
+            - otros activos corrientes
+            - other current assets
+            - anticipos
+            - pagos anticipados
+            - activos circulantes
+###### ejemplos
+
+            - Otros activos corrientes $80,000
+            - Other current assets 40,000
+            - Anticipos 10,000
+###### nombre
+
+            - Total activos corrientes
+###### categoria
+
+            - activos
+###### subcategoria
+
+            - activos corrientes
+###### sinonimos
+
+            - Suma de activos corrientes
+            - Total current assets
+            - Suma de todos los activos líquidos
+###### descripcion
+
+            - Suma de todos los activos que se espera convertir en efectivo, vender o consumir en el ciclo operativo normal.
+###### patrones
+
+            - total activos corrientes
+            - suma de activos corrientes
+            - total current assets
+###### ejemplos
+
+            - Total activos corrientes $1,500,000
+            - Total current assets 1,200,000
+##### activos_no_corrientes
+
+###### nombre
+
+            - Activos fijos, netos
+###### categoria
+
+            - activos
+###### subcategoria
+
+            - activos no corrientes
+###### sinonimos
+
+            - Inmovilizado neto
+            - Fixed assets, net
+            - PP&E
+            - Activos físicos netos
+            - Propiedad, planta y equipo
+###### descripcion
+
+            - Bienes tangibles de uso prolongado, como maquinaria, terrenos, edificios, vehículos, menos la depreciación acumulada.
+###### patrones
+
+            - activos fijos
+            - fixed assets
+            - inmovilizado neto
+            - pp&e
+            - propiedad, planta y equipo
+###### ejemplos
+
+            - Activos fijos, netos $900,000
+            - Fixed assets, net 700,000
+            - PP&E 500,000
+###### nombre
+
+            - Otros activos no corrientes
+###### categoria
+
+            - activos
+###### subcategoria
+
+            - activos no corrientes
+###### sinonimos
+
+            - Activos a largo plazo
+            - Other non-current assets
+            - Activos intangibles
+            - Inversiones a largo plazo
+###### descripcion
+
+            - Recursos con vencimiento superior a un año que no son inmovilizado, como inversiones a largo plazo, activos intangibles y activos por impuestos diferidos.
+###### patrones
+
+            - otros activos no corrientes
+            - other non-current assets
+            - activos a largo plazo
+            - activos intangibles
+            - inversiones a largo plazo
+###### ejemplos
+
+            - Otros activos no corrientes $300,000
+            - Other non-current assets 200,000
+            - Inversiones a largo plazo 100,000
+###### nombre
+
+            - Total activos no corrientes
+###### categoria
+
+            - activos
+###### subcategoria
+
+            - activos no corrientes
+###### sinonimos
+
+            - Suma de activos no corrientes
+            - Total non-current assets
+            - Suma de todos los activos a largo plazo
+###### descripcion
+
+            - Suma de todos los activos a largo plazo de una empresa.
+###### patrones
+
+            - total activos no corrientes
+            - suma de activos no corrientes
+            - total non-current assets
+###### ejemplos
+
+            - Total activos no corrientes $2,000,000
+            - Total non-current assets 1,800,000
+##### total_activos
+
+###### nombre
+
+            - Total activos
+###### categoria
+
+            - activos
+###### subcategoria
+
+            - total activos 
+###### sinonimos
+
+            - Total de activos
+            - Suma de activos corrientes y no corrientes
+            - Total assets
+###### descripcion
+
+            - Suma de todos los activos de la empresa, tanto corrientes como no corrientes.
+###### patrones
+
+            - suma de activos corrientes y no corrientes
+            - total assets
+            - total de activos
+            - total activos
+###### ejemplos
+
+            - Total activos $3,500,000
+            - Total assets 3,000,000
+###### relaciones
+
+            - Total activos corrientes
+            - Total activos no corrientes
+#### pasivos
+
+##### pasivos_corrientes
+
+###### nombre
+
+            - Deuda financiera (corto plazo)
+###### sinonimos
+
+            - Préstamos bancarios a corto plazo
+            - Financial debt (short term)
+            - Obligaciones financieras corrientes
+###### descripcion
+
+            - Pasivos provenientes de préstamos bancarios, bonos emitidos o líneas de crédito con intereses a corto plazo.
+###### categoria
+
+            - pasivos
+###### subcategoria
+
+            - pasivos corrientes
+###### patrones
+
+            - deuda financiera (corto plazo)
+            - financial debt (short term)
+            - préstamos bancarios a corto plazo
+            - obligaciones financieras corrientes
+###### ejemplos
+
+            - Deuda financiera (corto plazo) $100,000
+            - Deuda financiera (corto plazo) 50,000
+            - Préstamos bancarios a corto plazo 25,000
+###### nombre
+
+            - Tarjetas de crédito
+###### sinonimos
+
+            - Crédito bancario
+            - Credit cards
+            - Líneas de crédito comerciales
+###### descripcion
+
+            - Pasivo financiero corriente generado por el uso de líneas de crédito proporcionadas por entidades emisoras de tarjetas.
+###### categoria
+
+            - pasivos
+###### subcategoria
+
+            - pasivos corrientes
+###### patrones
+
+            - credit cards
+            - crédito bancario
+            - tarjetas de crédito
+            - líneas de crédito comerciales
+###### ejemplos
+
+            - Tarjetas de crédito $100,000
+            - Tarjetas de crédito 50,000
+            - Crédito bancario 25,000
+###### idioma
+
+            - es
+###### nombre
+
+            - Otros pasivos corrientes
+###### sinonimos
+
+            - Otras obligaciones a corto plazo
+            - Other current liabilities
+            - Provisiones operativas
+###### descripcion
+
+            - Obligaciones diversas de corto plazo no clasificadas como deuda financiera.
+###### categoria
+
+            - pasivos
+###### subcategoria
+
+            - pasivos corrientes
+###### patrones
+
+            - otros pasivos corrientes
+            - otras obligaciones a corto plazo
+            - provisiones operativas
+            - other current liabilities
+###### ejemplos
+
+            - Otros pasivos corrientes $100,000
+            - Otros pasivos corrientes 50,000
+            - Otras obligaciones a corto plazo 25,000
+##### total_pasivos_corrientes
+
+###### nombre
+
+            - Total pasivos corrientes
+###### sinonimos
+
+            - Total current liabilities
+            - Suma de pasivos corrientes
+            - Obligaciones a corto plazo totales
+###### descripcion
+
+            - Suma total de todas las obligaciones financieras y no financieras que deben pagarse dentro del año fiscal.
+###### categoria
+
+            - pasivos
+###### subcategoria
+
+            - total pasivos corrientes
+###### patrones
+
+            - total current liabilities
+            - suma de pasivos corrientes
+            - obligaciones a corto plazo totales
+###### relaciones
+
+            - Total pasivos corrientes
+            - Total pasivos no corrientes
+###### ejemplos
+
+            - Total pasivos corrientes $100,000
+            - Total pasivos corrientes 50,000
+            - Total current liabilities 25,000
+##### pasivos_no_corrientes
+
+###### nombre
+
+            - Deuda financiera no corriente
+###### sinonimos
+
+            - Préstamos bancarios a largo plazo
+            - Non-current financial debt
+            - Obligaciones financieras a largo plazo
+###### descripcion
+
+            - Préstamos, créditos u otras formas de financiamiento que la empresa debe pagar en un plazo mayor a un año.
+###### categoria
+
+            - pasivos
+###### subcategoria
+
+            - total pasivos no corrientes
+###### patrones
+
+            - préstamos bancarios a largo plazo
+            - deuda financiera no corriente
+            - non-current financial debt
+            - obligaciones financieras a largo plazo
+###### ejemplos
+
+            - Deuda financiera no corriente $100,000
+            - Deuda financiera no corriente 50,000
+            - Préstamos bancarios a largo plazo 25,000
+###### nombre
+
+            - Otros pasivos no corrientes
+###### sinonimos
+
+            - Otras obligaciones a largo plazo
+            - Other non-current liabilities
+            - Pasivos por impuestos diferidos
+###### descripcion
+
+            - Obligaciones financieras o contingentes de largo plazo superior a un año no incluidas en deuda principal.
+###### categoria
+
+            - pasivos
+###### subcategoria
+
+            - total pasivos no corrientes
+###### patrones
+
+            - other non-current liabilities
+            - otros pasivos no corrientes
+            - otras obligaciones a largo plazo
+            - pasivos por impuestos diferidos
+###### ejemplos
+
+            - Otros pasivos no corrientes $100,000
+            - Otros pasivos no corrientes 50,000
+            - Otras obligaciones a largo plazo 25,000
+###### nombre
+
+            - Total pasivos no corrientes
+###### sinonimos
+
+            - Suma de pasivos no corrientes
+            - Total non-current liabilities
+            - Obligaciones a largo plazo totales
+###### descripcion
+
+            - Suma total de todas las deudas y obligaciones con vencimiento superior a un año.
+###### categoria
+
+            - pasivos
+###### subcategoria
+
+            - total pasivos no corrientes
+###### patrones
+
+            - obligaciones a largo plazo totales
+            - suma de pasivos no corrientes
+            - total non-current liabilities
+            - total pasivos no corrientes
+###### ejemplos
+
+            - Total pasivos no corrientes $100,000
+            - Total pasivos no corrientes 50,000
+            - Suma de pasivos no corrientes 25,000
+##### total_pasivos
+
+###### nombre
+
+            - Total de pasivos
+###### sinonimos
+
+            - Suma de pasivos corrientes y no corrientes
+            - Total pasivos
+            - Total liabilities
+###### descripcion
+
+            - Suma de los pasivos corrientes y no corrientes. Representa todas las obligaciones financieras y operativas de la empresa.
+###### categoria
+
+            - pasivos
+###### subcategoria
+
+            - total pasivos
+###### patrones
+
+            - total pasivos
+            - suma de pasivos corrientes y no corrientes
+            - total liabilities
+###### ejemplos
+
+            - Total de pasivos $100,000
+            - Total de pasivos 50,000
+            - Suma de pasivos corrientes y no corrientes 25,000
+#### patrimonio
+
+##### nombre
+
+          - Capital
+##### sinonimos
+
+          - Aportes de los propietarios
+          - Capital social
+          - Equity capital
+          - Cap. social
+          - Capital contable
+          - Share capital
+##### descripcion
+
+          - Representa la inversión directa de los propietarios en la empresa, incluyendo aportes iniciales y ampliaciones de capital.
+##### categoria
+
+          - patrimonio
+##### patrones
+
+          - capital social
+          - equity capital
+          - cap. social
+          - cap\.? social
+          - capital contable
+          - share capital
+          - aportes de los propietarios
+##### ejemplos
+
+          - Capital $100,000
+          - Capital 50,000
+          - Aportes de los propietarios 25,000
+##### nombre
+
+          - Ganancias
+##### sinonimos
+
+          - Profits
+          - Utilidades
+          - Earnings
+          - Beneficios
+##### descripcion
+
+          - Resultado neto después de deducir todos los gastos operativos, financieros y tributarios.
+##### categoria
+
+          - patrimonio
+##### patrones
+
+          - profits
+          - beneficios
+          - earnings
+          - utilidades
+##### ejemplos
+
+          - Ganancias $100,000
+          - Ganancias 50,000
+          - Profits 25,000
+##### nombre
+
+          - Otras reservas
+##### sinonimos
+
+          - Reservas legales
+          - Other reserves
+          - Reservas voluntarias
+          - Reservas estatutarias
+##### descripcion
+
+          - Parte del patrimonio acumulado por decisiones internas o legales.
+##### categoria
+
+          - patrimonio
+##### patrones
+
+          - reservas legales
+          - reservas estatutarias
+          - reservas voluntarias
+          - other reserves
+##### ejemplos
+
+          - Otras reservas $100,000
+          - Otras reservas 50,000
+          - Reservas legales 25,000
+##### nombre
+
+          - Utilidades retenidas
+##### sinonimos
+
+          - Retained earnings
+          - Ganancias retenidas
+          - Reservas acumuladas
+##### descripcion
+
+          - Ganancias acumuladas que no han sido distribuidas a los accionistas como dividendos y se reinvierten en la empresa.
+##### categoria
+
+          - patrimonio
+##### patrones
+
+          - ganancias retenidas
+          - retained earnings
+          - reservas acumuladas
+##### ejemplos
+
+          - Utilidades retenidas $100,000
+          - Utilidades retenidas 50,000
+          - Retained earnings 25,000
+##### nombre
+
+          - Resultado del ejercicio
+##### sinonimos
+
+          - Resultado anual
+          - Resultado neto del periodo
+          - Net income of the period
+##### descripcion
+
+          - Ganancia o pérdida neta obtenida por la empresa durante el último año fiscal.
+##### categoria
+
+          - patrimonio
+##### patrones
+
+          - net income of the period
+          - resultado neto del periodo
+          - resultado anual
+##### ejemplos
+
+          - Resultado del ejercicio $100,000
+          - Resultado del ejercicio 50,000
+          - Resultado anual 25,000
+##### nombre
+
+          - Patrimonio total
+##### sinonimos
+
+          - Suma de patrimonio
+          - Valor neto contable
+          - Total equity
+##### descripcion
+
+          - Suma total del capital, utilidades retenidas y otras reservas.
+##### categoria
+
+          - patrimonio
+##### patrones
+
+          - suma de patrimonio
+          - valor neto contable
+          - total equity
+##### ejemplos
+
+          - Patrimonio total $100,000
+          - Patrimonio total 50,000
+          - Suma de patrimonio 25,000
+##### nombre
+
+          - Total pasivos y patrimonio
+##### sinonimos
+
+          - Total de recursos propios y ajenos
+          - Suma de pasivos y patrimonio
+          - Total liabilities and equity
+##### descripcion
+
+          - Suma del total de pasivos más el patrimonio total. Debe ser igual al total de activos.
+##### categoria
+
+          - patrimonio
+##### patrones
+
+          - suma de pasivos y patrimonio
+          - total de recursos propios y ajenos
+          - total liabilities and equity
+##### relaciones
+
+          - Total de pasivos
+          - Patrimonio total
+##### ejemplos
+
+          - Total pasivos y patrimonio $100,000
+          - Total pasivos y patrimonio 50,000
+          - Total de recursos propios y ajenos 25,000
+# Estado de resultados
+
+## estructura_ejemplo
+
+    - Ingresos por ventas, Otros ingresos operativos, Costo de ventas, Utilidad bruta, Gastos de administración, Gastos de ventas, Gastos financieros, Utilidad operativa, Utilidad antes de impuestos, Impuestos sobre la renta, Utilidad neta
+## descripcion
+
+    - Reporte financiero que muestra los ingresos, costos y gastos de una empresa durante un periodo determinado, reflejando el resultado neto (utilidad o pérdida). También conocido como estado de pérdidas y ganancias, income statement, profit and loss statement.
+## estructura
+
+### ejemplo
+
+#### ingresos
+
+##### nombre
+
+          - Ingresos por ventas
+##### sinonimos
+
+          - Ventas netas
+          - Net sales
+          - Revenue
+          - Ingresos operativos
+##### descripcion
+
+          - Total de ingresos obtenidos por la venta de bienes o servicios, menos devoluciones y descuentos.
+##### nombre
+
+          - Otros ingresos operativos
+##### sinonimos
+
+          - Ingresos extraordinarios
+          - Other operating income
+          - Ingresos no recurrentes
+##### descripcion
+
+          - Ingresos derivados de actividades distintas a la operación principal, como alquileres, regalías o comisiones.
+#### costos
+
+##### nombre
+
+          - Costo de ventas
+##### sinonimos
+
+          - Coste de ventas
+          - Cost of goods sold
+          - COGS
+          - Costo de los productos vendidos
+##### descripcion
+
+          - Costo directo de los bienes o servicios vendidos durante el periodo.
+#### gastos
+
+##### nombre
+
+          - Gastos de administración
+##### sinonimos
+
+          - Gastos administrativos
+          - Administrative expenses
+          - Gastos de gestión
+##### descripcion
+
+          - Gastos relacionados con la gestión y administración general de la empresa.
+##### nombre
+
+          - Gastos de ventas
+##### sinonimos
+
+          - Gastos comerciales
+          - Selling expenses
+          - Gastos de distribución
+##### descripcion
+
+          - Gastos asociados a la comercialización y distribución de los productos o servicios.
+##### nombre
+
+          - Gastos financieros
+##### sinonimos
+
+          - Costos financieros
+          - Financial expenses
+          - Intereses pagados
+##### descripcion
+
+          - Gastos derivados de intereses y otros costos relacionados con financiamiento.
+#### utilidad_bruta
+
+##### nombre
+
+          - Utilidad bruta
+##### sinonimos
+
+          - Beneficio bruto
+          - Gross profit
+          - Resultado bruto
+##### descripcion
+
+          - Diferencia entre ingresos por ventas y costo de ventas.
+#### utilidad_operativa
+
+##### nombre
+
+          - Utilidad operativa
+##### sinonimos
+
+          - Resultado operativo
+          - Operating profit
+          - EBIT
+##### descripcion
+
+          - Resultado después de restar gastos operativos a la utilidad bruta.
+#### utilidad_antes_impuestos
+
+##### nombre
+
+          - Utilidad antes de impuestos
+##### sinonimos
+
+          - Resultado antes de impuestos
+          - Profit before tax
+          - Earnings before tax
+##### descripcion
+
+          - Resultado antes de deducir el gasto por impuestos.
+#### impuestos
+
+##### nombre
+
+          - Impuestos sobre la renta
+##### sinonimos
+
+          - Gasto por impuestos
+          - Income tax expense
+          - ISR
+##### descripcion
+
+          - Monto de impuestos sobre la renta causados en el periodo.
+#### utilidad_neta
+
+##### nombre
+
+          - Utilidad neta
+##### sinonimos
+
+          - Resultado neto
+          - Net income
+          - Beneficio neto
+          - Pérdida neta
+##### descripcion
+
+          - Resultado final después de restar todos los gastos e impuestos a los ingresos totales.
