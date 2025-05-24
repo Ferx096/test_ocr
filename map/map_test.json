@@ -215,7 +215,6 @@
               "Total activos $3,500,000",
               "Total assets 3,000,000"
             ],
-            "idioma": "es",
             "relaciones": [
               "Total activos corrientes",
               "Total activos no corrientes"
@@ -243,8 +242,7 @@
                 "Deuda financiera (corto plazo) $100,000",
                 "Deuda financiera (corto plazo) 50,000",
                 "Préstamos bancarios a corto plazo 25,000"
-              ],
-              "idioma": "es"
+              ]
             },
             {
               "nombre": "Tarjetas de crédito",
@@ -287,8 +285,7 @@
                 "Otros pasivos corrientes $100,000",
                 "Otros pasivos corrientes 50,000",
                 "Otras obligaciones a corto plazo 25,000"
-              ],
-              "idioma": "es"
+              ]
             }
           ],
           "total_pasivos_corrientes": {
@@ -305,7 +302,6 @@
               "suma de pasivos corrientes",
               "obligaciones a corto plazo totales"
             ],
-            "idioma": "es",
             "relaciones": [
               "Total pasivos corrientes",
               "Total pasivos no corrientes"
@@ -336,8 +332,7 @@
                 "Deuda financiera no corriente $100,000",
                 "Deuda financiera no corriente 50,000",
                 "Préstamos bancarios a largo plazo 25,000"
-              ],
-              "idioma": "es"
+              ]
             },
             {
               "nombre": "Otros pasivos no corrientes",
@@ -358,8 +353,7 @@
                 "Otros pasivos no corrientes $100,000",
                 "Otros pasivos no corrientes 50,000",
                 "Otras obligaciones a largo plazo 25,000"
-              ],
-              "idioma": "es"
+              ]
             },
             {
               "nombre": "Total pasivos no corrientes",
@@ -380,8 +374,7 @@
                 "Total pasivos no corrientes $100,000",
                 "Total pasivos no corrientes 50,000",
                 "Suma de pasivos no corrientes 25,000"
-              ],
-              "idioma": "es"
+              ]
             }
           ],
           "total_pasivos": {
@@ -398,7 +391,6 @@
               "suma de pasivos corrientes y no corrientes",
               "total liabilities"
             ],
-            "idioma": "es",
             "ejemplos": [
               "Total de pasivos $100,000",
               "Total de pasivos 50,000",
@@ -428,7 +420,6 @@
               "share capital",
               "aportes de los propietarios"
             ],
-            "idioma": "es",
             "ejemplos": [
               "Capital $100,000",
               "Capital 50,000",
@@ -451,7 +442,6 @@
               "earnings",
               "utilidades"
             ],
-            "idioma": "es",
             "ejemplos": [
               "Ganancias $100,000",
               "Ganancias 50,000",
@@ -474,7 +464,6 @@
               "reservas voluntarias",
               "other reserves"
             ],
-            "idioma": "es",
             "ejemplos": [
               "Otras reservas $100,000",
               "Otras reservas 50,000",
@@ -495,7 +484,6 @@
               "retained earnings",
               "reservas acumuladas"
             ],
-            "idioma": "es",
             "ejemplos": [
               "Utilidades retenidas $100,000",
               "Utilidades retenidas 50,000",
@@ -516,7 +504,6 @@
               "resultado neto del periodo",
               "resultado anual"
             ],
-            "idioma": "es",
             "ejemplos": [
               "Resultado del ejercicio $100,000",
               "Resultado del ejercicio 50,000",
@@ -537,7 +524,6 @@
               "valor neto contable",
               "total equity"
             ],
-            "idioma": "es",
             "ejemplos": [
               "Patrimonio total $100,000",
               "Patrimonio total 50,000",
@@ -558,7 +544,6 @@
               "total de recursos propios y ajenos",
               "total liabilities and equity"
             ],
-            "idioma": "es",
             "relaciones": [
               "Total de pasivos",
               "Patrimonio total"
