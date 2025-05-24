@@ -41,3 +41,17 @@ python3 rag_balance_pipeline.py --input_pdf document/estados_financieros__pdf_93
 - Se unificará el idioma a español en variables, funciones y prompts.
 - Se ampliarán los tests para cubrir los módulos principales.
 
+## Diagrama de flujo de búsqueda semántica
+
+Este diagrama describe el flujo de trabajo para categorizar términos financieros utilizando técnicas de búsqueda semántica, incluyendo coincidencias difusas, embeddings y modelos de lenguaje.
+
+
+```mermaid
+flowchart LR
+    A["Término de entrada<br>caja bancaria"];
+    A --> B["TermMatcher:<br>->Fuzzy +<br>->Embedding Matching<br>(OpenAI text-embedding-3-large"];
+    B --> C{"¿Coincidencia encontrada?<br>Score ≥ umbral"};
+    C -->|Yes| D["Categoría asignada<br>Ej: Activo Corriente"];
+    C -->|No| E["GlossaryRAG<br>->Embedding Matching <br>(all-MiniLM-L6-v2)"];
+    E --> F["Términos similares sugeridos<br>Ej: \"efectivo y equivalentes\""];
+```
