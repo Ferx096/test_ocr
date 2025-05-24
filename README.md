@@ -54,3 +54,4 @@ flowchart TD
     C -- Sí --> D["Categoría asignada\nEj.: Activo Corriente"]
     C -- No --> E["GlossaryRAG\nSemantic Search\n(MiniLM)"]
     E --> F["Términos similares sugeridos\nEj.: \"efectivo y equivalentes\""]
+```
