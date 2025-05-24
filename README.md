@@ -47,9 +47,9 @@ Este diagrama describe el flujo de trabajo para categorizar términos financiero
 
 ```mermaid
 flowchart TD
-    A[Término de entrada<br>("caja bancaria")]
-    A --> B[TermMatcher<br>Fuzzy + Embedding Matching<br>(OpenAI)]
-    B --> C{¿Coincidencia encontrada?}
-    C -- Sí --> D[Categoría asignada<br>Ej.: Activo Corriente]
-    C -- No --> E[GlossaryRAG<br>Semantic Search<br>(MiniLM)]
-    E --> F[Términos similares sugeridos<br>Ej.: "efectivo y equivalentes"]
+    A["Término de entrada\n(\"caja bancaria\")"]
+    A --> B["TermMatcher\nFuzzy + Embedding Matching\n(OpenAI)"]
+    B --> C{"¿Coincidencia encontrada?"}
+    C -- Sí --> D["Categoría asignada\nEj.: Activo Corriente"]
+    C -- No --> E["GlossaryRAG\nSemantic Search\n(MiniLM)"]
+    E --> F["Términos similares sugeridos\nEj.: \"efectivo y equivalentes\""]
