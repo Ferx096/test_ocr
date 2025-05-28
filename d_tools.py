@@ -2,7 +2,7 @@ import logging
 import re
 from dotenv import load_dotenv
 from langchain_core.tools import tool
-from langchain_core.messages import HumanMessage
+from langchain_core.messages import HumanMessage, add_messages
 from typing import Optional, Annotated
 from typing_extensions import TypedDict
 from b_embeddings import search_vectorestore
