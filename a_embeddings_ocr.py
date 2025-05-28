@@ -44,10 +44,10 @@ embedding = AzureOpenAIEmbeddings(
 logger.info(f"Azure embedding cargado")
 
 # cargar datos de guia
-url = r"C:\Users\grupo\OneDrive\Escritorio\MyWacc\ocr\test\map\map_test.json"
+url = "/workspaces/test_ocr/map/map_test.md"
 with open(url, encoding="utf-8") as f:
-    guia_data = json.load(f)
-logger.info(f"json de documento guia cargado")
+    guia_data = f.read()
+logger.info(f"Documento Markdown guia cargado")
 
 
 # ======================================
@@ -57,33 +57,28 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
 from langchain.schema import Document
 
-
 def embeddings_guia(guia_data: str):
-    # concatenar terminos del json
-    chunks_guie = []
-    for cat, content in guia_data.items():
-        description = content.get("description", "")  # obtener description
-        for termino, definicion in content.get(
-            "terminos", {}
-        ).items():  # obtener terminos
-            texto = f"{cat} - {termino}: {definicion}"
-            chunks_guie.append(texto)
-    logger.info(f"Documento de guia json listo para ser dividido")
+    """
+    Procesa un texto en formato Markdown y lo divide en fragmentos para embeddings.
+    Args:
+        guia_data (str): Contenido del archivo .md como string.
+    Returns:
+        List[Document]: Lista de objetos Document con metadatos.
+    """
+    logger.info("Documento de guía Markdown recibido para dividir")
 
-    # chunk-split de la guia de datos
+    # Inicializar el splitter
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=100, chunk_overlap=20)
-    docs = []
-    for texto in chunks_guie:
-        for chunk in text_splitter.split_text(texto):
-            docs.append(
-                Document(
-                    page_content=chunk,
-                    metadata={"fuente": "guia financiera"},
-                )
-            )
-    logger.info("Split aplicado individualmente y documentos creados con metadatos")
-
+    # Aplicar el split al texto completo
+    chunks = text_splitter.split_text(guia_data)
+    # Crear documentos con metadatos
+    docs = [
+        Document(page_content=chunk, metadata={"fuente": "guia financiera"})
+        for chunk in chunks
+    ]
+    logger.info("Split aplicado al documento completo y documentos creados con metadatos")
     return docs
+
 
 
 # ======================================
@@ -96,8 +91,6 @@ El objetivo principal de estas 3 funciones es:
 - Combinar el  documento guia + documento financiero con el objetivo de transformarlos a embeddings
 - Una vez creado el embedding, almacenarlo en un solo vector store listo para ser recuperados en consultas
 """
-
-
 def extract_text_from_pdf_azure(pdf_content: bytes):
     """
     Extrae texto de un PDF usando Azure Document Intelligence
