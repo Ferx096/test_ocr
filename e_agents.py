@@ -68,15 +68,38 @@ def node_company_info(State: State) -> Command[Literal["balance_sheet"]]:
     # obtener query del estado
     query = "Extrae el nombre, RUT y fecha de reporte de la empresa."
     # ejecutar el agente
-    response = agent_company_info.invoke([HumanMessage(content=query)])
+    response = agent_company_info.invoke({"content": query})
     logger.info(f"Agente de recuperacion de informacion de compañia ejecutado")
 
-    # Parsear la respuesta JSON
-    estructura_company = json.loads(response.content)
+    # Extraer el contenido de la respuesta de forma robusta
+    if isinstance(response, list):
+        if response and isinstance(response[0], dict) and 'content' in response[0]:
+            content_str = response[0]['content']
+        else:
+            content_str = str(response)
+    elif hasattr(response, 'content'):
+        content_str = response.content
+    else:
+        content_str = str(response)
+
+
+    # Validar y parsear la respuesta JSON
+    try:
+        estructura_company = json.loads(content_str)
+        logger.info("Respuesta del agente parseada como JSON correctamente")
+    except Exception as e:
+        logger.error(f"Error al parsear la respuesta del agente como JSON: {e}. Respuesta: {content_str}")
+        # Devolver un dict vacío para evitar fallos posteriores
+        estructura_company = {"company_name": None, "company_rut": None, "report_date": None}
+
 
     # Aplicar parse_number a cada valor dentro de cada bloque
-    def clean(d):
-        return {k: parse_company_info(v) for k, v in d.items()}
+    def clean(val):
+        if isinstance(val, dict):
+            return {k: parse_company_info(v) for k, v in val.items()}
+        elif isinstance(val, str):
+            return parse_company_info(val)
+        return None
 
     company_name = clean(estructura_company.get("company_name", {}))
     company_rut = clean(estructura_company.get("company_rut", {}))
@@ -95,7 +118,7 @@ def node_company_info(State: State) -> Command[Literal["balance_sheet"]]:
         goto=goto,
         update={
             # se usa solo content ya que es la respuesta del agente
-            "messages": [HumanMessage(content=response.content, name="company_info")],
+            "messages": [str(content_str)],
             # aqui se usa el diccionario result
             "nombre_compañia": company_name,
             "rut_compañia": company_rut,
@@ -146,8 +169,20 @@ def node_balance_sheet(state: State) -> Command[Literal["final"]]:
     # obtener query del estado
     query = f"Extrae los datos del balance general; activos, pasivos y patrimonio de la empresa {state['nombre_compañia']}. Dame tu respeusta en formato json"
     # ejecutar el agente
-    response = agent_balance_sheet.invoke([HumanMessage(content=query)])
-    texto = response.content
+    response = agent_balance_sheet.invoke({"content": query})
+    logger.info("Agente balance general")
+
+    # Extraer el contenido de la respuesta de forma robusta
+    if isinstance(response, dict) and 'messages' in response and response['messages']:
+        # Buscar el último mensaje tipo AIMessage con content no vacío
+        for msg in reversed(response['messages']):
+            if hasattr(msg, 'content') and msg.content:
+                texto = msg.content
+                break
+        else:
+            texto = str(response)
+    else:
+        texto = str(response)
     logger.info(f"Texto recuperado por agente principal.")
 
     # Usar LLM para evaluar inteligentemente el contenido
@@ -157,12 +192,14 @@ def node_balance_sheet(state: State) -> Command[Literal["final"]]:
     )
 
     # Parsear la rpta JSON conviertiendolo en un diccionario
-    estructura_balance = json.loads(
-        resultado_llm.content
-    )  # seguro si el JSON está limpio
-    logger.info(f"Json convertido a diccionario")
+    try:
+        estructura_balance = json.loads(resultado_llm.content)
+        logger.info(f"Json convertido a diccionario")
+    except Exception as e:
+        logger.error(f"Error al parsear la respuesta del balance como JSON: {e}. Respuesta: {resultado_llm.content}")
+        estructura_balance = {"activos": {}, "pasivos": {}, "patrimonio": {}}
 
-    # Aplicar parser_number a cada valor dentro de cada bloque
+    # Aplicar parse_number a cada valor dentro de cada bloque
     def clean_dict(d):
         return {e: parse_number(v) for e, v in d.items()}
 
@@ -203,7 +240,7 @@ def node_balance_sheet(state: State) -> Command[Literal["final"]]:
         update={
             # se usa solo content ya que es la respuesta del agente
             #"messages": {"balance_sheet": response.content}
-            "messages": [HumanMessage(content=response.content, name="balance_sheet")],
+            "messages": [str(content_str)],
             # aqui se usa el diccionario result
             "balance_general": [activos, pasivos, patrimonio],
             "next": goto,
