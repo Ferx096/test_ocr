@@ -2,12 +2,16 @@ from dotenv import load_dotenv
 import os
 import logging
 from langchain_core.messages import HumanMessage
-from b_embeddings import search_vectorestore
+from langgraph.types import Command
+from typing import Literal
+from langgraph.graph import StateGraph, END, MessagesState
 from datetime import datetime
-from f_config import get_llm
 from langsmith import utils
+from b_embeddings import search_vectorestore
+from f_config import get_llm
 from d_tools import State
 from d_tools import extract_company_info, parse_company_info, extract_balance_sheet, parse_number, sum_group, evaluate_balance_totals, extract_income_statement, agent_income_statement, agent_balance_sheet, agent_company_info
+
 #from g_main import vectore_storage
 # ======================================
 # CARAGR DATOS

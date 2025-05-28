@@ -1,11 +1,10 @@
 import logging
 from b_embeddings import search_vectorestore
-from e_agents import app
+
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
-app = app
 # ======================================
 # GRAPH VISUALIZATION
 # ======================================
@@ -35,16 +34,4 @@ with open("document/estados_financieros__pdf_93834000_202403.pdf", "rb") as f:
 #Guardar en el almacen de vectores para una busqueda optima
 vectore_storage = search_vectorestore(pdf_content, guia_data)
 
-# ======================================
-# TEST
-# ======================================
 
-test = {}
-def main():
-    # Ejemplo de consulta
-    query = app.invoke(test)
-    excel_bytes = query_test.get("excel_bytes")
-    return excel_bytes
-
-if __name__ == "__main__":
-    main()

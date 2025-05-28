@@ -1,6 +1,7 @@
 import logging
 import re
 from dotenv import load_dotenv
+from typing import Dict
 from langchain_core.tools import tool
 from langchain_core.messages import HumanMessage
 from typing import Optional, Annotated
@@ -12,6 +13,7 @@ from c_prompts import prompt_extract_company, prompt_balance_sheet, prompt_total
 from f_config import get_llm
 from f_config import get_embedding
 from g_main import vectore_storage
+from langgraph.prebuilt import create_react_agent
 
 load_dotenv()
 # configuracion de logging
