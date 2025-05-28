@@ -7,13 +7,15 @@ from langchain_core.messages import HumanMessage
 from typing import Optional, Annotated
 from langgraph.graph.message import add_messages
 from typing_extensions import TypedDict
-from b_embeddings import search_vectorestore
+from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
+from langgraph.prebuilt import create_react_agent
+from b_embeddings import search_vectorestore
 from c_prompts import prompt_extract_company, prompt_balance_sheet, prompt_total_balance, prompt_income_statement
 from f_config import get_llm
 from f_config import get_embedding
 from g_main import vectore_storage
-from langgraph.prebuilt import create_react_agent
+
 
 load_dotenv()
 # configuracion de logging
@@ -162,7 +164,7 @@ def evaluate_balance_totals(llm, texto_balance: str):
     Evalua la respuesta obtenida por el primer agente (el que obtiene el balance)
     En la evaluacion verifica si existe los totales o tiene que geerar su suma
     """
-    chain = prompt_total_balance | llm | StrOutputParser()
+    chain = PromptTemplate.from_template(prompt_total_balance) | llm | StrOutputParser()
     return chain.invoke({"balance_texto": texto_balance})
 
 
