@@ -2,7 +2,7 @@ import logging
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
 from langchain.schema import Document
-from e_config import get_embedding
+from f_config import get_embedding
 from a_ocr_extractor import concat_text
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")

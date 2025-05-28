@@ -3,9 +3,9 @@ import re
 from dotenv import load_dotenv
 from langchain_core.tools import tool
 from langchain_core.messages import HumanMessage
-from a_embeddings_ocr import search_vectorestore
+from b_embeddings import search_vectorestore
 from langchain_core.output_parsers import StrOutputParser
-from b_prompts import prompt_extract_company, prompt_balance_sheet, prompt_total_balance, prompt_income_statement
+from c_prompts import prompt_extract_company, prompt_balance_sheet, prompt_total_balance, prompt_income_statement
 
 
 load_dotenv()

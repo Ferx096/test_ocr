@@ -1,5 +1,5 @@
 import logging
-from d_agents import extract_company_info
+from e_agents import extract_company_info
 from b_embeddings import search_vectorestore
 from e_agents import app
 

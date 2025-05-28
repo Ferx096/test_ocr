@@ -2,7 +2,7 @@ import logging
 from dotenv import load_dotenv
 from azure.core.credentials import AzureKeyCredential
 from azure.ai.documentintelligence import DocumentIntelligenceClient
-from e_config import AZURE_CONFIG
+from f_config import AZURE_CONFIG
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.schema import Document
 import pandas as pd
