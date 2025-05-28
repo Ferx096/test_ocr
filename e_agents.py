@@ -3,7 +3,8 @@ import logging
 from langchain_core.messages import HumanMessage
 from b_embeddings import search_vectorestore
 from datetime import datetime
-from d_tools import State, extract_company_info, agent_company_info, parse_company_info, extract_balance_sheet, parse_number, sum_group, agent_balance_sheet, evaluate_balance_totals, pdf_content
+from d_tools import State
+from d_tools import extract_company_info, parse_company_info, extract_balance_sheet, parse_number, sum_group, evaluate_balance_totals, extract_income_statement, agent_income_statement, agent_balance_sheet, agent_company_info
 
 # ======================================
 # CARAGR DATOS
@@ -37,11 +38,6 @@ else:
 """Estructura de estado compartido entre agentes"""
 State = State
 
-# Caragar contenido
-pdf_content = pdf_content
-vectore_storage = search_vectorestore(pdf_content)
-logger.info(f"Almacenamiento de vectores listo")
-
 
 # ======================================
 # NODO DE INFORMACION DE LA COMPAÑIA
@@ -56,6 +52,8 @@ agent_company_info = agent_company_info
 # parser de info de compañia
 """Extrae informacion del valor del texto corrigiendo  valores innecesarios"""
 parse_company_info = parse_company_info
+
+extract_income_statement = extract_income_statement
 
 
 # NODO COMPANY

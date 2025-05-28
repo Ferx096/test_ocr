@@ -19,8 +19,6 @@ logger = logging.getLogger(__name__)
 # CARGAR DATOS
 # ======================================
 # llm
-from config import get_llm, get_embedding
-
 llm = get_llm()
 logger.info(f"Azure LLM cargado")
 embedding = get_embedding()
