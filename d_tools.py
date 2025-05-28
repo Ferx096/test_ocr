@@ -147,19 +147,12 @@ def parse_number(valor):
     except Exception:
         return None
 
-
 # Sumar valores en caso no exista suma:
 def sum_group(grupo: Dict[str, str]) -> float:
     """Suma los valores numéricos de un grupo de cuentas."""
     return sum(parse_number(e) for e in grupo.values())
-
-
 # agente
-agent_balance_sheet = create_react_agent(
-    llm, tools=[extract_balance_sheet], prompt=prompt_balance_sheet
-)
-
-
+agent_balance_sheet = create_react_agent(llm, tools=[extract_balance_sheet], prompt=prompt_balance_sheet)
 # evaluador de balance total
 def evaluate_balance_totals(llm, texto_balance: str):
     """
@@ -183,9 +176,7 @@ def extract_income_statement(query: str) -> str:
     results = vectore_storage.invoke(query)
     return "\n".join([doc.page_content for doc in results])
 
-
 # Se usara el mismo parse_number pdf balance general
-
 # agente de balance de resultados
 agent_income_statement = create_react_agent(
     llm, tools=[extract_income_statement], prompt=prompt_income_statement
