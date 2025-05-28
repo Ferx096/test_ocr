@@ -62,11 +62,9 @@ else:
 """Estructura de estado compartido entre agentes"""
 State = State
 
-# Usar vectore_storage directamente desde c_tools.py
-from c_tools import vectore_storage
-if vectore_storage is None:
-    logger.error("No se pudo inicializar el almacenamiento de vectores. El proceso se detiene.")
-    exit(1)
+# Caragar contenido
+pdf_content = pdf_content
+vectore_storage = search_vectorestore(pdf_content)
 logger.info(f"Almacenamiento de vectores listo")
 
 
@@ -86,76 +84,26 @@ parse_company_info = parse_company_info
 
 
 # NODO COMPANY
-def node_company_info(state: State) -> Command[Literal["balance_sheet"]]:
+def node_company_info(State: State) -> Command[Literal["balance_sheet"]]:
     """
     Nodo que tiene funcion de buscar nombre y rut de la empresa y la fecha del informe
     """
     # obtener query del estado
     query = "Extrae el nombre, RUT y fecha de reporte de la empresa."
     # ejecutar el agente
-    # Si el input es un dict plano, pásalo como tal
-    response = agent_company_info.invoke({"content": query})
-    print(f"DEBUG: response type: {type(response)}, value: {response}")
+    response = agent_company_info.invoke([HumanMessage(content=query)])
     logger.info(f"Agente de recuperacion de informacion de compañia ejecutado")
 
-    # Extraer el contenido de la respuesta de forma robusta
-    if isinstance(response, list):
-        if response and isinstance(response[0], dict) and 'content' in response[0]:
-            content_str = response[0]['content']
-        else:
-            content_str = str(response)
-    elif hasattr(response, 'content'):
-        content_str = response.content
-    else:
-        content_str = str(response)
+    # Parsear la respuesta JSON
+    estructura_company = json.loads(response.content)
 
-    # Validar y parsear la respuesta JSON
-    try:
-        estructura_company = json.loads(content_str)
-        logger.info("Respuesta del agente parseada como JSON correctamente")
-    except Exception as e:
-        logger.error(f"Error al parsear la respuesta del agente como JSON: {e}. Respuesta: {content_str}")
-        # Devolver un dict vacío para evitar fallos posteriores
-        estructura_company = {"company_name": None, "company_rut": None, "report_date": None}
+    # Aplicar parse_number a cada valor dentro de cada bloque
+    def clean(d):
+        return {k: parse_company_info(v) for k, v in d.items()}
 
-    # Aplicar parse_company_info a cada campo
-    def clean_field(val):
-        if isinstance(val, dict):
-            return {k: parse_company_info(v) for k, v in val.items()}
-        elif isinstance(val, str):
-            return parse_company_info(val)
-        return None
-
-    company_name = clean_field(estructura_company.get("company_name", ""))
-    if isinstance(company_name, dict):
-        company_name = next((v for v in company_name.values() if v), None)
-    company_rut = clean_field(estructura_company.get("company_rut", ""))
-    if isinstance(company_rut, dict):
-        company_rut = next((v for v in company_rut.values() if v), None)
-    report_date = clean_field(estructura_company.get("report_date", ""))
-    if isinstance(report_date, dict):
-        report_date = next((v for v in report_date.values() if v), None)
-
-    # Fallback si todo es vacío o "No especificado"
-    if not company_name or company_name.lower() == "no especificado":
-        from c_tools import fallback_parse_company_info
-        # Buscar texto plano original en la respuesta
-        texto_plano = None
-        if isinstance(response, dict) and 'messages' in response and response['messages']:
-            for msg in response['messages']:
-                if hasattr(msg, 'content') and msg.content:
-                    texto_plano = msg.content
-                    break
-        if not texto_plano:
-            texto_plano = str(response)
-        fallback = fallback_parse_company_info(texto_plano)
-        if fallback.get("company_name"):
-            company_name = fallback["company_name"]
-        if fallback.get("company_rut"):
-            company_rut = fallback["company_rut"]
-        if fallback.get("report_date"):
-            report_date = fallback["report_date"]
-
+    company_name = clean(estructura_company.get("company_name", {}))
+    company_rut = clean(estructura_company.get("company_rut", {}))
+    report_date = clean(estructura_company.get("report_date", {}))
     creacion_report = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     logger.info(f"Datos parseados")
 
@@ -169,7 +117,9 @@ def node_company_info(state: State) -> Command[Literal["balance_sheet"]]:
     return Command(
         goto=goto,
         update={
-            "messages": [str(content_str)],
+            # se usa solo content ya que es la respuesta del agente
+            "messages": [HumanMessage(content=response.content, name="company_info")],
+            # aqui se usa el diccionario result
             "nombre_compañia": company_name,
             "rut_compañia": company_rut,
             "fecha_reporte": report_date,
@@ -219,47 +169,21 @@ def node_balance_sheet(state: State) -> Command[Literal["final"]]:
     # obtener query del estado
     query = f"Extrae los datos del balance general; activos, pasivos y patrimonio de la empresa {state['nombre_compañia']}. Dame tu respeusta en formato json"
     # ejecutar el agente
-    response = agent_balance_sheet.invoke({"content": query})
-    # Extraer el contenido de la respuesta de forma robusta
-    if isinstance(response, dict) and 'messages' in response and response['messages']:
-        # Buscar el último mensaje tipo AIMessage con content no vacío
-        for msg in reversed(response['messages']):
-            if hasattr(msg, 'content') and msg.content:
-                texto = msg.content
-                break
-        else:
-            texto = str(response)
-    else:
-        texto = str(response)
+    response = agent_balance_sheet.invoke([HumanMessage(content=query)])
+    texto = response.content
     logger.info(f"Texto recuperado por agente principal.")
 
     # Usar LLM para evaluar inteligentemente el contenido
     resultado_llm = evaluate_balance_totals(llm, texto)
-    logger.info(f"Contenido enviado a evaluate_balance_totals: {texto}")
-
     logger.info(
         f"Evaluación de totales en el texto principal realizada: {resultado_llm}"
     )
 
     # Parsear la rpta JSON conviertiendolo en un diccionario
-    try:
-        # Extraer bloque JSON si la respuesta contiene texto adicional
-        import re
-        def extract_json_block(text):
-            # Busca bloque entre triple backticks y/o primer bloque {...}
-            match = re.search(r'```json[\s\n]*({[\s\S]*?})[\s\n]*```', text)
-            if match:
-                return match.group(1)
-            match = re.search(r'({[\s\S]*})', text)
-            if match:
-                return match.group(1)
-            return text
-        resultado_llm_json = extract_json_block(resultado_llm)
-        estructura_balance = json.loads(resultado_llm_json)
-        logger.info(f"Json convertido a diccionario")
-    except Exception as e:
-        logger.error(f"Error al parsear la respuesta del balance como JSON: {e}. Respuesta: {resultado_llm}")
-        estructura_balance = {"activos": {}, "pasivos": {}, "patrimonio": {}}
+    estructura_balance = json.loads(
+        resultado_llm.content
+    )  # seguro si el JSON está limpio
+    logger.info(f"Json convertido a diccionario")
 
     # Aplicar parser_number a cada valor dentro de cada bloque
     def clean_dict(d):
@@ -270,13 +194,6 @@ def node_balance_sheet(state: State) -> Command[Literal["final"]]:
     pasivos = clean_dict(estructura_balance.get("pasivos", {}))
     patrimonio = clean_dict(estructura_balance.get("patrimonio", {}))
     logger.info("Bloques parseados correctamente.")
-
-    # Heurística: si hay nulls, buscar en el texto los valores de cada cuenta
-    from c_tools import extract_account_values_from_text
-    activos = extract_account_values_from_text(texto, activos)
-    pasivos = extract_account_values_from_text(texto, pasivos)
-    patrimonio = extract_account_values_from_text(texto, patrimonio)
-    logger.info(f"Valores de cuentas extraídos por heurística: activos={activos}, pasivos={pasivos}, patrimonio={patrimonio}")
 
     # Trabajar los totales
     total_activos = (
@@ -300,18 +217,6 @@ def node_balance_sheet(state: State) -> Command[Literal["final"]]:
     pasivos["total_pasivos"] = total_pasivos
     patrimonio["total_patrimonio"] = total_patrimonio
     logger.info("Totales calculados y actualizados en los bloques.")
-    # Fallback: si los totales son 0 o None, buscar en el texto original
-    if (not total_activos or total_activos == 0) or (not total_pasivos or total_pasivos == 0) or (not total_patrimonio or total_patrimonio == 0):
-        from c_tools import fallback_parse_balance_totals
-        fallback = fallback_parse_balance_totals(str(texto))
-        if fallback.get("total_activos"):
-            activos["total_activos"] = fallback["total_activos"]
-        if fallback.get("total_pasivos"):
-            pasivos["total_pasivos"] = fallback["total_pasivos"]
-        if fallback.get("total_patrimonio"):
-            patrimonio["total_patrimonio"] = fallback["total_patrimonio"]
-        logger.info(f"Fallback de totales aplicado: {fallback}")
-
 
     goto = "final"
 
@@ -321,7 +226,7 @@ def node_balance_sheet(state: State) -> Command[Literal["final"]]:
         update={
             # se usa solo content ya que es la respuesta del agente
             #"messages": {"balance_sheet": response.content}
-            "messages": [texto],
+            "messages": [HumanMessage(content=response.content, name="balance_sheet")],
             # aqui se usa el diccionario result
             "balance_general": [activos, pasivos, patrimonio],
             "next": goto,
@@ -372,8 +277,7 @@ def node_final(state: State) -> Command[Literal["end"]]:
     logger.info("Dataframe concatenados")
 
     # Guardar todo en una sola hoja excel
-    safe_company_name = str(nombre_compañia or "desconocida").replace("/", "_").replace("\\", "_").replace(" ", "_")[:30]
-    name_filed = f"Balance_empresa_{safe_company_name}.xlsx"
+    name_filed = f"Balance_empresa_{nombre_compañia}.xlsx"
     with pd.ExcelWriter(name_filed, engine="openpyxl") as writer:
         empresa_info.to_excel(writer, index=False, sheet_name="Balance", startrow=0)
         df_balance_concat.to_excel(
@@ -385,7 +289,9 @@ def node_final(state: State) -> Command[Literal["end"]]:
     return Command(
         goto="end",
         update={
-            "messages": ["Excel generado correctamente"]
+            "messages": [
+                HumanMessage(content="Excel generado correctamente", name="final")
+            ]
         },
     )
 

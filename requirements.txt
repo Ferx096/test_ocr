@@ -11,4 +11,3 @@ ipython
 pandas
 tabulate
 pyppeteer
-openpyxl
