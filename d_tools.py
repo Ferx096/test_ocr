@@ -11,6 +11,7 @@ from langchain_core.output_parsers import StrOutputParser
 from c_prompts import prompt_extract_company, prompt_balance_sheet, prompt_total_balance, prompt_income_statement
 from f_config import get_llm
 from f_config import get_embedding
+from g_main import vectore_storage
 
 load_dotenv()
 # configuracion de logging
@@ -52,10 +53,9 @@ class State(TypedDict):
     balance_general: Optional[dict]
     next: Optional[str]
 
-
-vectore_storage = search_vectorestore(pdf_content)
-logger.info(f"Almacenamiento de vectores listo")
-
+#almacenamiento de vectores
+vectore_storage = vectore_storage
+#prompt
 prompt_extract_company = prompt_extract_company
 prompt_balance_sheet = prompt_balance_sheet
 prompt_total_balance = prompt_total_balance
