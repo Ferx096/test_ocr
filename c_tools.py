@@ -77,10 +77,7 @@ class State(TypedDict):
     next: Optional[str]
 
 
-with open(
-    r"C:\Users\grupo\OneDrive\Escritorio\MyWacc\ocr\document\estados_financieros__pdf_93834000_202403.pdf",
-    "rb",
-) as f:
+with open("/workspaces/test_ocr/document/estados_financieros__pdf_93834000_202403.pdf","rb",) as f:
     pdf_content = f.read()
 
 vectore_storage = search_vectorestore(pdf_content)
@@ -93,7 +90,7 @@ prompt_income_statement = prompt_income_statement
 
 
 # ======================================
-# AGENT COMPANY INFO
+# TOOLS COMPANY INFO
 # ======================================
 # crear tool de company info
 @tool
@@ -215,7 +212,7 @@ def extract_income_statement(query: str) -> str:
     return "\n".join([doc.page_content for doc in results])
 
 
-# Se usara el mismo parse_number pde balance general
+# Se usara el mismo parse_number pdf balance general
 
 # agente de balance de resultados
 agent_income_statement = create_react_agent(
