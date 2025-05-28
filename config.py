@@ -16,15 +16,15 @@ load_dotenv()
 AZURE_CONFIG = {
     "endpoint": os.getenv(
         "AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT",
-        "https://quillboot.cognitiveservices.azure.com/",
+        "https://asoxdoc.cognitiveservices.azure.com/"
     ),
     "api_key": os.getenv(
         "AZURE_DOCUMENT_INTELLIGENCE_KEY",
-        "E55fg4v8ZzwaRdgMTMcCm0D4ZEWT328USStQtzDLAaPfDaf3PjuVJQQJ99BBACYeBjFXJ3w3AAALACOGGbA9",
+        "4fl7ieA4uwJABfXmDcFlviVBPRQ6h5GlZyoSxKxup9St5x1XlIfLJQQJ99BEACYeBjFXJ3w3AAALACOGn9jy",
     ),
     "account_key": os.getenv(
         "ACCOUNT_KEY",
-        "6ymzKZ5BvE3BoQUcIZ6PW5OS+F2+Naqq0b+zintQO8fgYAB7wmJZjoGqmch2yutVgxHXQzX/pTf7+AStR7yfhg==",
+        "A5f2P34SQOM6yDuIw0xu0we1Hj08VLuIrIN2BCPYzA2NL7h5wDC7JQQJ99BEACYeBjFXJ3w3AAALACOGYKtB",
     ),
 }
 
