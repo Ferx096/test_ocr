@@ -3,10 +3,13 @@ import re
 from dotenv import load_dotenv
 from langchain_core.tools import tool
 from langchain_core.messages import HumanMessage
+from typing import Optional, Annotated
+from typing_extensions import TypedDict
 from b_embeddings import search_vectorestore
 from langchain_core.output_parsers import StrOutputParser
 from c_prompts import prompt_extract_company, prompt_balance_sheet, prompt_total_balance, prompt_income_statement
-
+from f_config import get_llm
+from f_config import get_embedding
 
 load_dotenv()
 # configuracion de logging
@@ -40,7 +43,6 @@ Se pretende crear 3 agentes jerargicos para obtener informacion valiosa
 
 class State(TypedDict):
     """Estructura de estado compartido entre agentes"""
-
     messages: Optional[Annotated[list[HumanMessage], add_messages]]
     nombre_compañia: Optional[str]
     rut_compañia: Optional[str]

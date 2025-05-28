@@ -1,8 +1,11 @@
 from dotenv import load_dotenv
+import os
 import logging
 from langchain_core.messages import HumanMessage
 from b_embeddings import search_vectorestore
 from datetime import datetime
+from f_config import get_llm
+from langsmith import utils
 from d_tools import State
 from d_tools import extract_company_info, parse_company_info, extract_balance_sheet, parse_number, sum_group, evaluate_balance_totals, extract_income_statement, agent_income_statement, agent_balance_sheet, agent_company_info
 
@@ -18,14 +21,10 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # llm
-from config import get_llm
-
 llm = get_llm()
 logger.info(f"Azure LLM cargado")
 
 # LANGSMIT
-from langsmith import utils
-
 LANGSMITH_ENDPOINT = os.getenv("LANGSMITH_ENDPOINT")
 LANGSMITH_API_KEY = os.getenv("LANGSMITH_API_KEY")
 LANGSMITH_PROJECT = os.getenv("LANGSMITH_PROJECT")
