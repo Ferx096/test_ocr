@@ -3,7 +3,7 @@ import re
 from dotenv import load_dotenv
 from langchain_core.tools import tool
 from langchain_core.messages import HumanMessage
-from typing import Optional, Annota
+from typing import Optional, Annotated
 from typing_extensions import TypedDict
 from b_embeddings import search_vectorestore
 from langchain_core.output_parsers import StrOutputParser
