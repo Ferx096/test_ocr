@@ -39,7 +39,7 @@ else:
 """Estructura de estado compartido entre agentes"""
 # State eliminado para simplificar el pipeline modular
 
-# Caragar contenido
+# Cargar contenido
 # pdf_content y vectore_storage serán gestionados desde f_main.py en la nueva estructura modular
 
 

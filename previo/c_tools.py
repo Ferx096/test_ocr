@@ -52,9 +52,6 @@ class State(TypedDict):
     next: Optional[str]
 
 
-with open("/workspaces/test_ocr/document/estados_financieros__pdf_93834000_202403.pdf","rb",) as f:
-    pdf_content = f.read()
-
 vectore_storage = search_vectorestore(pdf_content)
 logger.info(f"Almacenamiento de vectores listo")
 

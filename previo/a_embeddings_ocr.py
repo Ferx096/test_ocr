@@ -178,23 +178,7 @@ def concat_text(pdf_content):
         df = pd.DataFrame(matrix)
         tables_text += df.to_markdown(index=False) + "\n\n"
         logger.info(f"Tablas transformadas a formato markdown")
-    """
     
-    tables_text = ""
-    for table in result["tables_data"]:
-        df = (
-            pd.DataFrame(
-                {
-                    (cell["row_index"], cell["column_index"]): cell["content"]
-                    for cell in table
-                }
-            )
-            .unstack()
-            .fillna("")
-        )
-        tables_text += df.to_markdown(index=False) + "\n\n"
-    logger.info(f"Tablas transformadas a formato markdown")
-    """
     # concatenar texto y tablas
     concat_content = full_text + "\n\n" + tables_text
     logger.info(f"Texto de documento de usuario concatenado")

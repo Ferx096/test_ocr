@@ -3,6 +3,9 @@ from dotenv import load_dotenv
 from azure.core.credentials import AzureKeyCredential
 from azure.ai.documentintelligence import DocumentIntelligenceClient
 from e_config import AZURE_CONFIG
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.schema import Document
+import pandas as pd
 
 load_dotenv()
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -58,10 +61,10 @@ def extract_text_from_pdf_azure(pdf_content: bytes):
 def concat_text(pdf_content):
     """
     Convierte el texto y las tablas extraídas en markdown y las concatena.
+    Conserva el texto obtenido del diccionario y convierte en markdown las tablas
+    Se hace split al texto concatenado, de esta forma podra procesarlas para embedding
+    return = split (texto + tabla contetanado)
     """
-    from langchain.text_splitter import RecursiveCharacterTextSplitter
-    from langchain.schema import Document
-    import pandas as pd
     result = extract_text_from_pdf_azure(pdf_content)
     full_text = result["full_text"]
     tables_text = ""
@@ -72,9 +75,12 @@ def concat_text(pdf_content):
         for cell in table:
             row, col = cell["row_index"], cell["column_index"]
             matrix[row][col] = cell["content"]
+        #crear el df
         df = pd.DataFrame(matrix)
         tables_text += df.to_markdown(index=False) + "\n\n"
+    # concatenar texto y tablas
     concat_content = full_text + "\n\n" + tables_text
+    # split
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=100, chunk_overlap=20)
     chunks = text_splitter.split_text(concat_content)
     docs_finance = [Document(page_content=chunk) for chunk in chunks]
