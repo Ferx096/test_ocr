@@ -1,12 +1,6 @@
 from dotenv import load_dotenv
-import os
-import pandas as pd
-from langchain_openai import AzureChatOpenAI, AzureOpenAIEmbeddings
-from langchain_core.tools import tool
-import json
-import re
 import logging
-from datetime import datetime
+
 from azure.core.credentials import AzureKeyCredential
 from azure.ai.documentintelligence import DocumentIntelligenceClient
 from config import AZURE_CONFIG
@@ -25,22 +19,11 @@ logger = logging.getLogger(__name__)
 # CARGAR DATOS
 # ======================================
 # llm
-llm = AzureChatOpenAI(
-    api_key=os.getenv("AZURE_OPENAI_API_KEY"),
-    azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
-    api_version=os.getenv("OPENAI_API_VERSION"),
-    deployment_name=os.getenv("AZURE_OPENAI_CHAT_DEPLOYMENT_NAME"),
-    model_name="gpt-4",
-)
+from config import get_llm, get_embedding
 
+llm = get_llm()
 logger.info(f"Azure LLM cargado")
-
-embedding = AzureOpenAIEmbeddings(
-    api_version=os.getenv("OPENAI_EMBEDDING_API_VERSION"),
-    deployment=os.getenv("AZURE_OPENAI_EMBEDDING_DEPLOYMENT_NAME"),
-    api_key=os.getenv("AZURE_OPENAI_API_KEY"),
-    model="text-embedding-3-large",
-)
+embedding = get_embedding()
 logger.info(f"Azure embedding cargado")
 
 # cargar datos de guia

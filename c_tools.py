@@ -1,25 +1,11 @@
-from dotenv import load_dotenv
-import pandas as pd
 import logging
-import os
 import re
-import json
-from langchain_openai import AzureChatOpenAI, AzureOpenAIEmbeddings
-from langgraph.prebuilt import create_react_agent
-from langgraph.graph import StateGraph, MessagesState, START, END
-from langgraph.graph.message import add_messages
-from langgraph.types import Command
-from typing import Annotated, TypedDict, Literal, Dict, Optional, Union
+from dotenv import load_dotenv
 from langchain_core.tools import tool
-from langgraph.checkpoint.memory import MemorySaver
 from langchain_core.messages import HumanMessage
 from a_embeddings_ocr import search_vectorestore
 from langchain_core.output_parsers import StrOutputParser
-from langchain_core.prompts import ChatPromptTemplate
-from b_prompts import prompt_extract_company
-from b_prompts import prompt_balance_sheet
-from b_prompts import prompt_total_balance
-from b_prompts import prompt_income_statement
+from b_prompts import prompt_extract_company, prompt_balance_sheet, prompt_total_balance, prompt_income_statement
 
 
 load_dotenv()
@@ -33,22 +19,11 @@ logger = logging.getLogger(__name__)
 # CARGAR DATOS
 # ======================================
 # llm
-llm = AzureChatOpenAI(
-    api_key=os.getenv("AZURE_OPENAI_API_KEY"),
-    azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
-    api_version=os.getenv("OPENAI_API_VERSION"),
-    deployment_name=os.getenv("AZURE_OPENAI_CHAT_DEPLOYMENT_NAME"),
-    model_name="gpt-4",
-)
+from config import get_llm, get_embedding
 
+llm = get_llm()
 logger.info(f"Azure LLM cargado")
-
-embedding = AzureOpenAIEmbeddings(
-    api_version=os.getenv("OPENAI_EMBEDDING_API_VERSION"),
-    deployment=os.getenv("AZURE_OPENAI_EMBEDDING_DEPLOYMENT_NAME"),
-    api_key=os.getenv("AZURE_OPENAI_API_KEY"),
-    model="text-embedding-3-large",
-)
+embedding = get_embedding()
 logger.info(f"Azure embedding cargado")
 
 # ======================================

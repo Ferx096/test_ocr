@@ -12,23 +12,12 @@ logger = logging.getLogger(__name__)
 # Cargar variables de entorno
 load_dotenv()
 
-# Configuración de Azure Document Intelligence
+# Configuración centralizada de Azure
 AZURE_CONFIG = {
-    "endpoint": os.getenv(
-        "AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT",
-        "https://asoxdoc.cognitiveservices.azure.com/"
-    ),
-    "api_key": os.getenv(
-        "AZURE_DOCUMENT_INTELLIGENCE_KEY",
-        "4fl7ieA4uwJABfXmDcFlviVBPRQ6h5GlZyoSxKxup9St5x1XlIfLJQQJ99BEACYeBjFXJ3w3AAALACOGn9jy",
-    ),
-    "account_key": os.getenv(
-        "ACCOUNT_KEY",
-        "A5f2P34SQOM6yDuIw0xu0we1Hj08VLuIrIN2BCPYzA2NL7h5wDC7JQQJ99BEACYeBjFXJ3w3AAALACOGYKtB",
-    ),
+    "endpoint": os.getenv("AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT"),
+    "api_key": os.getenv("AZURE_DOCUMENT_INTELLIGENCE_KEY"),
 }
 
-# Configuración de Azure Blob Storage
 AZURE_BLOB_CONFIG = {
     "connection_string": os.getenv("AZURE_BLOB_CONNECTION_STRING"),
     "container_name": os.getenv("AZURE_BLOB_CONTAINER_NAME", "pdf"),
@@ -36,18 +25,26 @@ AZURE_BLOB_CONFIG = {
     "account_key": os.getenv("AZURE_BLOB_ACCOUNT_KEY"),
     "endpoint_suffix": os.getenv("AZURE_BLOB_ENDPOINT_SUFFIX", "core.windows.net"),
 }
+from langchain_openai import AzureChatOpenAI, AzureOpenAIEmbeddings
 
-# Configuración de Azure para autenticación
-AZURE_AUTH_CONFIG = {
-    "tenant_id": os.getenv("AZURE_TENANT_ID"),
-    "subscription_id": os.getenv("AZURE_SUBSCRIPTION_ID"),
-    "client_id": os.getenv("AZURE_CLIENT_ID"),
-    "client_secret": os.getenv("AZURE_CLIENT_SECRET"),
-    "authority_host": os.getenv(
-        "AZURE_AUTHORITY_HOST", "https://login.microsoftonline.com"
-    ),
-    "resource_group": os.getenv("AZURE_RESOURCE_GROUP"),
-}
+def get_llm():
+    return AzureChatOpenAI(
+        api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+        azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+        api_version=os.getenv("OPENAI_API_VERSION"),
+        deployment_name=os.getenv("AZURE_OPENAI_CHAT_DEPLOYMENT_NAME"),
+        model_name="gpt-4",
+    )
+
+def get_embedding():
+    return AzureOpenAIEmbeddings(
+        api_version=os.getenv("OPENAI_EMBEDDING_API_VERSION"),
+        deployment=os.getenv("AZURE_OPENAI_EMBEDDING_DEPLOYMENT_NAME"),
+        api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+        model="text-embedding-3-large",
+    )
+
+
 
 
 # Asegurarse de que AZURE_BLOB_CONFIG esté definido globalmente

@@ -1,30 +1,9 @@
 from dotenv import load_dotenv
 import logging
-import os
-import re
-import json
-from langchain_openai import AzureChatOpenAI, AzureOpenAIEmbeddings
-from langgraph.prebuilt import create_react_agent
-from langgraph.graph import StateGraph, MessagesState, START, END
-from langgraph.graph.message import add_messages
-from langgraph.types import Command
-from typing import Annotated, TypedDict, Literal, Dict, Optional, Union
-from langchain_core.tools import tool
-from langgraph.checkpoint.memory import MemorySaver
 from langchain_core.messages import HumanMessage
 from a_embeddings_ocr import search_vectorestore
-from langgraph.pregel import Pregel
 from datetime import datetime
-from c_tools import State
-from c_tools import extract_company_info
-from c_tools import agent_company_info
-from c_tools import parse_company_info
-from c_tools import extract_balance_sheet
-from c_tools import parse_number
-from c_tools import sum_group
-from c_tools import agent_balance_sheet
-from c_tools import evaluate_balance_totals
-from c_tools import pdf_content
+from c_tools import State, extract_company_info, agent_company_info, parse_company_info, extract_balance_sheet, parse_number, sum_group, agent_balance_sheet, evaluate_balance_totals, pdf_content
 
 # ======================================
 # CARAGR DATOS
@@ -38,13 +17,9 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # llm
-llm = AzureChatOpenAI(
-    api_key=os.getenv("AZURE_OPENAI_API_KEY"),
-    azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
-    api_version=os.getenv("OPENAI_API_VERSION"),
-    deployment_name=os.getenv("AZURE_OPENAI_CHAT_DEPLOYMENT_NAME"),
-    model_name="gpt-4",
-)
+from config import get_llm
+
+llm = get_llm()
 logger.info(f"Azure LLM cargado")
 
 # LANGSMIT
