@@ -11,8 +11,8 @@ from b_embeddings import search_vectorestore
 from f_config import get_llm
 from d_tools import State
 from d_tools import extract_company_info, parse_company_info, extract_balance_sheet, parse_number, sum_group, evaluate_balance_totals, extract_income_statement, agent_income_statement, agent_balance_sheet, agent_company_info
+from d_tools import prompt_total_balance_runneable
 
-#from g_main import vectore_storage
 # ======================================
 # CARAGR DATOS
 # ======================================
@@ -156,7 +156,6 @@ agent_balance_sheet = agent_balance_sheet
 Evalua la respuesta obtenida por el primer agente (el que obtiene el balance)
 En la evaluacion verifica si existe los totales o tiene que geerar su suma
 """
-evaluate_balance_totals = evaluate_balance_totals
 
 
 # NODO DE BALANCE GENERAL
@@ -186,7 +185,7 @@ def node_balance_sheet(state: State) -> Command[Literal["final"]]:
     logger.info(f"Texto recuperado por agente principal.")
 
     # Usar LLM para evaluar inteligentemente el contenido
-    resultado_llm = evaluate_balance_totals(llm, texto)
+    resultado_llm = evaluate_balance_totals(llm, texto, prompt_total_balance_runneable)
     logger.info(
         f"Evaluación de totales en el texto principal realizada: {resultado_llm}"
     )

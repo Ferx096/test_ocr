@@ -138,7 +138,9 @@ Para cada bloque, incluye los conceptos clave que pueden ser identificados entre
 {input}
 """
 
+
 prompt_total_balance = """
+
     Tu tarea es analizar la siguiente estructura JSON llamada `texto_balance`, que contiene ítems clasificados en tres bloques: **activos**, **pasivos** y **patrimonio**.
 
     Debes hacer una **búsqueda inteligente** dentro de cada bloque para identificar si ya existe un **total** correspondiente al grupo. Este total puede aparecer con distintos nombres, abreviaturas entre otros, como:
@@ -235,8 +237,8 @@ prompt_total_balance = """
     - Si ya existe un total mal nombrado (por ejemplo: "total del activo"), no lo elimines, solo añade el campo estándar con el mismo valor.
     - Asegúrate de mantener el formato JSON bien estructurado.
     - Tienes que devolver tu respuesta en formato JSON
-{input}
 """
+
 
 prompt_income_statement = """
 {input}

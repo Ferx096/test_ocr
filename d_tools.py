@@ -159,14 +159,25 @@ def sum_group(grupo: Dict[str, str]) -> float:
     return sum(parse_number(e) for e in grupo.values())
 # agente
 agent_balance_sheet = create_react_agent(llm, tools=[extract_balance_sheet], prompt=prompt_balance_sheet)
+
 # evaluador de balance total
-def evaluate_balance_totals(llm, texto_balance: str):
+from langchain_core.prompts import ChatPromptTemplate
+prompt_total_balance_runneable = ChatPromptTemplate.from_template(prompt_total_balance)
+
+def evaluate_balance_totals(llm, texto_balance, prompt_total_balance_runneable):
     """
     Evalua la respuesta obtenida por el primer agente (el que obtiene el balance)
     En la evaluacion verifica si existe los totales o tiene que geerar su suma
     """
-    chain = PromptTemplate.from_template(prompt_total_balance) | llm | StrOutputParser()
-    return chain.invoke({"balance_texto": texto_balance})
+    chain = prompt_total_balance_runneable | llm | StrOutputParser()
+    if isinstance(texto_balance, dict):
+        texto_balance_str = json.dumps(texto_balance, ensure_ascii=False)
+    else:
+        texto_balance_str = texto_balance
+    return chain.invoke({"balance_texto": texto_balance_str})
+
+
+
 
 
 # ======================================
