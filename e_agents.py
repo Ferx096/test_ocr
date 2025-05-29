@@ -297,15 +297,19 @@ def node_final(state: State) -> Command[Literal["end"]]:
         df_balance_concat.to_excel(
             writer, index=False, sheet_name="Balance", startrow=6
         )  # Empieza después de los datos de empresa
-
     logger.info(f"Archivo Excel generado exitosamente: {name_filed}")
+
+    # Leer el archivo como bytes
+    with open(name_filed, "rb") as f:
+        excel_bytes = f.read()
 
     return Command(
         goto="end",
         update={
             "messages": [
                 HumanMessage(content="Excel generado correctamente", name="final")
-            ]
+            ],
+            "excel_bytes": excel_bytes,  #bytes
         },
     )
 

@@ -56,6 +56,7 @@ class State(TypedDict):
     creacion_report: Optional[dict]
     balance_general: Optional[dict]
     next: Optional[str]
+    excel_bytes: Optional[bytes]
 
 #almacenamiento de vectores
 vectore_storage = vectore_storage
