@@ -60,6 +60,11 @@
    pip install -r requirements.txt
    ```
 3. (Opcional) Instala Tesseract OCR si tu sistema lo requiere:
+4. Instala dependencias de desarrollo (para testing):
+   ```bash
+   pip install -r requirements-dev.txt
+   ```
+
    - Ubuntu: `sudo apt-get install tesseract-ocr`
    - Windows: [Descargar instalador](https://github.com/tesseract-ocr/tesseract)
 
@@ -86,6 +91,11 @@ Asegúrate de que el archivo `.env` NO se suba al repositorio.
    python d_agents.py
    ```
 3. Los resultados se generan en archivos de salida (JSON/TXT) según la configuración.
+4. Para ejecutar todos los tests automatizados:
+   ```bash
+   pytest
+   ```
+   Esto buscará y ejecutará todos los tests en la carpeta `tests/`.
 
 ---
 
