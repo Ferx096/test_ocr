@@ -1,0 +1,33 @@
+# Python cache and compiled files
+__pycache__/
+*.pyc
+
+# Logs and result files
+*.log
+result.log
+result_tests.log
+
+# Debug and backup files
+ocr_debug_*.txt
+*.bak
+
+# Editor and OS files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment variables
+.env
+.env.*
+
+# Large or sensitive data (if not needed in repo)
+document/*.pdf
+
+documentos.pdf
+estados_financieros__pdf_93834000_202403.pdf
+
+# Ignore test artifacts
+map/*.bak
+map/__pycache__/
+previo/__pycache__/
