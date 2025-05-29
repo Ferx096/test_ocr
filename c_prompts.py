@@ -51,7 +51,6 @@ prompt_extract_company = """
     - Si la información es numérica o de formato específico (como una fecha), verificar que coincida con los estándares locales (e.g., formato RUT chileno).
     - Cuando devuelvas el valor del RUT, asegúrate de eliminar cualquier punto (.) o guion (-)  u otro carácter y devuelve únicamente los números en formato continuo. Ejemplo: "12.345.678-9" debe devolverse como "123456789".
     - No añadas texto adicional ni explicaciones. Devuelve solamente el JSON válido
-    {input}
 """
 
 
@@ -132,14 +131,16 @@ Para cada bloque, incluye los conceptos clave que pueden ser identificados entre
 # Notas
 - La salida debe ser únicamente un JSON válido, sin ningún texto antes o después.
 - Algunas entradas pueden ser nombradas ambiguamente o nombres abreviaso en el documento; en ese caso, asócialas al bloque correspondiente basado en su significado económico.
+"""
+Prompt para identificar y calcular los totales de cada bloque (activos, pasivos, patrimonio) en el balance.
+"""
 - Cada concepto debe tener un valor numerico asociado, de lo contrario no lo pongas.
 - Los valores numéricos que no incluyan comas ni espacios ni ningún carácter adicional que no sea numero 
 - Asegúrate de que todos los datos están clasificados bajo los bloques principales (activos, pasivos, o patrimonio).
-{input}
 """
 
 
-prompt_total_balance = """
+prompt_total_balance = '''
 
     Tu tarea es analizar la siguiente estructura JSON llamada `texto_balance`, que contiene ítems clasificados en tres bloques: **activos**, **pasivos** y **patrimonio**.
 
@@ -237,7 +238,7 @@ prompt_total_balance = """
     - Si ya existe un total mal nombrado (por ejemplo: "total del activo"), no lo elimines, solo añade el campo estándar con el mismo valor.
     - Asegúrate de mantener el formato JSON bien estructurado.
     - Tienes que devolver tu respuesta en formato JSON
-"""
+'''
 
 
 prompt_income_statement = """
