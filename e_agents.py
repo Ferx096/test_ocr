@@ -193,11 +193,22 @@ def node_balance_sheet(state: State) -> Command[Literal["final"]]:
 
     # Parsear la rpta JSON conviertiendolo en un diccionario
     try:
-        estructura_balance = json.loads(resultado_llm.content)
-        logger.info(f"Json convertido a diccionario")
+        # Detecta si resultado_llm es un objeto con `.content` o un string plano
+        if hasattr(resultado_llm, "content"):
+            content_str = resultado_llm.content
+        else:
+            content_str = resultado_llm
+        #verificar que no este vacio
+        if not content_str.strip():
+            raise ValueError("La respuesta del LLM está vacía. No se puede parsear como JSON.")
+
+        estructura_balance = json.loads(content_str)
+        logger.info("Respuesta del agente parseada como JSON correctamente")
+
     except Exception as e:
-        logger.error(f"Error al parsear la respuesta del balance como JSON: {e}. Respuesta: {resultado_llm.content}")
+        logger.error(f"Error al parsear la respuesta del balance como JSON: {e}. Respuesta: {content_str}")
         estructura_balance = {"activos": {}, "pasivos": {}, "patrimonio": {}}
+
 
     # Aplicar parse_number a cada valor dentro de cada bloque
     def clean_dict(d):
