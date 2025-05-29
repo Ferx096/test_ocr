@@ -17,7 +17,7 @@ def test_concat_text():
     assert isinstance(result, str)
 
 def test_search_vectorestore():
-    with open("document/estados_financieros__pdf_93834000_202403.pdf"pyt, "rb") as f:
+    with open("document/estados_financieros__pdf_93834000_202403.pdf", "rb") as f:
         pdf_bytes = f.read()
-    result = search_vectorestore(pdf_bytes)
+    result = search_vectorestore(pdpyf_bytes)
     assert result is not None
