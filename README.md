@@ -1,8 +1,28 @@
-# Explicación del Proyecto: test_ocr
+# test_ocr
 
-## ¿Qué es test_ocr?
+![Estado del proyecto](https://img.shields.io/badge/estado-en%20desarrollo-yellow)
+![Python](https://img.shields.io/badge/python-3.8%2B-blue)
+![Licencia](https://img.shields.io/badge/licencia-MIT-green)
+
+## Descripción
 
 **test_ocr** es una solución automatizada para extraer y analizar información financiera de documentos PDF escaneados, como balances y estados financieros. Utiliza tecnologías de OCR (Reconocimiento Óptico de Caracteres), modelos de lenguaje (LLM) y embeddings de Azure para transformar documentos no estructurados en datos estructurados y útiles.
+
+---
+
+## Tabla de Contenidos
+- [¿Para qué sirve?](#para-qué-sirve)
+- [Ejemplo de uso](#ejemplo-de-uso)
+- [Instalación y requisitos](#instalación-y-requisitos)
+- [Configuración](#configuración)
+- [Funcionamiento](#funcionamiento)
+- [Componentes principales](#componentes-principales)
+- [Solución de problemas](#solución-de-problemas)
+- [Contribución](#contribución)
+- [Licencia](#licencia)
+- [Contacto](#contacto)
+
+---
 
 ## ¿Para qué sirve?
 
@@ -10,12 +30,64 @@
 - Facilitar el análisis, reporte y reutilización de datos financieros.
 - Automatizar procesos que normalmente requieren revisión manual de documentos.
 
-## ¿Cómo funciona?
+---
 
-1. **Carga de documentos**: El usuario coloca los archivos PDF en la carpeta `document/`.
-2. **Procesamiento OCR**: El sistema convierte las imágenes de texto en texto digital.
-3. **Embeddings y LLM**: Se utilizan modelos de Azure para comprender el contexto y extraer información relevante.
-4. **Estructuración**: Los datos extraídos se organizan en formatos como JSON o TXT para su análisis posterior.
+## Ejemplo de uso
+
+### Entrada (PDF escaneado)
+
+    document/Yamas 2023 Balance Sheet.pdf
+
+### Salida (JSON generado)
+
+```json
+{
+  "empresa": "Ejemplo S.A.",
+  "anio": 2024,
+  "activo_total": 100000,
+  "pasivo_total": 50000,
+  "patrimonio": 50000
+}
+```
+
+---
+
+## Instalación y requisitos
+
+1. Python 3.8 o superior
+2. Instala las dependencias:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. (Opcional) Instala Tesseract OCR si tu sistema lo requiere:
+   - Ubuntu: `sudo apt-get install tesseract-ocr`
+   - Windows: [Descargar instalador](https://github.com/tesseract-ocr/tesseract)
+
+---
+
+## Configuración
+
+Crea un archivo `.env` en la raíz del proyecto con tus credenciales de Azure:
+
+```
+AZURE_OPENAI_KEY=tu_clave
+AZURE_OPENAI_ENDPOINT=tu_endpoint
+```
+
+Asegúrate de que el archivo `.env` NO se suba al repositorio.
+
+---
+
+## Funcionamiento
+
+1. Coloca los archivos PDF a procesar en la carpeta `document/`.
+2. Ejecuta el pipeline principal:
+   ```bash
+   python d_agents.py
+   ```
+3. Los resultados se generan en archivos de salida (JSON/TXT) según la configuración.
+
+---
 
 ## Componentes principales
 
@@ -26,26 +98,37 @@
 - `document/`: Carpeta de entrada para los PDFs.
 - `requirements.txt`: Lista de dependencias necesarias.
 
-## ¿Qué tecnologías utiliza?
+---
 
-- Python 3
-- Azure OpenAI (LLM y embeddings)
-- OCR (Reconocimiento Óptico de Caracteres)
-- Pandas para manipulación de datos
+## Solución de problemas
 
-## ¿Cómo se usa?
+- **Error: 'No se encuentra la variable AZURE_OPENAI_KEY'**
+  - Verifica que tu archivo `.env` esté correctamente configurado y en la raíz del proyecto.
+- **OCR no reconoce bien los números**
+  - Asegúrate de que el PDF tenga buena calidad. Considera preprocesar la imagen.
+- **Problemas de dependencias**
+  - Reinstala los paquetes con `pip install -r requirements.txt`.
 
-1. Instala las dependencias con `pip install -r requirements.txt`.
-2. Configura tus credenciales de Azure en un archivo `.env`.
-3. Coloca los PDFs a procesar en la carpeta `document/`.
-4. Ejecuta el pipeline con `python d_agents.py`.
-5. Revisa los resultados generados en los archivos de salida.
+---
 
-## Ventajas
+## Contribución
 
-- Ahorra tiempo y reduce errores humanos en la digitalización de datos financieros.
-- Modular y fácil de adaptar a otros tipos de documentos.
-- Escalable para grandes volúmenes de archivos.
+¡Las contribuciones son bienvenidas!
+
+1. Haz un fork del repositorio
+2. Crea una rama para tu feature o fix
+3. Haz tus cambios y commitea de forma descriptiva
+4. Haz push a tu rama y abre un Pull Request
+
+Por favor, sigue el estilo de código y documenta tus funciones.
+
+---
+
+## Licencia
+
+Este proyecto está bajo la Licencia MIT. Consulta el archivo LICENSE para más detalles.
+
+---
 
 ## Contacto
 
