@@ -174,23 +174,23 @@ prompt_total_balance = """
     La estructura final debe conservar todos los conceptos originales y añadir el total estandarizado al final de cada bloque:
 
     ```json
-    {
-        "activos": {
+    {{
+        "activos": {{
             "concepto_1": valor_1,
             "...": "...",
             "total_activos": valor_o_NO_ENCONTRADO
-        },
-        "pasivos": {
+        }},
+        "pasivos": {{
             "concepto_1": valor_1,
             "...": "...",
             "total_pasivos": valor_o_NO_ENCONTRADO
-        },
-        "patrimonio": {
+        }},
+        "patrimonio": {{
             "concepto_1": valor_1,
             "...": "...",
             "total_patrimonio": valor_o_NO_ENCONTRADO
-        }
-    }
+        }}
+    }}
 
     # Ejemplo de entrada:
 
