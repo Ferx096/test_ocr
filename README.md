@@ -1,76 +1,52 @@
-# test_ocr
+# Explicación del Proyecto: test_ocr
 
-## Descripción
+## ¿Qué es test_ocr?
 
-**test_ocr** es una herramienta para la extracción automatizada y análisis de información financiera desde documentos PDF escaneados, utilizando modelos de lenguaje (LLM) y embeddings de Azure. El objetivo es transformar documentos no estructurados (como balances y estados financieros) en datos estructurados y útiles para análisis o integración en otros sistemas.
+**test_ocr** es una solución automatizada para extraer y analizar información financiera de documentos PDF escaneados, como balances y estados financieros. Utiliza tecnologías de OCR (Reconocimiento Óptico de Caracteres), modelos de lenguaje (LLM) y embeddings de Azure para transformar documentos no estructurados en datos estructurados y útiles.
 
-## Características principales
+## ¿Para qué sirve?
 
-- Extracción OCR avanzada desde PDFs escaneados.
-- Uso de modelos de lenguaje y embeddings de Azure para mejorar la precisión.
-- Pipeline modular y fácil de adaptar a otros tipos de documentos.
-- Soporte para múltiples formatos de salida (JSON, TXT, etc.).
+- Digitalizar y estructurar información financiera contenida en PDFs escaneados.
+- Facilitar el análisis, reporte y reutilización de datos financieros.
+- Automatizar procesos que normalmente requieren revisión manual de documentos.
 
-## Diagrama de flujo
+## ¿Cómo funciona?
 
-```
-PDF -> OCR -> Embeddings -> LLM Extraction -> Datos estructurados (JSON/TXT)
-```
+1. **Carga de documentos**: El usuario coloca los archivos PDF en la carpeta `document/`.
+2. **Procesamiento OCR**: El sistema convierte las imágenes de texto en texto digital.
+3. **Embeddings y LLM**: Se utilizan modelos de Azure para comprender el contexto y extraer información relevante.
+4. **Estructuración**: Los datos extraídos se organizan en formatos como JSON o TXT para su análisis posterior.
 
-## Ejemplo de uso
+## Componentes principales
 
-Supón que tienes un PDF de un balance financiero. El sistema extraerá los datos clave y los convertirá en un archivo JSON estructurado, listo para análisis.
-
-## Instalación
-
-1. Clona el repositorio:
-   ```bash
-   git clone https://github.com/Ferx096/test_ocr.git
-   cd test_ocr
-   ```
-2. Instala las dependencias:
-   ```bash
-   pip install -r requirements.txt
-   ```
-3. Configura las variables de entorno necesarias en un archivo `.env` (ver sección de configuración).
-
-## Configuración
-
-Debes crear un archivo `.env` con tus credenciales de Azure y otros parámetros necesarios. Ejemplo:
-
-```
-AZURE_OPENAI_KEY=tu_clave
-AZURE_OPENAI_ENDPOINT=tu_endpoint
-...
-```
-
-Asegúrate de tener los archivos PDF en la carpeta `document/`.
-
-## Uso
-
-Ejecuta el pipeline principal con:
-```bash
-python d_agents.py
-```
-Los resultados se guardarán en archivos de salida en el formato especificado.
-
-## Estructura del repositorio
-
-- `a_embeddings_ocr.py`: Generación de embeddings y procesamiento OCR.
-- `d_agents.py`: Orquestador principal del pipeline.
+- `a_embeddings_ocr.py`: Procesa los PDFs y genera embeddings para mejorar la extracción.
+- `d_agents.py`: Orquesta el pipeline de procesamiento.
 - `f_config.py`: Configuración y credenciales de Azure.
-- `map/`: Utilidades para mapeo y pruebas.
-- `document/`: Carpeta donde colocar los PDFs a procesar.
-- `requirements.txt`: Dependencias del proyecto.
+- `map/`: Utilidades para pruebas y mapeo de términos.
+- `document/`: Carpeta de entrada para los PDFs.
+- `requirements.txt`: Lista de dependencias necesarias.
 
-## Contribución
+## ¿Qué tecnologías utiliza?
 
-¡Las contribuciones son bienvenidas! Por favor, abre un issue o un pull request para sugerencias o mejoras.
+- Python 3
+- Azure OpenAI (LLM y embeddings)
+- OCR (Reconocimiento Óptico de Caracteres)
+- Pandas para manipulación de datos
 
-## Licencia
+## ¿Cómo se usa?
 
-[MIT](LICENSE) (o la que corresponda)
+1. Instala las dependencias con `pip install -r requirements.txt`.
+2. Configura tus credenciales de Azure en un archivo `.env`.
+3. Coloca los PDFs a procesar en la carpeta `document/`.
+4. Ejecuta el pipeline con `python d_agents.py`.
+5. Revisa los resultados generados en los archivos de salida.
+
+## Ventajas
+
+- Ahorra tiempo y reduce errores humanos en la digitalización de datos financieros.
+- Modular y fácil de adaptar a otros tipos de documentos.
+- Escalable para grandes volúmenes de archivos.
 
 ## Contacto
 
-Para soporte o preguntas, contacta a ferx096@gmail.com o abre un issue en GitHub.
+Para dudas o soporte, contacta a ferx096@gmail.com o abre un issue en GitHub.
