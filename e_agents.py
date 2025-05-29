@@ -334,9 +334,3 @@ graph.add_edge("balance_sheet", "final")  # <-- Conexión
 graph.add_edge("final", "end")  # FIN
 
 app = graph.compile()
-
-
-
-
-
-
