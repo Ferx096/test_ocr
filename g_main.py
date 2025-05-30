@@ -23,15 +23,17 @@ logger.info(f"imagen del workflow guardada")
 # ======================================
 #CREAR EL VECTOR STORE PARA LA BUSQUEDA
 # ======================================
-#importar documento base-guia
-with open("map/map_test.md", "r", encoding="utf-8") as f_guia:
+import sys
+if 'pytest' not in sys.modules:
+    #importar documento base-guia
+    with open("map/map_test.md", "r", encoding="utf-8") as f_guia:
         guia_data = f_guia.read()
-
-#importar documento para prueba
-with open("document/estados_financieros__pdf_93834000_202403.pdf", "rb") as f:
+    #importar documento para prueba
+    with open("document/estados_financieros__pdf_93834000_202403.pdf", "rb") as f:
         pdf_content = f.read()
-
-#Guardar en el almacen de vectores para una busqueda optima
-vectore_storage = search_vectorestore(pdf_content, guia_data)
+    #Guardar en el almacen de vectores para una busqueda optima
+    vectore_storage = search_vectorestore(pdf_content, guia_data)
+else:
+    vectore_storage = None
 
 

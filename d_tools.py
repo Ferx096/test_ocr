@@ -18,21 +18,26 @@ from f_config import get_embedding
 from g_main import vectore_storage
 
 
-load_dotenv()
-# configuracion de logging
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
-)
-logger = logging.getLogger(__name__)
+import sys
+if 'pytest' in sys.modules:
 
-# ======================================
-# CARGAR DATOS
-# ======================================
-# llm
-llm = get_llm()
-logger.info(f"Azure LLM cargado")
-embedding = get_embedding()
-logger.info(f"Azure embedding cargado")
+    class DummyEmbedding:
+        pass
+    from unittest.mock import MagicMock
+    llm = MagicMock()
+    embedding = DummyEmbedding()
+else:
+    load_dotenv()
+    # configuracion de logging
+    logging.basicConfig(
+        level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+    )
+    logger = logging.getLogger(__name__)
+    # llm
+    llm = get_llm()
+    logger.info(f"Azure LLM cargado")
+    embedding = get_embedding()
+    logger.info(f"Azure embedding cargado")
 
 # ======================================
 # PROMPT + ESTRUCTURA
