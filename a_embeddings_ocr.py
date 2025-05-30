@@ -27,7 +27,7 @@ embedding = get_embedding()
 logger.info(f"Azure embedding cargado")
 
 # cargar datos de guia
-url = "./map/map_test.md"
+url = "/workspace/test_ocr/map/map_test.md"
 with open(url, encoding="utf-8") as f:
     guia_data = f.read()
 logger.info(f"Documento Markdown guia cargado")

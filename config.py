@@ -63,7 +63,13 @@ if not AZURE_BLOB_CONFIG["connection_string"]:
             "No se pudo construir connection_string, faltan account_name o account_key"
         )
 
+# Definir AZURE_AUTH_CONFIG antes de usarlo
+AZURE_AUTH_CONFIG = {
+    'tenant_id': os.getenv('AZURE_TENANT_ID', ''),
+    'subscription_id': os.getenv('AZURE_SUBSCRIPTION_ID', '')
+}
 # Registrar información de configuración
 logger.info(f"Azure Document Intelligence Endpoint: {AZURE_CONFIG['endpoint']}")
 logger.info(f"Azure Blob Storage Account: {AZURE_BLOB_CONFIG['account_name']}")
-
+logger.info(f"Azure Tenant ID: {AZURE_AUTH_CONFIG['tenant_id']}")
+logger.info(f"Azure Subscription ID: {AZURE_AUTH_CONFIG['subscription_id']}")

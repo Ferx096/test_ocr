@@ -2,7 +2,10 @@ import pytest
 from a_embeddings_ocr import embeddings_guia, extract_text_from_pdf_azure, concat_text, search_vectorestore
 
 def test_embeddings_guia():
-    assert isinstance(embeddings_guia("guia de prueba"), str)
+    result = embeddings_guia("guia de prueba")
+    from langchain.schema import Document
+    assert isinstance(result, list)
+    assert all(isinstance(doc, Document) for doc in result)
 
 def test_extract_text_from_pdf_azure():
     with open("document/estados_financieros__pdf_93834000_202403.pdf", "rb") as f:
