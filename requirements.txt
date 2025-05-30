@@ -12,3 +12,4 @@ pandas
 tabulate
 pyppeteer
 openpyxl
+azure-storage-blob
