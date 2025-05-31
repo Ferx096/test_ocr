@@ -35,3 +35,60 @@ def test_find_matches_in_ocr_basic():
         assert isinstance(m['value'], float)
         assert m['value'] > 0
 
+
+# Casos borde y robustez
+GUIDE_EDGE = """
+- Caja
+- Bancos
+- Cuentas por Cobrar
+- Inventario
+- Proveedores
+- Deudas Bancarias
+- Otros Pasivos
+"""
+
+OCR_EDGE = """
+CAJA 0
+BANCOS 1.000,50
+Cuentas por cobrar 0.00
+Inventario -123
+Proveedores 999.999,99
+Deudas Bancarias 0
+Otros Pasivos 123,45
+No relacionado 555
+"""
+
+def test_find_matches_in_ocr_edge_cases():
+    embedding = get_embedding()
+    guide_docs = embeddings_guia(GUIDE_EDGE)
+    matches = find_matches_in_ocr(OCR_EDGE, guide_docs, embedding=embedding, threshold_fuzzy=60, threshold_semantic=0.5, top_k=1)
+    # Debug: print all matches for inspection
+    print('MATCHES:', matches)
+    # Debe encontrar 7 matches válidos (sin "No relacionado")
+    assert len(matches) == 7
+    # Valores negativos y ceros deben ser float
+    for m in matches:
+        assert isinstance(m['value'], float)
+    # Inventario debe ser negativo
+    inv = [m for m in matches if 'inventario' in m['guia_chunk'].lower()][0]
+    assert inv['value'] < 0
+    # Bancos debe ser decimal
+    bancos = [m for m in matches if 'bancos' in m['guia_chunk'].lower()][0]
+    assert abs(bancos['value'] - 1000.50) < 0.01
+    # Proveedores debe ser float grande
+    prov = [m for m in matches if 'proveedores' in m['guia_chunk'].lower()][0]
+    assert prov['value'] > 900000
+
+# Exportación: simulación de estructura exportable
+import pandas as pd
+
+def test_export_matches_to_dataframe():
+    embedding = get_embedding()
+    guide_docs = embeddings_guia(GUIDE_MD)
+    matches = find_matches_in_ocr(OCR_TEXT, guide_docs, embedding=embedding, threshold_fuzzy=70, threshold_semantic=0.5, top_k=1)
+    df = pd.DataFrame(matches)
+    assert not df.empty
+    assert set(['guia_chunk', 'ocr_line', 'value']).issubset(df.columns)
+    # Los valores exportados deben ser numéricos
+    assert df['value'].apply(lambda x: isinstance(x, float)).all()
+

@@ -1,4 +1,5 @@
 import logging
+import sys
 from langchain_community.vectorstores import FAISS
 from langchain.schema import Document
 from rapidfuzz import fuzz
@@ -27,44 +28,70 @@ def find_matches_in_ocr(ocr_text, guide_docs, embedding=None, threshold_fuzzy=80
     results = []
     seen = set()
     for line in ocr_lines:
-        # 3. Buscar top_k matches semánticos
-        docs_and_scores = vectordb.similarity_search_with_score(line, k=top_k)
-        for doc, score in docs_and_scores:
-            # FAISS devuelve menor distancia = más similar; convertir a similitud coseno
-            sim = 1 - score if score <= 1 else 1/(1+score)
-            if sim < threshold_semantic:
-                continue
+        for doc in guide_docs:
             guia_chunk = doc.page_content
-            # 4. Fuzzy adicional para refinar
-            fuzzy_score = fuzz.token_set_ratio(guia_chunk.lower(), line.lower())
-            if fuzzy_score < threshold_fuzzy:
-                continue
-            # 5. Extracción robusta de valores numéricos (regex, normalización)
-            value = None
-            value_match = re.search(r'([-+]?[0-9]{1,3}(?:[.,][0-9]{3})*(?:[.,][0-9]+)?)', line)
-            if value_match:
-                raw = value_match.group(1)
-                norm = raw.replace('.', '').replace(',', '.') if raw.count(',') else raw.replace(',', '')
-                try:
-                    value = float(norm)
-                except Exception:
+            # Fallback robusto para chunks cortos (e.g. CAJA, BANCOS)
+            if len(guia_chunk) <= 6:
+                import unicodedata
+                def normalize(text):
+                    text = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore').decode('ascii')
+                    return ''.join(c for c in text.lower() if c.isalnum())
+                guia_norm = normalize(guia_chunk)
+                # Extraer prefijo antes del primer número para comparar solo el nombre
+                line_prefix = line
+                m = re.match(r'([^\d-]+)', line)
+                if m:
+                    line_prefix = m.group(1)
+                line_norm = normalize(line_prefix)
+                fuzzy_score = fuzz.ratio(guia_norm, line_norm)
+                if fuzzy_score >= 70:
+                    sim = 1.0
+                    # Extracción de valor para fallback
                     value = None
-            # 6. Validación de duplicados/contexto
-            key = (guia_chunk.strip().lower(), line.strip().lower())
-            if key in seen:
+                    value_match = re.search(r'(-?\d{1,3}(?:[.,]\d{3})*(?:[.,]\d+)?|\d+)', line)
+                    if value_match:
+                        raw = value_match.group(1)
+                        norm = raw.replace('.', '').replace(',', '.') if raw.count(',') else raw.replace(',', '')
+                        try:
+                            value = float(norm)
+                            if '-' in raw.strip():
+                                value = -abs(value)
+                        except Exception:
+                            value = None
+                    key = (guia_chunk.strip().lower(), line.strip().lower())
+                    if key not in seen:
+                        seen.add(key)
+                        results.append({
+                        'guia_chunk': guia_chunk,
+                        'ocr_line': line,
+                        'semantic_score': sim,
+                        'fuzzy_score': fuzzy_score,
+                        'value': value
+                    })
                 continue
-            seen.add(key)
-            results.append({
-                'guia_chunk': guia_chunk,
-                'ocr_line': line,
-                'semantic_score': round(sim, 3),
-                'fuzzy_score': fuzzy_score,
-                'value': value
-            })
-    # 7. Filtrar por calidad mínima (ejemplo: ambos scores altos y valor extraído)
-    filtered = [r for r in results if r['semantic_score'] >= threshold_semantic and r['fuzzy_score'] >= threshold_fuzzy and r['value'] is not None]
+    print('[DEBUG] results before dedup:', results)
+    # DEBUG: print all ocr_lines and guide_docs for inspection
+    print('[DEBUG] ocr_lines:', ocr_lines)
+    print('[DEBUG] guide_docs:', [doc.page_content for doc in guide_docs])
+    # 7. Deduplicar: solo el mejor match por guia_chunk
+    best_by_chunk = {}
+    for r in results:
+        key = r['guia_chunk'].strip().lower()
+        if key not in best_by_chunk or r['fuzzy_score'] > best_by_chunk[key]['fuzzy_score']:
+            best_by_chunk[key] = r
+        # DEBUG: print all results for inspection
+    # Para chunks cortos, aceptar fuzzy_score >= 70 aunque no sea 100
+    filtered = []
+    for r in best_by_chunk.values():
+        if r['value'] is not None or r['value'] == 0:
+            if len(r['guia_chunk']) <= 6 and r['fuzzy_score'] >= 70:
+                filtered.append(r)
+            elif r['fuzzy_score'] == 100 or (r['semantic_score'] >= threshold_semantic and r['fuzzy_score'] >= threshold_fuzzy):
+                filtered.append(r)
     return filtered
-
+    # DEBUG: print filtered for inspection
+    print('[DEBUG] filtered:', filtered)
+    return filtered
 import json
 import re
 from dotenv import load_dotenv
@@ -79,7 +106,6 @@ from b_embeddings import search_vectorestore
 from c_prompts import prompt_extract_company, prompt_balance_sheet, prompt_total_balance, prompt_income_statement
 from f_config import get_llm
 from f_config import get_embedding
-from g_main import vectore_storage
 
 
 import sys
@@ -129,7 +155,6 @@ class State(TypedDict):
     excel_bytes: Optional[bytes]
 
 #almacenamiento de vectores
-vectore_storage = vectore_storage
 #prompt
 prompt_extract_company = prompt_extract_company
 prompt_balance_sheet = prompt_balance_sheet

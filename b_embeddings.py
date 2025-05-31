@@ -19,12 +19,18 @@ def embeddings_guia(guia_data: str):
     logger.info("Documento de guía Markdown recibido para dividir")
     # Inicializar el splitter
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=100, chunk_overlap=20)
-    # Aplicar el split al texto completo
-    chunks = text_splitter.split_text(guia_data)
-    # Crear documentos con metadatos
-    docs = [Document(page_content=chunk, metadata={"fuente": "guia financiera"}) for chunk in chunks]
-    logger.info("Split aplicado al documento completo y documentos creados con metadatos")
+    # Dividir en líneas y filtrar solo ítems relevantes
+    # Extraer solo los ítems de lista markdown, ignorando encabezados
+    docs = []
+    for line in guia_data.splitlines():
+        l = line.strip()
+        if l.startswith('- '):
+            docs.append(Document(page_content=l[2:].strip(), metadata={"fuente": "guia financiera"}))
+    print(f'[DEBUG] lines: {guia_data.splitlines()}, docs: {[d.page_content for d in docs]}')
+    logger.info("Split por ítem aplicado y documentos creados con metadatos")
+    print(f'[DEBUG] docs: {[d.page_content for d in docs]}')
     return docs
+
 
 def search_vectorestore(pdf_content, guia_data):
     """
