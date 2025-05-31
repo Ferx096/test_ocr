@@ -1,4 +1,10 @@
 python-dotenv
+
+# Para visualizar el workflow del agente como imagen PNG
+# Requiere Node.js y Mermaid CLI
+# Instalar con: npm install -g @mermaid-js/mermaid-cli
+# Alternativamente, puedes agregarlo a un archivo requirements-node.txt si prefieres separar dependencias de Node.js
+
 langchain
 langgraph
 langchain-openai
