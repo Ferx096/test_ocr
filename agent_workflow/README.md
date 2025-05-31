@@ -24,14 +24,16 @@ Este directorio contiene scripts para exportar y visualizar el workflow (StateGr
 - `puppeteer-config.json`: Configuración para ejecutar mmdc como root
 - `workflow_graph.png`: Imagen PNG generada
 
-##WORKFLOW
+## WORKFLOW
 
-mermaid_code = '''graph TD
-    company_info["Company Info"]
-    balance_sheet["Balance Sheet"]
-    final["Final"]
-    end["End"]
-    company_info --> balance_sheet
-    balance_sheet --> final
-    final --> end
-'''
+´´´´
+flowchart TD
+    a[Company Info]
+    b[Balance Sheet]
+    c[Final]
+    d[End]
+    
+    a --> b
+    b --> c
+    c --> d
+´´´´
