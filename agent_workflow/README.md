@@ -27,14 +27,14 @@ Este directorio contiene scripts para exportar y visualizar el workflow (StateGr
 ## WORKFLOW
 ---
 
-```
+```mermaid
 flowchart LR;
-  a[Company Info];
-  b[Balance Sheet];
-  c[Final];
-  d[End];
-  a --> b;
-  b --> c;
-  c --> d;
+    a[Company Info];
+    b[Balance Sheet];
+    c[Final];
+    d[End];
+    a --> b;
+    b --> c;
+    c --> d;
 ```
 
