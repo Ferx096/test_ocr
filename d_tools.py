@@ -1,4 +1,70 @@
 import logging
+from langchain_community.vectorstores import FAISS
+from langchain.schema import Document
+from rapidfuzz import fuzz
+import pandas as pd
+
+def find_matches_in_ocr(ocr_text, guide_docs, embedding=None, threshold_fuzzy=80, threshold_semantic=0.80, top_k=2):
+    """
+    Matching semántico (embeddings) + fuzzy + extracción robusta de valores.
+    Args:
+        ocr_text (str): Texto OCR del PDF.
+        guide_docs (List[Document]): Chunks de la guía financiera.
+        embedding: Modelo de embedding (obligatorio para semántica).
+        threshold_fuzzy (int): Umbral fuzzy mínimo para aceptar match.
+        threshold_semantic (float): Umbral de similitud semántica (coseno) mínimo.
+        top_k (int): Número de matches semánticos a considerar por línea.
+    Returns:
+        List[dict]: Matches de calidad con variable, valor y contexto.
+    """
+    from langchain_community.vectorstores import FAISS
+    import numpy as np
+    import re
+    # 1. Construir vectorstore de la guía
+    vectordb = FAISS.from_documents(guide_docs, embedding)
+    # 2. Procesar OCR en líneas
+    ocr_lines = [line.strip() for line in ocr_text.split('\n') if line.strip()]
+    results = []
+    seen = set()
+    for line in ocr_lines:
+        # 3. Buscar top_k matches semánticos
+        docs_and_scores = vectordb.similarity_search_with_score(line, k=top_k)
+        for doc, score in docs_and_scores:
+            # FAISS devuelve menor distancia = más similar; convertir a similitud coseno
+            sim = 1 - score if score <= 1 else 1/(1+score)
+            if sim < threshold_semantic:
+                continue
+            guia_chunk = doc.page_content
+            # 4. Fuzzy adicional para refinar
+            fuzzy_score = fuzz.token_set_ratio(guia_chunk.lower(), line.lower())
+            if fuzzy_score < threshold_fuzzy:
+                continue
+            # 5. Extracción robusta de valores numéricos (regex, normalización)
+            value = None
+            value_match = re.search(r'([-+]?[0-9]{1,3}(?:[.,][0-9]{3})*(?:[.,][0-9]+)?)', line)
+            if value_match:
+                raw = value_match.group(1)
+                norm = raw.replace('.', '').replace(',', '.') if raw.count(',') else raw.replace(',', '')
+                try:
+                    value = float(norm)
+                except Exception:
+                    value = None
+            # 6. Validación de duplicados/contexto
+            key = (guia_chunk.strip().lower(), line.strip().lower())
+            if key in seen:
+                continue
+            seen.add(key)
+            results.append({
+                'guia_chunk': guia_chunk,
+                'ocr_line': line,
+                'semantic_score': round(sim, 3),
+                'fuzzy_score': fuzzy_score,
+                'value': value
+            })
+    # 7. Filtrar por calidad mínima (ejemplo: ambos scores altos y valor extraído)
+    filtered = [r for r in results if r['semantic_score'] >= threshold_semantic and r['fuzzy_score'] >= threshold_fuzzy and r['value'] is not None]
+    return filtered
+
 import json
 import re
 from dotenv import load_dotenv

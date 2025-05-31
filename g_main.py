@@ -1,87 +1,30 @@
-import logging
-from b_embeddings import search_vectorestore
+import json
+from a_ocr_extractor import extract_text_from_pdf_azure
+from b_embeddings import embeddings_guia
+from d_tools import find_matches_in_ocr, ensure_totals, exportar_a_excel
+from f_config import get_embedding
 
+# 1. Carga la guía (markdown)
+with open("map/map_test.md", encoding="utf-8") as f:
+    guia_data = f.read()
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
-logger = logging.getLogger(__name__)
+# 2. Carga el PDF
+with open("document/estados_financieros__pdf_93834000_202403.pdf", "rb") as f:
+    pdf_bytes = f.read()
 
-# ======================================
-# GRAPH VISUALIZATION
-# ======================================
-"""
-from langchain_core.runnables.graph_mermaid import MermaidDrawMethod
-from IPython.display import Image, display
+# 3. Extrae el texto OCR
+oct_result = extract_text_from_pdf_azure(pdf_bytes)
+ocr_text = oct_result["full_text"]
 
-# generar imagen
-imagen = app.get_graph().draw_mermaid_png()
-# guardar imagen
-with open(path_graph, "wb") as f:
-    f.write(imagen)
-print("imagen del workflow guardada")
-logger.info(f"imagen del workflow guardada")
-"""
-# ======================================
-# EXPORTAR WORKFLOW COMO MERMAID
-# ======================================
-def export_stategraph_to_mermaid(graph, path="workflow_graph.mmd"):
-    """
-    Exporta la estructura del StateGraph a formato Mermaid y la guarda en un archivo.
-    """
-    nodes = [
-        ("company_info", "Company Info"),
-        ("balance_sheet", "Balance Sheet"),
-        ("final", "Final"),
-        ("end", "End")
-    ]
-    edges = [
-        ("company_info", "balance_sheet"),
-        ("balance_sheet", "final"),
-        ("final", "end")
-    ]
-    mermaid = ["graph TD"]
-    for node, label in nodes:
-        mermaid.append(f"    {node}[\"{label}\"]")
-    for src, dst in edges:
-        mermaid.append(f"    {src} --> {dst}")
-    mermaid_code = "\n".join(mermaid)
-    with open(path, "w", encoding="utf-8") as f:
-        f.write(mermaid_code)
-    print(f"Código Mermaid exportado a {path}")
+# 4. Construye los documentos de la guía (desde markdown)
+guide_docs = embeddings_guia(guia_data)
 
-# Ejemplo de uso:
-# from e_agents import graph
-# export_stategraph_to_mermaid(graph, "workflow_graph.mmd")
+# 5. Matching y extracción
+embedding_model = get_embedding()
+resultados = find_matches_in_ocr(ocr_text, guide_docs, embedding=embedding_model)
+resultados = ensure_totals(resultados)
 
-# ======================================
-# GENERAR PNG DESDE MERMAID (CLI)
-# ======================================
-def generar_png_mermaid(input_mmd="workflow_graph.mmd", output_png="workflow_graph.png"):
-    import subprocess
-    try:
-        subprocess.run([
-            "mmdc", "-i", input_mmd, "-o", output_png
-        ], check=True)
-        print(f"Imagen PNG generada en {output_png}")
-    except Exception as e:
-        print(f"Error generando PNG: {e}")
-
-# Ejemplo de uso:
-# generar_png_mermaid("workflow_graph.mmd", "workflow_graph.png")
-
-# ======================================
-#CREAR EL VECTOR STORE PARA LA BUSQUEDA
-# ======================================
-import sys
-if 'pytest' not in sys.modules:
-    #importar documento base-guia
-    with open("map/map_test.md", "r", encoding="utf-8") as f_guia:
-        guia_data = f_guia.read()
-    #importar documento para prueba
-    with open("document/estados_financieros__pdf_93834000_202403.pdf", "rb") as f:
-        pdf_content = f.read()
-    #Guardar en el almacen de vectores para una busqueda optima
-    vectore_storage = search_vectorestore(pdf_content, guia_data)
-else:
-    vectore_storage = None
-
+# 6. Exporta a Excel
+nombre_archivo = exportar_a_excel(resultados)
+print(f"Balance exportado a {nombre_archivo}")
 
