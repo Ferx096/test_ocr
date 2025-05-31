@@ -25,15 +25,16 @@ Este directorio contiene scripts para exportar y visualizar el workflow (StateGr
 - `workflow_graph.png`: Imagen PNG generada
 
 ## WORKFLOW
+---
 
-´´´´
-flowchart TD
-    a[Company Info]
-    b[Balance Sheet]
-    c[Final]
-    d[End]
-    
-    a --> b
-    b --> c
-    c --> d
-´´´´
+```
+flowchart LR;
+  a[Company Info];
+  b[Balance Sheet];
+  c[Final];
+  d[End];
+  a --> b;
+  b --> c;
+  c --> d;
+```
+
