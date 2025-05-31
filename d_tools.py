@@ -72,11 +72,9 @@ from typing import Dict
 from langchain_core.tools import tool
 from langchain_core.messages import HumanMessage
 from typing import Optional, Annotated
-from langgraph.graph.message import add_messages
 from typing_extensions import TypedDict
 from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
-from langgraph.prebuilt import create_react_agent
 from b_embeddings import search_vectorestore
 from c_prompts import prompt_extract_company, prompt_balance_sheet, prompt_total_balance, prompt_income_statement
 from f_config import get_llm
@@ -121,7 +119,7 @@ Se pretende crear 3 agentes jerargicos para obtener informacion valiosa
 
 class State(TypedDict):
     """Estructura de estado compartido entre agentes"""
-    messages: Annotated[Optional[list[HumanMessage]], add_messages]
+    messages: Optional[list[HumanMessage]]
     nombre_compañia: Optional[str]
     rut_compañia: Optional[str]
     fecha_reporte: Optional[str]
@@ -153,11 +151,6 @@ def extract_company_info(query: str) -> str:
 
 
 # agente
-agent_company_info = create_react_agent(
-    llm,
-    tools=[extract_company_info],
-    prompt=prompt_extract_company,
-)
 
 
 # funcion para extraer informacion del texto del agente
@@ -229,9 +222,6 @@ def parse_number(valor):
 def sum_group(grupo: Dict[str, str]) -> float:
     """Suma los valores numéricos de un grupo de cuentas."""
     return sum(parse_number(e) for e in grupo.values())
-# agente
-agent_balance_sheet = create_react_agent(llm, tools=[extract_balance_sheet], prompt=prompt_balance_sheet)
-
 # evaluador de balance total
 from langchain_core.prompts import ChatPromptTemplate
 prompt_total_balance_runneable = ChatPromptTemplate.from_template(prompt_total_balance)
@@ -267,6 +257,45 @@ def extract_income_statement(query: str) -> str:
 
 # Se usara el mismo parse_number pdf balance general
 # agente de balance de resultados
-agent_income_statement = create_react_agent(
-    llm, tools=[extract_income_statement], prompt=prompt_income_statement
-)
+
+from rapidfuzz import fuzz
+from typing import List
+from langchain.schema import Document
+
+def find_matches_in_ocr(ocr_text: str, guide_docs: List[Document], embedding=None, threshold_fuzzy=70, threshold_semantic=0.5, top_k=1):
+    """
+    Busca matches entre líneas del OCR y los ítems individuales de la guía usando fuzzy y (opcional) similitud semántica.
+    Extrae valores numéricos asociados y retorna lista de dicts con match y valor.
+    """
+    ocr_lines = [l.strip() for l in ocr_text.split("\n") if l.strip()]
+    results = []
+    # Extraer ítems individuales de la guía
+    guide_items = []
+    for doc in guide_docs:
+        for line in doc.page_content.split("\n"):
+            item = line.strip().lstrip('-').strip()
+            if item and not item.startswith('#'):
+                guide_items.append(item)
+    for guia_item in guide_items:
+        best_score = 0
+        best_line = None
+        for line in ocr_lines:
+            score = fuzz.token_set_ratio(guia_item, line)
+            if score > best_score:
+                best_score = score
+                best_line = line
+        if best_score >= threshold_fuzzy:
+            match = re.search(r"([\d\.\,]+)", best_line)
+            value = float(match.group(1).replace('.', '').replace(',', '.')) if match else None
+            results.append({
+                'guia_chunk': guia_item,
+                'ocr_line': best_line,
+                'score': best_score,
+                'value': value
+            })
+    results = [r for r in results if r['value'] is not None]
+    return results
+
+# Exportar la función para los tests
+__all__ = ['find_matches_in_ocr']
+
