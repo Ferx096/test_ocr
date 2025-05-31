@@ -134,6 +134,20 @@ Por favor, sigue el estilo de código y documenta tus funciones.
 
 ---
 
+## WORKFLOW
+
+```mermaid
+flowchart LR;
+    a[Company Info];
+    b[Balance Sheet];
+    c[Final];
+    d[End];
+    a --> b;
+    b --> c;
+    c --> d;
+```
+---
+
 ## Licencia
 
 Este proyecto está bajo la Licencia MIT. Consulta el archivo LICENSE para más detalles.
