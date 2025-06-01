@@ -13,3 +13,4 @@ tabulate
 pyppeteer
 openpyxl
 azure-storage-blob
+rapidfuzz
