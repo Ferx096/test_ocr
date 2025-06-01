@@ -6,7 +6,7 @@
 
 ## Descripción
 
-**test_ocr** es una solución automatizada para extraer y analizar información financiera de documentos PDF escaneados, como balances y estados financieros. Utiliza tecnologías de OCR (Reconocimiento Óptico de Caracteres), modelos de lenguaje (LLM) y embeddings de Azure para transformar documentos no estructurados en datos estructurados y útiles.
+**test_ocr** es una solución automatizada para extraer y analizar información financiera de documentos PDF escaneados, como balances y estados financieros. Utiliza OCR de Azure, embeddings y matching semántico para transformar documentos no estructurados en datos estructurados y exportarlos a Excel.
 
 ---
 
@@ -36,19 +36,13 @@
 
 ### Entrada (PDF escaneado)
 
-    document/Yamas 2023 Balance Sheet.pdf
+    document/estados_financieros__pdf_93834000_202403.pdf
 
-### Salida (JSON generado)
+### Salida (Excel generado)
 
-```json
-{
-  "empresa": "Ejemplo S.A.",
-  "anio": 2024,
-  "activo_total": 100000,
-  "pasivo_total": 50000,
-  "patrimonio": 50000
-}
-```
+    resultado.xlsx
+
+El archivo Excel contendrá los datos extraídos y estructurados del PDF procesado, según la guía definida en `map/map_test.md`.
 
 ---
 
@@ -88,9 +82,9 @@ Asegúrate de que el archivo `.env` NO se suba al repositorio.
 1. Coloca los archivos PDF a procesar en la carpeta `document/`.
 2. Ejecuta el pipeline principal:
    ```bash
-   python d_agents.py
+   python g_main.py
    ```
-3. Los resultados se generan en archivos de salida (JSON/TXT) según la configuración.
+3. El resultado se genera en un archivo Excel (`resultado.xlsx`).
 4. Para ejecutar todos los tests automatizados:
    ```bash
    pytest
@@ -101,10 +95,12 @@ Asegúrate de que el archivo `.env` NO se suba al repositorio.
 
 ## Componentes principales
 
-- `a_embeddings_ocr.py`: Procesa los PDFs y genera embeddings para mejorar la extracción.
-- `d_agents.py`: Orquesta el pipeline de procesamiento.
+- `a_ocr_extractor.py`: Extrae texto de PDFs usando Azure Document Intelligence.
+- `b_embeddings.py`: Procesa la guía y genera embeddings para matching.
+- `d_tools.py`: Herramientas para matching, validación y exportación a Excel.
+- `g_main.py`: Orquesta el pipeline de procesamiento.
 - `f_config.py`: Configuración y credenciales de Azure.
-- `map/`: Utilidades para pruebas y mapeo de términos.
+- `map/`: Utilidades para pruebas y mapeo de términos (incluye la guía en markdown).
 - `document/`: Carpeta de entrada para los PDFs.
 - `requirements.txt`: Lista de dependencias necesarias.
 
@@ -136,16 +132,10 @@ Por favor, sigue el estilo de código y documenta tus funciones.
 
 ## WORKFLOW
 
-```mermaid
-flowchart LR;
-    a[Company Info];
-    b[Balance Sheet];
-    c[Final];
-    d[End];
-    a --> b;
-    b --> c;
-    c --> d;
-```
+1. El usuario coloca el PDF a procesar en la carpeta `document/`.
+2. El sistema extrae el texto usando Azure Document Intelligence.
+3. Se utiliza la guía (`map/map_test.md`) para identificar y mapear los conceptos clave mediante embeddings y matching semántico.
+4. Los datos estructurados se exportan a un archivo Excel (`resultado.xlsx`).
 ---
 
 ## Licencia
