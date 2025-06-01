@@ -324,3 +324,59 @@ def find_matches_in_ocr(ocr_text: str, guide_docs: List[Document], embedding=Non
 # Exportar la función para los tests
 __all__ = ['find_matches_in_ocr']
 
+
+def ensure_totals(resultados):
+    """
+    Agrupa los resultados en activos, pasivos y patrimonio usando un mapeo explícito de cuentas.
+    Si no existe el total en el grupo, lo calcula y lo agrega.
+    """
+    # Diccionario de mapeo robusto: nombre de cuenta (lower) -> grupo
+    mapeo = {
+        'caja y bancos': 'activo',
+        'caja': 'activo',
+        'bancos': 'activo',
+        'efectivo': 'activo',
+        'cuentas por cobrar': 'activo',
+        'inventarios': 'activo',
+        'total activos': 'activo',
+        'deuda financiera': 'pasivo',
+        'proveedores': 'pasivo',
+        'cuentas por pagar': 'pasivo',
+        'total pasivos': 'pasivo',
+        'capital social': 'patrimonio',
+        'utilidades retenidas': 'patrimonio',
+        'total patrimonio': 'patrimonio',
+        'patrimonio neto': 'patrimonio',
+        'flujo de caja': 'activo',
+        # Agrega aquí más mapeos según tu guía real
+    }
+    # Agrupar resultados
+    grupos = {'activo': [], 'pasivo': [], 'patrimonio': []}
+    otros = []
+    for r in resultados:
+        nombre = r.get('guia_chunk', '').strip().lower()
+        grupo = None
+        for clave, tipo in mapeo.items():
+            if clave in nombre:
+                grupo = tipo
+                break
+        if grupo:
+            grupos[grupo].append(r)
+        else:
+            otros.append(r)
+    # Calcular totales si no existen
+    nuevos_resultados = resultados.copy()
+    for grupo, items in grupos.items():
+        if not items:
+            continue
+        # Buscar si ya existe un total explícito
+        tiene_total = any('total' in r['guia_chunk'].lower() for r in items)
+        if not tiene_total:
+            suma = sum(r['value'] for r in items if isinstance(r['value'], (int, float)))
+            nuevos_resultados.append({
+                'guia_chunk': f'Total {grupo}s',
+                'ocr_line': '',
+                'value': suma
+            })
+    return nuevos_resultados
+
