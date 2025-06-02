@@ -380,3 +380,19 @@ def ensure_totals(resultados):
             })
     return nuevos_resultados
 
+
+def exportar_a_excel(resultados, nombre_archivo="resultado.xlsx"):
+    """
+    Exporta la lista de resultados a un archivo Excel con columnas: Cuenta, Valor.
+    """
+    import pandas as pd
+    filas = []
+    for r in resultados:
+        filas.append({
+            'Cuenta': r.get('guia_chunk', ''),
+            'Valor': r.get('value', '')
+        })
+    df = pd.DataFrame(filas)
+    df.to_excel(nombre_archivo, index=False)
+    return nombre_archivo
+
