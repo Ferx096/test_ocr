@@ -311,7 +311,10 @@ def find_matches_in_ocr(ocr_text: str, guide_docs: List[Document], embedding=Non
                 best_line = line
         if best_score >= threshold_fuzzy:
             match = re.search(r"([\d\.\,]+)", best_line)
-            value = float(match.group(1).replace('.', '').replace(',', '.')) if match else None
+            try:
+                value = float(match.group(1).replace('.', '').replace(',', '.')) if match else None
+            except Exception:
+                value = None
             results.append({
                 'guia_chunk': guia_item,
                 'ocr_line': best_line,
