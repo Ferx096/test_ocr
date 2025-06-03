@@ -81,18 +81,14 @@ def parse_markdown_guia(md_text):
         docs.append(Document(page_content=page_content, metadata={k: v for k, v in current.items() if k != 'nombre'}))
     return docs
 
-def search_vectorestore(pdf_content, guia_data):
+def search_vectorestore(guia_data):
     """
     Transforma el texto concatenado en embedding y lo guarda en un vectorstore, listo para ser invocado
     """
     embedding = get_embedding()
-    docs_finance = concat_text(pdf_content)
     docs_guia = embeddings_guia(guia_data)
-    # combinar antes de vectorizar
-    docs_merge = docs_guia + docs_finance
-    logger.info(f"Documentos combinados para vectore store")
     # vectore store - embedding
-    vectore_store = FAISS.from_documents(docs_merge, embedding)
+    vectore_store = FAISS.from_documents(docs_guia, embedding)
     #recuperador
     retriever = vectore_store.as_retriever()
     logger.info(f"Vector Store y recuperación lista")
