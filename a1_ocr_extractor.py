@@ -71,6 +71,9 @@ def extract_text_from_pdf_azure(pdf_content: bytes):
         import traceback
         logger.error(traceback.format_exc())
         return None
+        
+#================================================================
+#Posiblemente no se use esta funcion ya que combina embeddings
 
 # Convertir tablas en markdown
 def concat_text(pdf_content):
